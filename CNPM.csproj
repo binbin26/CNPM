@@ -206,6 +206,9 @@
     <EmbeddedResource Include="Forms\Shared\CourseDetailForm.resx">
       <DependentUpon>CourseDetailForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Teacher\CourseDashboardForm.resx">
+      <DependentUpon>CourseDashboardForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

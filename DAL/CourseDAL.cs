@@ -63,5 +63,32 @@ namespace CNPM.DAL
                 return rowsAffected > 0;
             }
         }
+            // Lấy danh sách khóa học do Giảng viên phụ trách
+        public List<Course> GetCoursesByTeacher(int teacherID)
+            {
+                List<Course> courses = new List<Course>();
+                using (SqlConnection conn = DatabaseHelper.GetConnection())
+                {
+                    string query = "SELECT * FROM Courses WHERE TeacherID = @TeacherID";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@TeacherID", teacherID);
+
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        courses.Add(new Course
+                        {
+                            CourseID = (int)reader["CourseID"],
+                            CourseCode = reader["CourseCode"].ToString(),
+                            CourseName = reader["CourseName"].ToString(),
+                            StartDate = (DateTime)reader["StartDate"],
+                            EndDate = (DateTime)reader["EndDate"]
+                        });
+                    }
+                }
+                return courses;
+        }
     }
 }

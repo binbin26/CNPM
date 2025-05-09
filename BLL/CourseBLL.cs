@@ -27,5 +27,9 @@ namespace CNPM.BLL
             if (studentID <= 0 || courseID <= 0) return false;
             return _courseDAL.EnrollStudent(studentID, courseID);
         }
+        public List<Course> GetCoursesByTeacher(int teacherID)
+        {
+            return _courseDAL.GetCoursesByTeacher(teacherID);
+        }
     }
 }

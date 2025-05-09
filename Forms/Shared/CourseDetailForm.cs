@@ -10,11 +10,11 @@ namespace CNPM.Forms.Shared
         // ✅ bỏ khởi tạo trực tiếp, chuyển sang lấy từ DI
         private readonly CourseBLL _courseBLL;
         private readonly IUserContext _userContext;
-
-        public CourseDetailForm()
+        private int _courseID;
+        public CourseDetailForm(int courseID)
         {
             InitializeComponent();
-
+            _courseID = courseID;
             // ✅ Lấy các service đã đăng ký trong Program
             _courseBLL = Program.ServiceProvider.GetRequiredService<CourseBLL>();
             _userContext = Program.ServiceProvider.GetRequiredService<IUserContext>();
