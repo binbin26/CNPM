@@ -3,8 +3,6 @@ using CNPM.Models.Courses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CNPM.BLL
 {
@@ -30,6 +28,11 @@ namespace CNPM.BLL
         public List<Course> GetCoursesByTeacher(int teacherID)
         {
             return _courseDAL.GetCoursesByTeacher(teacherID);
+        }
+        // Trong CourseBLL.cs
+        public Course GetCourseByID(int courseID)
+        {
+            return _courseDAL.GetCourseByID(courseID);
         }
     }
 }

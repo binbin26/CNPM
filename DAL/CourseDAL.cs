@@ -90,5 +90,30 @@ namespace CNPM.DAL
                 }
                 return courses;
         }
+        public Course GetCourseByID(int courseID)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT * FROM Courses WHERE CourseID = @CourseID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@CourseID", courseID);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return new Course
+                    {
+                        CourseID = (int)reader["CourseID"],
+                        CourseCode = reader["CourseCode"].ToString(),
+                        CourseName = reader["CourseName"].ToString(),
+                        StartDate = (DateTime)reader["StartDate"],
+                        EndDate = (DateTime)reader["EndDate"]
+                    };
+                }
+                return null;
+            }
+        }
     }
 }

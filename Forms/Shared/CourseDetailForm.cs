@@ -26,13 +26,12 @@ namespace CNPM.Forms.Shared
         {
             dataGridViewCourses.DataSource = _courseBLL.GetAvailableCourses();
         }
-
         private void btnEnroll_Click(object sender, EventArgs e)
         {
             int selectedCourseID =
                 (int)dataGridViewCourses.CurrentRow.Cells["CourseID"].Value;
 
-            // ✅ Lấy ID sinh viên từ IUserContext thay vì Global
+            // ✅ Lấy ID sinh viên từ IUserContext
             int studentID = _userContext.CurrentUser.UserID;
 
             if (_courseBLL.EnrollStudent(studentID, selectedCourseID))

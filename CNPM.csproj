@@ -91,8 +91,22 @@
   <ItemGroup>
     <Compile Include="BLL\CourseBLL.cs" />
     <Compile Include="BLL\Courses\ContentService.cs" />
+    <Compile Include="BLL\Courses\CourseManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BLL\Courses\CourseManagementForm.Designer.cs">
+      <DependentUpon>CourseManagementForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BLL\Courses\CourseManager.cs" />
     <Compile Include="BLL\Courses\EnrollmentService.cs" />
+    <Compile Include="BLL\DocumentRepository.cs" />
+    <Compile Include="Forms\Shared\EnrolledStudentsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Shared\EnrolledStudentsForm.Designer.cs">
+      <DependentUpon>EnrolledStudentsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BLL\EnrollmentBLL.cs" />
     <Compile Include="BLL\PermissionHelper.cs" />
     <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="BLL\Users\AuthService.cs" />
@@ -106,6 +120,7 @@
     <Compile Include="DAL\Courses\ExamRepository.cs" />
     <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\EduMasterDbContext.cs" />
+    <Compile Include="DAL\EnrollmentDAL.cs" />
     <Compile Include="DAL\PermissionDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="DAL\Users\StudentRepository.cs" />
@@ -187,6 +202,7 @@
     <Compile Include="Models\Courses\Exam.cs" />
     <Compile Include="Models\Courses\Document.cs" />
     <Compile Include="Models\Courses\Course.cs" />
+    <Compile Include="Models\EnrolledStudent.cs" />
     <Compile Include="Models\Shared\Enum.cs" />
     <Compile Include="Models\Shared\Permission.cs" />
     <Compile Include="Models\Users\Teacher.cs" />
@@ -197,6 +213,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="Utilities\Logger.cs" />
+    <EmbeddedResource Include="BLL\Courses\CourseManagementForm.resx">
+      <DependentUpon>CourseManagementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Admin\UserManagementForm.resx">
       <DependentUpon>UserManagementForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Shared\CourseDetailForm.resx">
       <DependentUpon>CourseDetailForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Shared\EnrolledStudentsForm.resx">
+      <DependentUpon>EnrolledStudentsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\CourseDashboardForm.resx">
       <DependentUpon>CourseDashboardForm.cs</DependentUpon>
