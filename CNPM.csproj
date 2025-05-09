@@ -45,6 +45,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.9.0.4\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=9.0.0.4, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.DependencyInjection.9.0.4\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.4, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.4\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>packages\NLog.5.4.0\lib\net46\NLog.dll</HintPath>
     </Reference>
@@ -66,6 +75,9 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\CourseBLL.cs" />
     <Compile Include="BLL\Courses\ContentService.cs" />
     <Compile Include="BLL\Courses\CourseManager.cs" />
     <Compile Include="BLL\Courses\EnrollmentService.cs" />
@@ -85,12 +98,15 @@
     <Compile Include="BLL\Users\AuthService.cs" />
     <Compile Include="BLL\Users\RoleManager.cs" />
     <Compile Include="BLL\Users\UserService.cs" />
+    <Compile Include="CurrentUser.cs" />
+    <Compile Include="DAL\CourseDAL.cs" />
     <Compile Include="DAL\Courses\AssignmentRepository.cs" />
     <Compile Include="DAL\Courses\CourseRepository.cs" />
     <Compile Include="DAL\Courses\DocumentRepository.cs" />
     <Compile Include="DAL\Courses\ExamRepository.cs" />
     <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\EduMasterDbContext.cs" />
+    <Compile Include="DAL\PermissionDAL.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="DAL\Users\StudentRepository.cs" />
     <Compile Include="DAL\Users\TeacherRepository.cs" />
@@ -186,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Auth\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Shared\CourseDetailForm.resx">
+      <DependentUpon>CourseDetailForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -12,5 +12,7 @@ namespace CNPM.Models.Courses
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
         public int TeacherID { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime StartDate { get; set; }
     }
 }
