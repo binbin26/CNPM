@@ -383,3 +383,10 @@ VALUES (
     'Nguyễn Văn A', 
     'teacher08@edumaster.edu.vn'
 );
+
+UPDATE Users 
+SET PasswordHash = '$2a$12$xyz123...' -- Thay bằng BCrypt hash thực tế
+WHERE Username IN ('teacher08', 'student03', 'student02');
+
+SELECT *
+FROM Users 

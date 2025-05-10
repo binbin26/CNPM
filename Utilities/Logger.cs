@@ -5,12 +5,6 @@ namespace CNPM.Utilities
 {
     public static class Logger
     {
-        private static string LogFilePath =>
-    Path.Combine(
-        AppDomain.CurrentDomain.BaseDirectory,
-        "logs",
-        $"log_{DateTime.Now:yyyyMMdd}.log"
-    );
         /// <summary>
         /// Ghi log lỗi vào file
         /// </summary>
@@ -21,6 +15,10 @@ namespace CNPM.Utilities
                 string basePath = AppDomain.CurrentDomain.BaseDirectory;
                 string logDirectory = Path.Combine(basePath, "logs");
                 string logFilePath = Path.Combine(logDirectory, $"log_{DateTime.Now:yyyyMMdd}.log");
+                // Kiểm tra và xử lý errorMessage nếu null/rỗng
+                string safeErrorMessage = string.IsNullOrEmpty(errorMessage)
+                                        ? "Lỗi không xác định."
+                                        : errorMessage;
 
                 // Tạo thư mục nếu chưa tồn tại
                 Directory.CreateDirectory(logDirectory);

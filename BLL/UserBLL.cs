@@ -13,15 +13,41 @@ namespace CNPM.BLL
         {
             try
             {
+                // Validate dữ liệu trước khi thêm
+                if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password))
+                {
+                    Logger.LogError("Username hoặc Password không được trống.");
+                    return false;
+                }
+                // ⭐⭐ THÊM CODE HASH MẬT KHẨU TẠI ĐÂY ⭐⭐
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password); // Hash mật khẩu gốc
+                // Kiểm tra email hợp lệ (nếu cần)
+                if (!IsValidEmail(user.Email))
+                {
+                    Logger.LogError("Email không hợp lệ.");
+                    return false;
+                }
+
                 return _userDAL.AddUser(user);
             }
             catch (Exception ex)
             {
-                // Log lỗi (ví dụ: sử dụng NLog, Serilog)
-                Logger.LogError($"Lỗi ở lớp BLL: {ex.Message}");
+                Logger.LogError($"Lỗi thêm User: {ex.Message}");
+                return false; // Trả về false thay vì throw để tránh crash
+            }
+        }
 
-                // Ném lại exception để UI xử lý
-                throw;
+        // Phương thức kiểm tra email
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -30,23 +56,17 @@ namespace CNPM.BLL
             try
             {
                 User user = _userDAL.GetUserByUsername(username);
-                if (user == null)
+                if (user == null || string.IsNullOrEmpty(user.PasswordHash))
                 {
-                    Logger.LogError($"User {username} không tồn tại."); // Gọi Logger
                     return false;
                 }
 
-                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
-                if (!isPasswordValid)
-                {
-                    Logger.LogError($"Mật khẩu không đúng cho user {username}."); // Gọi Logger
-                }
-
+                bool isPasswordValid = password == user.PasswordHash;
                 return isPasswordValid;
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Lỗi đăng nhập: {ex.Message}"); // Gọi Logger
+                Logger.LogError($"Lỗi đăng nhập: {ex.Message}");
                 return false;
             }
         }

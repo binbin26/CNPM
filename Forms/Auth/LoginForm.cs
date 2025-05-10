@@ -13,7 +13,7 @@ namespace CNPM.Forms.Auth
 {
     public partial class LoginForm : Form
     {
-        private readonly UserBLL _userBLL = new UserBLL();
+
 
         public LoginForm()
         {
@@ -22,7 +22,8 @@ namespace CNPM.Forms.Auth
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string username = txtUsername.Text;
+            UserBLL _userBLL = new UserBLL();
+            string username = txtUsername.Text.Trim();
             string password = txtPassword.Text;
             try
             {
@@ -41,6 +42,12 @@ namespace CNPM.Forms.Auth
             {
                 MessageBox.Show($"Lỗi hệ thống: {ex.Message}");
             }
+        }
+
+        private void btnSignUp_Click(object sender, EventArgs e)
+        {
+            RegistrationForm registrationForm = new RegistrationForm();
+            registrationForm.ShowDialog(); // Hiển thị dưới dạng modal
         }
     }
 }

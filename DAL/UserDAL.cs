@@ -21,25 +21,26 @@ namespace CNPM.DAL
                     SqlCommand cmd = new SqlCommand(query, conn);
 
                     conn.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
+                    using (SqlDataReader reader = cmd.ExecuteReader()) // Thêm using
                     {
-                        users.Add(new User
+                        while (reader.Read())
                         {
-                            UserID = (int)reader["UserID"],
-                            Username = reader["Username"].ToString(),
-                            Role = reader["Role"].ToString(),
-                            FullName = reader["FullName"].ToString(),
-                            Email = reader["Email"].ToString()
-                        });
+                            users.Add(new User
+                            {
+                                UserID = (int)reader["UserID"],
+                                Username = reader["Username"].ToString(),
+                                Role = reader["Role"].ToString(),
+                                FullName = reader["FullName"].ToString(),
+                                Email = reader["Email"].ToString()
+                            });
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Log lỗi và trả về danh sách rỗng
-                Logger.LogError("Lỗi khi tải danh sách người dùng: " + ex.Message);
+                Logger.LogError($"Lỗi khi tải danh sách người dùng: {ex.Message}");
+                throw; // Ném lại exception để xử lý ở tầng cao hơn
             }
 
             return users;
@@ -50,30 +51,31 @@ namespace CNPM.DAL
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                SqlTransaction transaction = conn.BeginTransaction(); // Bắt đầu transaction
-
-                try
+                using (SqlTransaction transaction = conn.BeginTransaction()) // Thêm using
                 {
-                    string query = @"
-                        INSERT INTO Users (Username, PasswordHash, Role, FullName, Email) 
-                        VALUES (@Username, @PasswordHash, @Role, @FullName, @Email)";
+                    try
+                    {
+                        string query = @"
+                    INSERT INTO Users (Username, PasswordHash, Role, FullName, Email) 
+                    VALUES (@Username, @PasswordHash, @Role, @FullName, @Email)";
 
-                    SqlCommand cmd = new SqlCommand(query, conn, transaction);
-                    cmd.Parameters.AddWithValue("@Username", user.Username);
-                    cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-                    cmd.Parameters.AddWithValue("@Role", user.Role);
-                    cmd.Parameters.AddWithValue("@FullName", user.FullName);
-                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                        SqlCommand cmd = new SqlCommand(query, conn, transaction);
+                        cmd.Parameters.Add("@Username", SqlDbType.NVarChar).Value = user.Username; // Xác định kiểu dữ liệu
+                        cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar).Value = user.PasswordHash;
+                        cmd.Parameters.Add("@Role", SqlDbType.NVarChar).Value = user.Role;
+                        cmd.Parameters.Add("@FullName", SqlDbType.NVarChar).Value = user.FullName;
+                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = user.Email;
 
-                    cmd.ExecuteNonQuery();
-                    transaction.Commit(); // Commit transaction
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback(); // Rollback nếu có lỗi
-                    Logger.LogError($"Lỗi khi thêm người dùng: {ex.Message}");
-                    throw;
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        Logger.LogError($"Lỗi khi thêm người dùng: {ex.Message}");
+                        return false; // Trả về false thay vì throw
+                    }
                 }
             }
         }
@@ -87,19 +89,22 @@ namespace CNPM.DAL
                 cmd.Parameters.AddWithValue("@Username", username);
 
                 conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                if (reader.Read())
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    return new User
+                    if (reader.Read())
                     {
-                        UserID = (int)reader["UserID"],
-                        Username = reader["Username"].ToString(),
-                        PasswordHash = reader["PasswordHash"].ToString(),
-                        Role = reader["Role"].ToString()
-                    };
+                        return new User
+                        {
+                            UserID = reader["UserID"] != DBNull.Value ? (int)reader["UserID"] : 0,
+                            Username = reader["Username"] != DBNull.Value ? reader["Username"].ToString() : "",
+                            PasswordHash = reader["PasswordHash"] != DBNull.Value ? reader["PasswordHash"].ToString() : "",
+                            Role = reader["Role"] != DBNull.Value ? reader["Role"].ToString() : "",
+                            FullName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "",
+                            Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : ""
+                        };
+                    }
+                    return null;
                 }
-                return null; // Không tìm thấy user
             }
         }
     }
