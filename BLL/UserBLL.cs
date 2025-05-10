@@ -29,20 +29,24 @@ namespace CNPM.BLL
         {
             try
             {
-                // Lấy thông tin user từ database
                 User user = _userDAL.GetUserByUsername(username);
-
-                // Kiểm tra user tồn tại và mật khẩu đúng
-                if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                if (user == null)
                 {
-                    return true;
+                    Logger.LogError($"User {username} không tồn tại."); // Gọi Logger
+                    return false;
                 }
-                return false;
+
+                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+                if (!isPasswordValid)
+                {
+                    Logger.LogError($"Mật khẩu không đúng cho user {username}."); // Gọi Logger
+                }
+
+                return isPasswordValid;
             }
             catch (Exception ex)
             {
-                // Log lỗi và trả về false
-                Logger.LogError($"Lỗi xác thực đăng nhập: {ex.Message}");
+                Logger.LogError($"Lỗi đăng nhập: {ex.Message}"); // Gọi Logger
                 return false;
             }
         }

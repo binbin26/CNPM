@@ -14,34 +14,26 @@ namespace CNPM.Utilities
         /// <summary>
         /// Ghi log lỗi vào file
         /// </summary>
-        public static void LogError(string message)
-        {
-            Log("ERROR", message);
-        }
-
-        /// <summary>
-        /// Ghi log thông tin
-        /// </summary>
-        public static void LogInfo(string message)
-        {
-            Log("INFO", message);
-        }
-
-        private static void Log(string logLevel, string message)
+        public static void LogError(string errorMessage)
         {
             try
             {
-                string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] {message}{Environment.NewLine}";
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string logDirectory = Path.Combine(basePath, "logs");
+                string logFilePath = Path.Combine(logDirectory, $"log_{DateTime.Now:yyyyMMdd}.log");
 
-                // Đảm bảo thread-safe khi ghi file
-                lock (typeof(Logger))
+                // Tạo thư mục nếu chưa tồn tại
+                Directory.CreateDirectory(logDirectory);
+
+                // Ghi log vào file
+                using (StreamWriter writer = new StreamWriter(logFilePath, true))
                 {
-                    File.AppendAllText(LogFilePath, logMessage);
+                    writer.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] ERROR: {errorMessage}");
                 }
             }
             catch (Exception ex)
             {
-                // Xử lý exception nếu không ghi được log (ví dụ: ghi vào console)
+                // Fallback: Hiển thị lỗi trên console nếu không ghi được log
                 Console.WriteLine($"Không thể ghi log: {ex.Message}");
             }
         }

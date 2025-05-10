@@ -361,3 +361,25 @@ VALUES
     (8,'admin02', '$2a$12$xyz123...', 'Admin', 'Nguyễn Văn C', 'c@edu.vn');
 
 Select * from Users
+ALTER TABLE CourseDocuments
+ADD Documents NVARCHAR(20) CHECK (Documents IN ('Tài liệu', 'Bài tập')); -- Phân loại
+ALTER TABLE CourseDocuments
+ADD DueDate DATETIME NULL  -- Hạn nộp (nếu là bài tập);
+
+SELECT Username, PasswordHash FROM Users 
+INSERT INTO Users (
+    UserID, 
+    Username, 
+    PasswordHash, 
+    Role, 
+    FullName, 
+    Email  -- Các cột NOT NULL phải được cung cấp
+)
+VALUES (
+    10, 
+    'teacher08', 
+    '123456',  -- Thay bằng giá trị thực tế
+    'Teacher', 
+    'Nguyễn Văn A', 
+    'teacher08@edumaster.edu.vn'
+);
