@@ -60,7 +60,6 @@ namespace CNPM.BLL
                 {
                     return false;
                 }
-
                 bool isPasswordValid = password == user.PasswordHash;
                 return isPasswordValid;
             }

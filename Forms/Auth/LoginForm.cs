@@ -1,12 +1,6 @@
 ﻿using CNPM.BLL;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CNPM.Utilities;
 using System.Windows.Forms;
 
 namespace CNPM.Forms.Auth
@@ -31,11 +25,13 @@ namespace CNPM.Forms.Auth
                 if (_userBLL.ValidateLogin(username, password))
                 {
                     MessageBox.Show("Đăng nhập thành công!");
+                    Logger.LogInfo($"Đăng nhập thành công với tài khoản: {username}");
                     // Mở form chính
                 }
                 else
                 {
                     MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!");
+                    Logger.LogInfo($"Đăng nhập thất bại");
                 }
             }
             catch (Exception ex)

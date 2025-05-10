@@ -35,5 +35,26 @@ namespace CNPM.Utilities
                 Console.WriteLine($"Không thể ghi log: {ex.Message}");
             }
         }
+        public static void LogInfo(string message)
+        {
+            try
+            {
+                string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                string logDirectory = Path.Combine(basePath, "logs");
+                string logFilePath = Path.Combine(logDirectory, $"log_{DateTime.Now:yyyyMMdd}.log");
+
+                Directory.CreateDirectory(logDirectory);
+
+                using (StreamWriter writer = new StreamWriter(logFilePath, true))
+                {
+                    writer.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] INFO: {message}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Không thể ghi log: {ex.Message}");
+            }
+        }
+
     }
 }
