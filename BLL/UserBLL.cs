@@ -16,26 +16,30 @@ namespace CNPM.BLL
                 // Validate dữ liệu trước khi thêm
                 if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password))
                 {
-                    Logger.LogError("Username hoặc Password không được trống.");
-                    return false;
-                }
-                // ⭐⭐ THÊM CODE HASH MẬT KHẨU TẠI ĐÂY ⭐⭐
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.Password); // Hash mật khẩu gốc
-                // Kiểm tra email hợp lệ (nếu cần)
-                if (!IsValidEmail(user.Email))
-                {
-                    Logger.LogError("Email không hợp lệ.");
-                    return false;
+                    throw new ArgumentException("Username hoặc Password không được trống.");
                 }
 
+                if (!IsValidEmail(user.Email))
+                {
+                    throw new ArgumentException("Email không hợp lệ.");
+                }
+
+                // Kiểm tra trùng lặp Username
+                if (_userDAL.GetUserByUsername(user.Username) != null)
+                {
+                    throw new ArgumentException($"Username '{user.Username}' đã tồn tại.");
+                }
+
+                // Gọi UserDAL để thêm user
                 return _userDAL.AddUser(user);
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.LogError($"Lỗi thêm User: {ex.Message}");
-                return false; // Trả về false thay vì throw để tránh crash
+                throw; // Ném ngoại lệ để xử lý ở tầng cao hơn
             }
         }
+
+
 
         // Phương thức kiểm tra email
         private bool IsValidEmail(string email)
@@ -67,6 +71,29 @@ namespace CNPM.BLL
             {
                 Logger.LogError($"Lỗi đăng nhập: {ex.Message}");
                 return false;
+            }
+        }
+        public string GetUserRole(string username)
+        {
+            try
+            {
+                // Lấy thông tin người dùng từ UserDAL
+                User user = _userDAL.GetUserByUsername(username);
+
+                // Kiểm tra nếu người dùng không tồn tại
+                if (user == null)
+                {
+                    Logger.LogError($"Không tìm thấy người dùng với username: {username}");
+                    return null;
+                }
+
+                // Trả về vai trò của người dùng
+                return user.Role;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Lỗi khi lấy vai trò người dùng: {ex.Message}");
+                return null;
             }
         }
     }

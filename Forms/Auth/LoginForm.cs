@@ -2,6 +2,9 @@
 using System;
 using CNPM.Utilities;
 using System.Windows.Forms;
+using CNPM.Forms.Admin;
+using CNPM.Forms.Student;
+using CNPM.Forms.Teacher;
 
 namespace CNPM.Forms.Auth
 {
@@ -24,9 +27,31 @@ namespace CNPM.Forms.Auth
 
                 if (_userBLL.ValidateLogin(username, password))
                 {
+                    // Get user role
+                    string role = _userBLL.GetUserRole(username); // Implement this method in UserBLL
                     MessageBox.Show("Đăng nhập thành công!");
                     Logger.LogInfo($"Đăng nhập thành công với tài khoản: {username}");
-                    // Mở form chính
+                    // Navigate based on role
+                    Form nextForm = null;
+                    switch (role)
+                    {
+                        case "Admin":
+                            nextForm = new AdminForm();
+                            break;
+                        case "Teacher":
+                            nextForm = new TeacherForm();
+                            break;
+                        case "Student":
+                            nextForm = new StudentForm();
+                            break;
+                        default:
+                            MessageBox.Show("Không xác định được vai trò người dùng.");
+                            return;
+                    }
+
+                    this.Hide();
+                    nextForm.ShowDialog();
+                    this.Show();
                 }
                 else
                 {
