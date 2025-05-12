@@ -33,8 +33,8 @@ namespace CNPM.BLL.Courses
         private void btnAddDocument_Click(object sender, EventArgs e)
         {
             // Mở form upload tài liệu
-            UploadContentForm form = new UploadContentForm(_courseID);
-            form.ShowDialog();
+            //UploadContentForm form = new UploadContentForm(_courseID);
+            //form.ShowDialog();
         }
 
         // Nút "Xem Sinh Viên Đăng Ký"

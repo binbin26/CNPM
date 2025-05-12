@@ -39,7 +39,7 @@ namespace CNPM.Forms.Auth
                             nextForm = new AdminForm();
                             break;
                         case "Teacher":
-                            nextForm = new TeacherForm();
+                            nextForm = new LecturerForm();
                             break;
                         case "Student":
                             nextForm = new StudentForm();
