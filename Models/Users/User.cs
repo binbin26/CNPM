@@ -15,5 +15,7 @@ namespace CNPM.Models.Users
         public string Role { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; }
     }
 }

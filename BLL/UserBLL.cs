@@ -2,44 +2,95 @@
 using CNPM.Models.Users;
 using CNPM.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace CNPM.BLL
 {
     public class UserBLL
     {
-        private readonly UserDAL _userDAL = new UserDAL();
+        private readonly UserDAL _userDAL;
+
+        public UserBLL()
+        {
+            _userDAL = new UserDAL();
+        }
+
+        public List<User> GetAllUsers()
+        {
+            try
+            {
+                return _userDAL.GetAllUsers();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error getting users: " + ex.Message);
+            }
+        }
 
         public bool AddUser(User user)
         {
             try
             {
-                // Validate dữ liệu trước khi thêm
-                if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password))
+                // Validate user data
+                if (string.IsNullOrWhiteSpace(user.Username) || 
+                    string.IsNullOrWhiteSpace(user.Password) ||
+                    string.IsNullOrWhiteSpace(user.Role))
                 {
-                    throw new ArgumentException("Username hoặc Password không được trống.");
+                    throw new Exception("Required fields cannot be empty");
                 }
 
-                if (!IsValidEmail(user.Email))
+                // Check if username already exists
+                var existingUser = _userDAL.GetUserByUsername(user.Username);
+                if (existingUser != null)
                 {
-                    throw new ArgumentException("Email không hợp lệ.");
+                    throw new Exception("Username already exists");
                 }
 
-                // Kiểm tra trùng lặp Username
-                if (_userDAL.GetUserByUsername(user.Username) != null)
-                {
-                    throw new ArgumentException($"Username '{user.Username}' đã tồn tại.");
-                }
-
-                // Gọi UserDAL để thêm user
                 return _userDAL.AddUser(user);
             }
-            catch
+            catch (Exception ex)
             {
-                throw; // Ném ngoại lệ để xử lý ở tầng cao hơn
+                throw new Exception("Error adding user: " + ex.Message);
             }
         }
 
+        public bool UpdateUser(User user)
+        {
+            try
+            {
+                // Validate user data
+                if (string.IsNullOrWhiteSpace(user.Username) || 
+                    string.IsNullOrWhiteSpace(user.Role))
+                {
+                    throw new Exception("Required fields cannot be empty");
+                }
 
+                // Check if user exists
+                var existingUser = _userDAL.GetUserByUsername(user.Username);
+                if (existingUser == null)
+                {
+                    throw new Exception("User not found");
+                }
+
+                return _userDAL.UpdateUser(user);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating user: " + ex.Message);
+            }
+        }
+
+        public bool DeleteUser(int userId)
+        {
+            try
+            {
+                return _userDAL.DeleteUser(userId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error deleting user: " + ex.Message);
+            }
+        }
 
         // Phương thức kiểm tra email
         private bool IsValidEmail(string email)

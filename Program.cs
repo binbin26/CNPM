@@ -4,6 +4,7 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using CNPM.BLL;
+using CNPM.Forms.Admin;
 
 
 namespace CNPM
@@ -27,7 +28,7 @@ namespace CNPM
                 return;
             }
             Application.Run(new LoginForm());
-            Application.EnableVisualStyles();
+
         }
         // ✅ Thêm method để đăng ký các dịch vụ
         private static void ConfigureServices(IServiceCollection services)
@@ -39,3 +40,4 @@ namespace CNPM
         }
     }
 }
+

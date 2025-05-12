@@ -56,19 +56,18 @@ namespace CNPM.DAL
                 {
                     try
                     {
-                        // Sửa câu lệnh SQL để loại bỏ dấu nháy đơn xung quanh tên cột
                         string query = @"
-                INSERT INTO Users (Username, PasswordHash, Role, FullName, Email, CreatedAt, IsActive) 
-                VALUES (@Username, @PasswordHash, @Role, @FullName, @Email, @CreatedAt, @IsActive)";
+                        INSERT INTO Users (Username, PasswordHash, Role, FullName, Email, CreatedAt, IsActive) 
+                        VALUES (@Username, @PasswordHash, @Role, @FullName, @Email, @CreatedAt, @IsActive)";
 
                         SqlCommand cmd = new SqlCommand(query, conn, transaction);
-                        cmd.Parameters.Add("@Username", SqlDbType.NVarChar).Value = user.Username;
-                        cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar).Value = user.Password; // Lưu mật khẩu gốc
-                        cmd.Parameters.Add("@Role", SqlDbType.NVarChar).Value = user.Role;
-                        cmd.Parameters.Add("@FullName", SqlDbType.NVarChar).Value = user.FullName;
-                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar).Value = user.Email;
-                        cmd.Parameters.Add("@CreatedAt", SqlDbType.DateTime).Value = DateTime.Now; // Thời gian hiện tại
-                        cmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = true; // Mặc định là kích hoạt
+                        cmd.Parameters.AddWithValue("@Username", user.Username);
+                        cmd.Parameters.AddWithValue("@PasswordHash", user.Password);
+                        cmd.Parameters.AddWithValue("@Role", user.Role);
+                        cmd.Parameters.AddWithValue("@FullName", user.FullName ?? user.Username); // Sử dụng Username nếu FullName là null
+                        cmd.Parameters.AddWithValue("@Email", user.Email);
+                        cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@IsActive", true);
 
                         cmd.ExecuteNonQuery();
                         transaction.Commit();
@@ -83,9 +82,6 @@ namespace CNPM.DAL
                 }
             }
         }
-
-
-
 
         public User GetUserByUsername(string username)
         {
@@ -111,6 +107,71 @@ namespace CNPM.DAL
                         };
                     }
                     return null;
+                }
+            }
+        }
+
+        public bool UpdateUser(User user)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = @"
+                        UPDATE Users 
+                        SET Username = @Username,
+                            Role = @Role,
+                            FullName = @FullName,
+                            Email = @Email,
+                            IsActive = @IsActive
+                        WHERE UserID = @UserID";
+
+                        SqlCommand cmd = new SqlCommand(query, conn, transaction);
+                        cmd.Parameters.AddWithValue("@UserID", user.UserID);
+                        cmd.Parameters.AddWithValue("@Username", user.Username);
+                        cmd.Parameters.AddWithValue("@Role", user.Role);
+                        cmd.Parameters.AddWithValue("@FullName", user.FullName ?? user.Username);
+                        cmd.Parameters.AddWithValue("@Email", user.Email);
+                        cmd.Parameters.AddWithValue("@IsActive", true);
+
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        public bool DeleteUser(int userId)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = "DELETE FROM Users WHERE UserID = @UserID";
+                        SqlCommand cmd = new SqlCommand(query, conn, transaction);
+                        cmd.Parameters.AddWithValue("@UserID", userId);
+
+                        cmd.ExecuteNonQuery();
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
