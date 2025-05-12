@@ -199,29 +199,41 @@
     <Compile Include="Forms\Student\StudyMaterialsForm.Designer.cs">
       <DependentUpon>StudyMaterialsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\CourseDashboardForm.cs">
+    <Compile Include="Forms\Teacher\CoursesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\CoursesControl.Designer.cs">
+      <DependentUpon>CoursesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Teacher\ExamControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\ExamControl.Designer.cs">
+      <DependentUpon>ExamControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Teacher\LecturerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\CourseDashboardForm.Designer.cs">
-      <DependentUpon>CourseDashboardForm.cs</DependentUpon>
+    <Compile Include="Forms\Teacher\LecturerForm.Designer.cs">
+      <DependentUpon>LecturerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\GradeAssignmentForm.cs">
+    <Compile Include="Forms\Teacher\QuestionEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\GradeAssignmentForm.Designer.cs">
-      <DependentUpon>GradeAssignmentForm.cs</DependentUpon>
+    <Compile Include="Forms\Teacher\QuestionEditorForm.Designer.cs">
+      <DependentUpon>QuestionEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\TeacherForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\Teacher\ScoreReportControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\TeacherForm.Designer.cs">
-      <DependentUpon>TeacherForm.cs</DependentUpon>
+    <Compile Include="Forms\Teacher\ScoreReportControl.Designer.cs">
+      <DependentUpon>ScoreReportControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UploadContentForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\Teacher\UploadControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UploadContentForm.Designer.cs">
-      <DependentUpon>UploadContentForm.cs</DependentUpon>
+    <Compile Include="Forms\Teacher\UploadControl.Designer.cs">
+      <DependentUpon>UploadControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Courses\Assignment.cs" />
     <Compile Include="Models\Courses\Exam.cs" />
@@ -258,9 +270,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Shared\EnrolledStudentsForm.resx">
       <DependentUpon>EnrolledStudentsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\CourseDashboardForm.resx">
-      <DependentUpon>CourseDashboardForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
