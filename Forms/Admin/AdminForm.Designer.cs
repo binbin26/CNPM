@@ -2,23 +2,30 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Linq;
 using CNPM.DAL;
 using CNPM.BLL;
 using CNPM.Models.Users;
+using CNPM.Models.Courses;
+using CNPM.Forms.Shared;
 
 namespace CNPM.Forms.Admin
 {
     public partial class AdminForm : Form
     {
         private readonly UserBLL _userBLL;
+        private readonly CourseBLL _courseBLL;
         private List<User> users;
+        private List<Course> courses;
 
         public AdminForm()
         {
             InitializeComponent();
             _userBLL = new UserBLL();
+            _courseBLL = new CourseBLL(new CourseDAL());
             InitializeUI();
             LoadUsers();
+            LoadCourses();
             UpdateDateLabel();
         }
 
@@ -27,7 +34,7 @@ namespace CNPM.Forms.Admin
             // Cấu hình form chính
             this.Text = "CNPM.Forms.Admin";
             this.Size = new Size(900, 650);
-            this.BackColor = Color.FromArgb(245, 245, 245);
+            this.BackColor = Color.PaleTurquoise;
 
             // Header
             Label headerLabel = new Label();
@@ -42,7 +49,7 @@ namespace CNPM.Forms.Admin
             dateLabel = new Label();
             dateLabel.Location = new Point(20, 70);
             dateLabel.AutoSize = true;
-            dateLabel.ForeColor = Color.FromArgb(127, 140, 141);
+            dateLabel.ForeColor = Color.FromArgb(44, 62, 80);
             this.Controls.Add(dateLabel);
 
             // Tạo tab control
@@ -52,7 +59,7 @@ namespace CNPM.Forms.Admin
 
             // Tab 1: Account List
             TabPage accountListTab = new TabPage("Account List");
-            accountListTab.BackColor = Color.White;
+            accountListTab.BackColor = Color.AliceBlue;
             tabControl.TabPages.Add(accountListTab);
 
             // DataGridView cho danh sách tài khoản
@@ -73,7 +80,7 @@ namespace CNPM.Forms.Admin
 
             // Tab 2: Account Management
             TabPage accountManagementTab = new TabPage("Account Management");
-            accountManagementTab.BackColor = Color.White;
+            accountManagementTab.BackColor = Color.AliceBlue;
             tabControl.TabPages.Add(accountManagementTab);
 
             // Panel quản lý tài khoản
@@ -141,8 +148,8 @@ namespace CNPM.Forms.Admin
             btnAddAccount.Text = "Add Account";
             btnAddAccount.Location = new Point(260, 270);
             btnAddAccount.Size = new Size(100, 30);
-            btnAddAccount.BackColor = Color.FromArgb(52, 152, 219);
-            btnAddAccount.ForeColor = Color.White;
+            btnAddAccount.BackColor = Color.PowderBlue;
+            btnAddAccount.ForeColor = Color.FromArgb(44, 62, 80);
             btnAddAccount.FlatStyle = FlatStyle.Flat;
             btnAddAccount.Click += BtnAddAccount_Click;
             managementPanel.Controls.Add(btnAddAccount);
@@ -194,8 +201,8 @@ namespace CNPM.Forms.Admin
             btnUpdateAccount.Text = "Update";
             btnUpdateAccount.Location = new Point(540, 200);
             btnUpdateAccount.Size = new Size(100, 30);
-            btnUpdateAccount.BackColor = Color.FromArgb(52, 152, 219);
-            btnUpdateAccount.ForeColor = Color.White;
+            btnUpdateAccount.BackColor = Color.PowderBlue;
+            btnUpdateAccount.ForeColor = Color.FromArgb(44, 62, 80);
             btnUpdateAccount.FlatStyle = FlatStyle.Flat;
             btnUpdateAccount.Click += BtnUpdateAccount_Click;
             managementPanel.Controls.Add(btnUpdateAccount);
@@ -204,11 +211,129 @@ namespace CNPM.Forms.Admin
             btnDeleteAccount.Text = "Delete";
             btnDeleteAccount.Location = new Point(650, 200);
             btnDeleteAccount.Size = new Size(100, 30);
-            btnDeleteAccount.BackColor = Color.FromArgb(231, 76, 60);
-            btnDeleteAccount.ForeColor = Color.White;
+            btnDeleteAccount.BackColor = Color.PowderBlue;
+            btnDeleteAccount.ForeColor = Color.FromArgb(44, 62, 80);
             btnDeleteAccount.FlatStyle = FlatStyle.Flat;
             btnDeleteAccount.Click += BtnDeleteAccount_Click;
             managementPanel.Controls.Add(btnDeleteAccount);
+
+            // Tab 3: Course Management
+            TabPage courseManagementTab = new TabPage("Course Management");
+            courseManagementTab.BackColor = Color.AliceBlue;
+            tabControl.TabPages.Add(courseManagementTab);
+
+            // Panel quản lý khóa học
+            Panel coursePanel = new Panel();
+            coursePanel.Location = new Point(10, 10);
+            coursePanel.Size = new Size(800, 400);
+            courseManagementTab.Controls.Add(coursePanel);
+
+            // Nhóm tạo khóa học mới
+            GroupBox newCourseGroup = new GroupBox();
+            newCourseGroup.Text = "Create New Course";
+            newCourseGroup.Location = new Point(10, 10);
+            newCourseGroup.Size = new Size(380, 300);
+            coursePanel.Controls.Add(newCourseGroup);
+
+            // Controls tạo khóa học
+            Label lblCourseCode = new Label();
+            lblCourseCode.Text = "Course Code:";
+            lblCourseCode.Location = new Point(10, 30);
+            lblCourseCode.AutoSize = true;
+            newCourseGroup.Controls.Add(lblCourseCode);
+
+            txtCourseCode = new TextBox();
+            txtCourseCode.Location = new Point(10, 50);
+            txtCourseCode.Size = new Size(350, 20);
+            newCourseGroup.Controls.Add(txtCourseCode);
+
+            Label lblCourseName = new Label();
+            lblCourseName.Text = "Course Name:";
+            lblCourseName.Location = new Point(10, 80);
+            lblCourseName.AutoSize = true;
+            newCourseGroup.Controls.Add(lblCourseName);
+
+            txtCourseName = new TextBox();
+            txtCourseName.Location = new Point(10, 100);
+            txtCourseName.Size = new Size(350, 20);
+            newCourseGroup.Controls.Add(txtCourseName);
+
+            Label lblTeacher = new Label();
+            lblTeacher.Text = "Teacher:";
+            lblTeacher.Location = new Point(10, 130);
+            lblTeacher.AutoSize = true;
+            newCourseGroup.Controls.Add(lblTeacher);
+
+            cmbTeachers = new ComboBox();
+            cmbTeachers.Location = new Point(10, 150);
+            cmbTeachers.Size = new Size(350, 20);
+            cmbTeachers.DropDownStyle = ComboBoxStyle.DropDownList;
+            newCourseGroup.Controls.Add(cmbTeachers);
+
+            Label lblStartDate = new Label();
+            lblStartDate.Text = "Start Date:";
+            lblStartDate.Location = new Point(10, 180);
+            lblStartDate.AutoSize = true;
+            newCourseGroup.Controls.Add(lblStartDate);
+
+            dtpStartDate = new DateTimePicker();
+            dtpStartDate.Location = new Point(10, 200);
+            dtpStartDate.Size = new Size(350, 20);
+            newCourseGroup.Controls.Add(dtpStartDate);
+
+            Label lblEndDate = new Label();
+            lblEndDate.Text = "End Date:";
+            lblEndDate.Location = new Point(10, 230);
+            lblEndDate.AutoSize = true;
+            newCourseGroup.Controls.Add(lblEndDate);
+
+            dtpEndDate = new DateTimePicker();
+            dtpEndDate.Location = new Point(10, 250);
+            dtpEndDate.Size = new Size(350, 20);
+            newCourseGroup.Controls.Add(dtpEndDate);
+
+            btnCreateCourse = new Button();
+            btnCreateCourse.Text = "Create Course";
+            btnCreateCourse.Location = new Point(260, 320);
+            btnCreateCourse.Size = new Size(100, 30);
+            btnCreateCourse.BackColor = Color.PowderBlue;
+            btnCreateCourse.ForeColor = Color.FromArgb(44, 62, 80);
+            btnCreateCourse.FlatStyle = FlatStyle.Flat;
+            btnCreateCourse.Click += BtnCreateCourse_Click;
+            coursePanel.Controls.Add(btnCreateCourse);
+
+            // Danh sách khóa học
+            GroupBox courseListGroup = new GroupBox();
+            courseListGroup.Text = "Course List";
+            courseListGroup.Location = new Point(400, 10);
+            courseListGroup.Size = new Size(380, 340);
+            coursePanel.Controls.Add(courseListGroup);
+
+            coursesDataGridView = new DataGridView();
+            coursesDataGridView.Location = new Point(10, 20);
+            coursesDataGridView.Size = new Size(360, 310);
+            coursesDataGridView.BackgroundColor = Color.White;
+            coursesDataGridView.BorderStyle = BorderStyle.None;
+            coursesDataGridView.ReadOnly = true;
+            coursesDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            coursesDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            coursesDataGridView.AllowUserToAddRows = false;
+            coursesDataGridView.AllowUserToDeleteRows = false;
+            coursesDataGridView.AllowUserToResizeRows = false;
+            coursesDataGridView.RowHeadersVisible = false;
+            coursesDataGridView.CellClick += CoursesDataGridView_CellClick;
+            courseListGroup.Controls.Add(coursesDataGridView);
+
+            // Nút quản lý học sinh
+            btnManageStudents = new Button();
+            btnManageStudents.Text = "Manage Students";
+            btnManageStudents.Location = new Point(540, 360);
+            btnManageStudents.Size = new Size(120, 30);
+            btnManageStudents.BackColor = Color.PowderBlue;
+            btnManageStudents.ForeColor = Color.FromArgb(44, 62, 80);
+            btnManageStudents.FlatStyle = FlatStyle.Flat;
+            btnManageStudents.Click += BtnManageStudents_Click;
+            coursePanel.Controls.Add(btnManageStudents);
 
             this.Controls.Add(tabControl);
         }
@@ -223,6 +348,20 @@ namespace CNPM.Forms.Admin
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading users: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadCourses()
+        {
+            try
+            {
+                courses = _courseBLL.GetAvailableCourses();
+                RefreshCourseList();
+                LoadTeachers();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading courses: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -397,6 +536,131 @@ namespace CNPM.Forms.Admin
             }
         }
 
+        private void LoadTeachers()
+        {
+            cmbTeachers.Items.Clear();
+            var teachers = users.Where(u => u.Role == "Teacher").ToList();
+            foreach (var teacher in teachers)
+            {
+                cmbTeachers.Items.Add($"{teacher.FullName} ({teacher.Username})");
+            }
+        }
+
+        private void RefreshCourseList()
+        {
+            coursesDataGridView.Rows.Clear();
+            coursesDataGridView.Columns.Clear();
+
+            coursesDataGridView.Columns.Add("CourseID", "ID");
+            coursesDataGridView.Columns.Add("CourseCode", "Code");
+            coursesDataGridView.Columns.Add("CourseName", "Name");
+            coursesDataGridView.Columns.Add("TeacherName", "Teacher");
+            coursesDataGridView.Columns.Add("StartDate", "Start Date");
+            coursesDataGridView.Columns.Add("EndDate", "End Date");
+
+            foreach (var course in courses)
+            {
+                var teacher = users.FirstOrDefault(u => u.UserID == course.TeacherID);
+                coursesDataGridView.Rows.Add(
+                    course.CourseID,
+                    course.CourseCode,
+                    course.CourseName,
+                    teacher?.FullName ?? "Unknown",
+                    course.StartDate.ToShortDateString(),
+                    course.EndDate.ToShortDateString()
+                );
+            }
+        }
+
+        private void BtnCreateCourse_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(txtCourseCode.Text))
+                {
+                    MessageBox.Show("Please enter course code", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtCourseCode.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtCourseName.Text))
+                {
+                    MessageBox.Show("Please enter course name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtCourseName.Focus();
+                    return;
+                }
+
+                if (cmbTeachers.SelectedIndex == -1)
+                {
+                    MessageBox.Show("Please select a teacher", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    cmbTeachers.Focus();
+                    return;
+                }
+
+                if (dtpStartDate.Value >= dtpEndDate.Value)
+                {
+                    MessageBox.Show("End date must be after start date", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var selectedTeacher = users.FirstOrDefault(u => 
+                    u.Role == "Teacher" && 
+                    cmbTeachers.SelectedItem.ToString().Contains(u.Username));
+
+                if (selectedTeacher == null)
+                {
+                    MessageBox.Show("Invalid teacher selection", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var newCourse = new Course
+                {
+                    CourseCode = txtCourseCode.Text.Trim(),
+                    CourseName = txtCourseName.Text.Trim(),
+                    TeacherID = selectedTeacher.UserID,
+                    StartDate = dtpStartDate.Value,
+                    EndDate = dtpEndDate.Value
+                };
+
+                if (_courseBLL.AddCourse(newCourse))
+                {
+                    LoadCourses();
+                    MessageBox.Show("Course created successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Clear fields
+                    txtCourseCode.Text = "";
+                    txtCourseName.Text = "";
+                    cmbTeachers.SelectedIndex = -1;
+                    dtpStartDate.Value = DateTime.Now;
+                    dtpEndDate.Value = DateTime.Now.AddMonths(3);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error creating course: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CoursesDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && coursesDataGridView.Rows[e.RowIndex].Cells[0].Value != null)
+            {
+                selectedCourseId = (int)coursesDataGridView.Rows[e.RowIndex].Cells[0].Value;
+            }
+        }
+
+        private void BtnManageStudents_Click(object sender, EventArgs e)
+        {
+            if (selectedCourseId == -1)
+            {
+                MessageBox.Show("Please select a course first", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var enrolledStudentsForm = new EnrolledStudentsForm(selectedCourseId);
+            enrolledStudentsForm.ShowDialog();
+        }
+
         // Các controls
         private Label dateLabel;
         private DataGridView accountsDataGridView;
@@ -411,5 +675,14 @@ namespace CNPM.Forms.Admin
         private Button btnUpdateAccount;
         private Button btnDeleteAccount;
         private int selectedAccountId = -1;
+        private TextBox txtCourseCode;
+        private TextBox txtCourseName;
+        private ComboBox cmbTeachers;
+        private DateTimePicker dtpStartDate;
+        private DateTimePicker dtpEndDate;
+        private Button btnCreateCourse;
+        private DataGridView coursesDataGridView;
+        private Button btnManageStudents;
+        private int selectedCourseId = -1;
     }
 }

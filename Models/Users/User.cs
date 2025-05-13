@@ -17,5 +17,8 @@ namespace CNPM.Models.Users
         public string Email { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
+        public string QueQuan { get; set; }
+        public string SoDienThoai { get; set; }
+        public string AvatarPath { get; set; }
     }
 }

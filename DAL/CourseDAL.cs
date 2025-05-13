@@ -1,4 +1,5 @@
 ﻿using CNPM.Models.Courses;
+using CNPM.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -28,7 +29,9 @@ namespace CNPM.DAL
                         CourseID = (int)reader["CourseID"],
                         CourseCode = reader["CourseCode"].ToString(),
                         CourseName = reader["CourseName"].ToString(),
-                        TeacherID = (int)reader["TeacherID"]
+                        TeacherID = (int)reader["TeacherID"],
+                        StartDate = (DateTime)reader["StartDate"],
+                        EndDate = (DateTime)reader["EndDate"]
                     });
                 }
             }
@@ -40,8 +43,8 @@ namespace CNPM.DAL
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
                 // Giả sử bạn có bảng Enrollments với các cột: StudentID, CourseID
-                string checkQuery = "SELECT COUNT(*) FROM Enrollments WHERE StudentID = @StudentID AND CourseID = @CourseID";
-                string insertQuery = "INSERT INTO Enrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";
+                string checkQuery = "SELECT COUNT(*) FROM CourseEnrollments WHERE StudentID = @StudentID AND CourseID = @CourseID";
+                string insertQuery = "INSERT INTO CourseEnrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";
 
                 SqlCommand checkCmd = new SqlCommand(checkQuery, conn);
                 checkCmd.Parameters.AddWithValue("@StudentID", studentID);
@@ -83,6 +86,7 @@ namespace CNPM.DAL
                             CourseID = (int)reader["CourseID"],
                             CourseCode = reader["CourseCode"].ToString(),
                             CourseName = reader["CourseName"].ToString(),
+                            TeacherID = (int)reader["TeacherID"],
                             StartDate = (DateTime)reader["StartDate"],
                             EndDate = (DateTime)reader["EndDate"]
                         });
@@ -108,11 +112,78 @@ namespace CNPM.DAL
                         CourseID = (int)reader["CourseID"],
                         CourseCode = reader["CourseCode"].ToString(),
                         CourseName = reader["CourseName"].ToString(),
+                        TeacherID = (int)reader["TeacherID"],
                         StartDate = (DateTime)reader["StartDate"],
                         EndDate = (DateTime)reader["EndDate"]
                     };
                 }
                 return null;
+            }
+        }
+
+        public bool AddCourse(Course course)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"INSERT INTO Courses (CourseCode, CourseName, TeacherID, StartDate, EndDate) 
+                               VALUES (@CourseCode, @CourseName, @TeacherID, @StartDate, @EndDate)";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@CourseCode", course.CourseCode);
+                cmd.Parameters.AddWithValue("@CourseName", course.CourseName);
+                cmd.Parameters.AddWithValue("@TeacherID", course.TeacherID);
+                cmd.Parameters.AddWithValue("@StartDate", course.StartDate);
+                cmd.Parameters.AddWithValue("@EndDate", course.EndDate);
+
+                conn.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
+        }
+
+        public List<EnrolledStudent> GetEnrolledStudents(int courseId)
+        {
+            List<EnrolledStudent> students = new List<EnrolledStudent>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+                    SELECT u.UserID as StudentID, u.FullName, u.Email, ce.EnrollmentDate
+                    FROM Users u
+                    INNER JOIN CourseEnrollments ce ON u.UserID = ce.StudentID
+                    WHERE ce.CourseID = @CourseID AND u.Role = 'Student'";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@CourseID", courseId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    students.Add(new EnrolledStudent
+                    {
+                        StudentID = (int)reader["StudentID"],
+                        FullName = reader["FullName"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        EnrollmentDate = (DateTime)reader["EnrollmentDate"]
+                    });
+                }
+            }
+            return students;
+        }
+
+        public bool RemoveStudent(int studentId, int courseId)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = "DELETE FROM CourseEnrollments WHERE StudentID = @StudentID AND CourseID = @CourseID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@StudentID", studentId);
+                cmd.Parameters.AddWithValue("@CourseID", courseId);
+
+                conn.Open();
+                int rowsAffected = cmd.ExecuteNonQuery();
+                return rowsAffected > 0;
             }
         }
     }
