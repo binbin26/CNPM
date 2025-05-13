@@ -39,7 +39,7 @@ namespace CNPM.Forms.Auth
                             nextForm = new AdminForm();
                             break;
                         case "Teacher":
-                            nextForm = new LecturerForm();
+                            nextForm = new MainForm();
                             break;
                         case "Student":
                             int userId = _userBLL.GetUserId(username); // Lấy userId của người dùng
