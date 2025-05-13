@@ -59,8 +59,8 @@ namespace CNPM.DAL
                     try
                     {
                         string query = @"
-                        INSERT INTO Users (Username, PasswordHash, Role, FullName, Email, CreatedAt, IsActive) 
-                        VALUES (@Username, @PasswordHash, @Role, @FullName, @Email, @CreatedAt, @IsActive)";
+                        INSERT INTO Users (Username, PasswordHash, Role, FullName, Email, CreatedAt, IsActive, QueQuan, SoDienThoai) 
+                        VALUES (@Username, @PasswordHash, @Role, @FullName, @Email, @CreatedAt, @IsActive, @QueQuan, @SoDienThoai)";
 
                         SqlCommand cmd = new SqlCommand(query, conn, transaction);
                         cmd.Parameters.AddWithValue("@Username", user.Username);
@@ -69,6 +69,8 @@ namespace CNPM.DAL
                         cmd.Parameters.AddWithValue("@FullName", user.FullName ?? user.Username); // Sử dụng Username nếu FullName là null
                         cmd.Parameters.AddWithValue("@Email", user.Email);
                         cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@QueQuan", user.QueQuan ?? "");
+                        cmd.Parameters.AddWithValue("@SoDienThoai", user.SoDienThoai ?? "");
                         cmd.Parameters.AddWithValue("@IsActive", true);
 
                         cmd.ExecuteNonQuery();
@@ -242,6 +244,50 @@ namespace CNPM.DAL
                     return result?.ToString();
                 }
             }
+        }
+
+        public DataTable GetAvailableCourses(int userId, string search)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                using (SqlConnection conn = DatabaseHelper.GetConnection())
+                {
+                    conn.Open();
+                    string query = @"
+                        SELECT c.CourseID, c.CourseName, u.FullName AS Teacher, 
+                               c.MaxEnrollment - ISNULL(e.NumEnrolled,0) AS SlotsLeft,
+                               c.RegistrationDeadline,
+                               CASE 
+                                   WHEN ce.EnrollmentID IS NOT NULL THEN N'Đã đăng ký'
+                                   WHEN c.RegistrationDeadline < GETDATE() THEN N'Hết hạn'
+                                   WHEN c.MaxEnrollment - ISNULL(e.NumEnrolled,0) <= 0 THEN N'Hết chỗ'
+                                   ELSE N'Chưa đăng ký'
+                               END AS Status
+                        FROM Courses c
+                        JOIN Users u ON c.TeacherID = u.UserID
+                        LEFT JOIN (
+                            SELECT CourseID, COUNT(*) AS NumEnrolled
+                            FROM CourseEnrollments
+                            GROUP BY CourseID
+                        ) e ON c.CourseID = e.CourseID
+                        LEFT JOIN CourseEnrollments ce ON ce.CourseID = c.CourseID AND ce.StudentID = @UserID
+                        WHERE (@Search = '' OR c.CourseName LIKE '%' + @Search + '%')
+                    ";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", userId);
+                        cmd.Parameters.AddWithValue("@Search", search);
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return dt;
         }
 
         public bool ChangePassword(string username, string newPassword)

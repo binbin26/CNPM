@@ -40,6 +40,10 @@
             this.lblEmail = new System.Windows.Forms.Label();
             this.lblFullname = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.lblPhone = new System.Windows.Forms.Label();
+            this.lblCity = new System.Windows.Forms.Label();
+            this.txtPhone = new System.Windows.Forms.TextBox();
+            this.txtCity = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,9 +77,9 @@
             // 
             // btnSignUp
             // 
-            this.btnSignUp.Location = new System.Drawing.Point(576, 372);
+            this.btnSignUp.Location = new System.Drawing.Point(650, 392);
             this.btnSignUp.Name = "btnSignUp";
-            this.btnSignUp.Size = new System.Drawing.Size(198, 51);
+            this.btnSignUp.Size = new System.Drawing.Size(138, 51);
             this.btnSignUp.TabIndex = 4;
             this.btnSignUp.Text = "Đăng ký";
             this.btnSignUp.UseVisualStyleBackColor = true;
@@ -141,12 +145,50 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // lblPhone
+            // 
+            this.lblPhone.AutoSize = true;
+            this.lblPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.lblPhone.Location = new System.Drawing.Point(90, 362);
+            this.lblPhone.Name = "lblPhone";
+            this.lblPhone.Size = new System.Drawing.Size(106, 20);
+            this.lblPhone.TabIndex = 11;
+            this.lblPhone.Text = "Số điện thoại";
+            // 
+            // lblCity
+            // 
+            this.lblCity.AutoSize = true;
+            this.lblCity.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.lblCity.Location = new System.Drawing.Point(90, 406);
+            this.lblCity.Name = "lblCity";
+            this.lblCity.Size = new System.Drawing.Size(81, 20);
+            this.lblCity.TabIndex = 12;
+            this.lblCity.Text = "Quê quán";
+            // 
+            // txtPhone
+            // 
+            this.txtPhone.Location = new System.Drawing.Point(212, 362);
+            this.txtPhone.Name = "txtPhone";
+            this.txtPhone.Size = new System.Drawing.Size(420, 22);
+            this.txtPhone.TabIndex = 13;
+            // 
+            // txtCity
+            // 
+            this.txtCity.Location = new System.Drawing.Point(212, 406);
+            this.txtCity.Name = "txtCity";
+            this.txtCity.Size = new System.Drawing.Size(420, 22);
+            this.txtCity.TabIndex = 14;
+            // 
             // RegistrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.PowderBlue;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.txtCity);
+            this.Controls.Add(this.txtPhone);
+            this.Controls.Add(this.lblCity);
+            this.Controls.Add(this.lblPhone);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblFullname);
             this.Controls.Add(this.lblEmail);
@@ -179,5 +221,9 @@
         private System.Windows.Forms.Label lblEmail;
         private System.Windows.Forms.Label lblFullname;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Label lblPhone;
+        private System.Windows.Forms.Label lblCity;
+        private System.Windows.Forms.TextBox txtPhone;
+        private System.Windows.Forms.TextBox txtCity;
     }
 }

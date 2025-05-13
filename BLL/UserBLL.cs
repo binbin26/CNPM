@@ -3,6 +3,7 @@ using CNPM.Models.Users;
 using CNPM.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 
 
@@ -70,7 +71,10 @@ namespace CNPM.BLL
                 // Validate user data
                 if (string.IsNullOrWhiteSpace(user.Username) || 
                     string.IsNullOrWhiteSpace(user.Password) ||
-                    string.IsNullOrWhiteSpace(user.Role))
+                    string.IsNullOrWhiteSpace(user.Role) ||
+                    string.IsNullOrWhiteSpace(user.SoDienThoai) ||
+                    string.IsNullOrWhiteSpace(user.QueQuan) ||
+                    string.IsNullOrWhiteSpace(user.Email))
                 {
                     throw new Exception("Required fields cannot be empty");
                 }
@@ -202,6 +206,11 @@ namespace CNPM.BLL
 
                 return false; // Sai mật khẩu cũ
             }
+
+        public DataTable GetAvailableCourses(int userId, string search)
+        {
+            return _userDAL.GetAvailableCourses(userId, search);
+        }
 
         public bool UpdateUserAvatarPath(string username, string imagePath)
         {

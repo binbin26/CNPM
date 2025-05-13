@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CNPM.BLL;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
@@ -9,6 +10,7 @@ namespace CNPM.Forms.Student
     {
         private int _userId;
         private string _connectionString = "Data Source=.;Initial Catalog=EduMasterDB;Integrated Security=True";
+        private UserBLL userBLL = new UserBLL();
 
         public ucDangKyHocPhan(int userId)
         {
@@ -21,49 +23,19 @@ namespace CNPM.Forms.Student
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
-                {
-                    conn.Open();
-                    string query = @"
-                        SELECT c.CourseID, c.CourseName, u.FullName AS Teacher, 
-                               c.MaxEnrollment - ISNULL(e.NumEnrolled,0) AS SlotsLeft,
-                               c.RegistrationDeadline,
-                               CASE 
-                                   WHEN ce.EnrollmentID IS NOT NULL THEN N'Đã đăng ký'
-                                   WHEN c.RegistrationDeadline < GETDATE() THEN N'Hết hạn'
-                                   WHEN c.MaxEnrollment - ISNULL(e.NumEnrolled,0) <= 0 THEN N'Hết chỗ'
-                                   ELSE N'Chưa đăng ký'
-                               END AS Status
-                        FROM Courses c
-                        JOIN Users u ON c.TeacherID = u.UserID
-                        LEFT JOIN (
-                            SELECT CourseID, COUNT(*) AS NumEnrolled
-                            FROM CourseEnrollments
-                            GROUP BY CourseID
-                        ) e ON c.CourseID = e.CourseID
-                        LEFT JOIN CourseEnrollments ce ON ce.CourseID = c.CourseID AND ce.StudentID = @UserID
-                        WHERE (@Search = '' OR c.CourseName LIKE '%' + @Search + '%')
-                    ";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@UserID", _userId);
-                        cmd.Parameters.AddWithValue("@Search", search);
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        dgvCourses.DataSource = dt;
-                        dgvCourses.Columns["CourseID"].Visible = false;
-                        dgvCourses.ReadOnly = true;
-                        dgvCourses.AllowUserToAddRows = false;
-                        dgvCourses.AllowUserToDeleteRows = false;
-                    }
-                }
+                DataTable dt = userBLL.GetAvailableCourses(_userId, search);
+                dgvCourses.DataSource = dt;
+                dgvCourses.Columns["CourseID"].Visible = false;
+                dgvCourses.ReadOnly = true;
+                dgvCourses.AllowUserToAddRows = false;
+                dgvCourses.AllowUserToDeleteRows = false;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải danh sách học phần: " + ex.Message);
             }
         }
+
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
@@ -85,8 +57,14 @@ namespace CNPM.Forms.Student
                 return;
             }
             int courseId = Convert.ToInt32(row.Cells["CourseID"].Value);
-            int slotsLeft = Convert.ToInt32(row.Cells["SlotsLeft"].Value);
-            DateTime deadline = Convert.ToDateTime(row.Cells["RegistrationDeadline"].Value);
+            int slotsLeft = row.Cells["SlotsLeft"].Value == DBNull.Value
+            ? 0
+            : Convert.ToInt32(row.Cells["SlotsLeft"].Value);
+
+            DateTime deadline = row.Cells["RegistrationDeadline"].Value == DBNull.Value
+                ? DateTime.MinValue
+                : Convert.ToDateTime(row.Cells["RegistrationDeadline"].Value);
+
             if (slotsLeft <= 0)
             {
                 MessageBox.Show("Học phần đã hết chỗ!");
