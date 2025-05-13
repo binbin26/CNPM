@@ -24,7 +24,9 @@ CREATE TABLE Courses (
     TeacherID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
     StartDate DATE NOT NULL,
     EndDate DATE NOT NULL,
-    Description NVARCHAR(MAX)
+    Description NVARCHAR(MAX),
+    MaxEnrollment INT DEFAULT 50, -- Số lượng tối đa mặc định là 50
+    RegistrationDeadline DATETIME NULL -- Hạn đăng ký
 );
 --Bảng Đăng Ký Khóa Học
 CREATE TABLE CourseEnrollments (
@@ -174,14 +176,11 @@ VALUES (
 );
 
 -- Thêm Khóa học
-INSERT INTO Courses (CourseCode, CourseName, TeacherID, StartDate, EndDate)
-VALUES (
-    'MATH101', 
-    'Toán Cao Cấp', 
-    3,  -- TeacherID của teacher02
-    '2023-10-01', 
-    '2023-12-31'
-);
+INSERT INTO Courses (CourseCode, CourseName, TeacherID, StartDate, EndDate, Description, MaxEnrollment, RegistrationDeadline)
+VALUES 
+('MATH101', N'Toán Cao Cấp', 1, '2024-06-01', '2024-08-31', N'Học phần Toán nâng cao cho sinh viên', 50, '2024-07-01'),
+('PHIL101', N'Triết học Mác-Lênin', 2, '2024-06-01', '2024-08-31', N'Những nguyên lý cơ bản của chủ nghĩa Mác-Lênin', 40, '2024-07-01'),
+('ENG101', N'Tiếng Anh Cơ Bản', 3, '2024-06-01', '2024-08-31', N'Kỹ năng tiếng Anh cơ bản cho sinh viên', 60, '2024-07-01');
 GO
 
 -- SP Đăng ký khóa học
@@ -390,3 +389,7 @@ WHERE Username IN ('teacher08', 'student03', 'student02');
 
 SELECT *
 FROM Users 
+
+ALTER TABLE Courses
+ADD MaxEnrollment INT DEFAULT 50,
+    RegistrationDeadline DATETIME NULL;

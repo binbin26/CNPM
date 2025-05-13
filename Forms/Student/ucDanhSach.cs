@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace CNPM.Forms.Student
 {
-    public partial class StudentForm: Form
+    public partial class ucDanhSach : UserControl
     {
-        public StudentForm()
+        public ucDanhSach()
         {
             InitializeComponent();
         }

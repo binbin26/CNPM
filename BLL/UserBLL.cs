@@ -115,6 +115,7 @@ namespace CNPM.BLL
                 {
                     return false;
                 }
+                // So sánh password trực tiếp vì trong database đang lưu plain text
                 bool isPasswordValid = password == user.PasswordHash;
                 return isPasswordValid;
             }
@@ -145,6 +146,25 @@ namespace CNPM.BLL
             {
                 Logger.LogError($"Lỗi khi lấy vai trò người dùng: {ex.Message}");
                 return null;
+            }
+        }
+
+        public int GetUserId(string username)
+        {
+            try
+            {
+                User user = _userDAL.GetUserByUsername(username);
+                if (user == null)
+                {
+                    Logger.LogError($"Không tìm thấy người dùng với username: {username}");
+                    return -1;
+                }
+                return user.UserID;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Lỗi khi lấy ID người dùng: {ex.Message}");
+                return -1;
             }
         }
     }
