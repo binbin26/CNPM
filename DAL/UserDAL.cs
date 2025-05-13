@@ -31,7 +31,9 @@ namespace CNPM.DAL
                                 Username = reader["Username"].ToString(),
                                 Role = reader["Role"].ToString(),
                                 FullName = reader["FullName"].ToString(),
-                                Email = reader["Email"].ToString()
+                                QueQuan = reader["QueQuan"] != DBNull.Value ? reader["QueQuan"].ToString() : null,
+                                SoDienThoai = reader["SoDienThoai"] != DBNull.Value ? reader["SoDienThoai"].ToString() : null,
+                                Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : null
                             });
                         }
                     }
@@ -82,6 +84,51 @@ namespace CNPM.DAL
                 }
             }
         }
+        public bool UpdateAvatar(string username, byte[] avatarImage)
+        {
+            string query = "UPDATE Users SET AvatarPath = @AvatarPath WHERE Username = @Username";
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    cmd.Parameters.Add("@Avatar", SqlDbType.VarBinary).Value = avatarImage;
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+        public string GetAvatarPath(string username)
+        {
+            string query = "SELECT AvatarPath FROM Users WHERE Username = @Username";
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    object result = cmd.ExecuteScalar();
+                    return result != DBNull.Value ? result.ToString() : null;
+                }
+            }
+        }
+
+        public bool UpdateAvatarPath(string username, string newPath)
+        {
+            string query = "UPDATE Users SET AvatarPath = @AvatarPath WHERE Username = @Username";
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    cmd.Parameters.AddWithValue("@AvatarPath", newPath);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+
 
         public User GetUserByUsername(string username)
         {
@@ -103,6 +150,8 @@ namespace CNPM.DAL
                             PasswordHash = reader["PasswordHash"] != DBNull.Value ? reader["PasswordHash"].ToString() : "",
                             Role = reader["Role"] != DBNull.Value ? reader["Role"].ToString() : "",
                             FullName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "",
+                            QueQuan = reader["QueQuan"] != DBNull.Value ? reader["QueQuan"].ToString() : "",
+                            SoDienThoai = reader["SoDienThoai"] != DBNull.Value ? reader["SoDienThoai"].ToString() : "",
                             Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : ""
                         };
                     }
@@ -126,7 +175,9 @@ namespace CNPM.DAL
                             Role = @Role,
                             FullName = @FullName,
                             Email = @Email,
-                            IsActive = @IsActive
+                            IsActive = @IsActive,
+                            QueQuan = @QueQuan,
+                            SoDienThoai = @SoDienThoai
                         WHERE UserID = @UserID";
 
                         SqlCommand cmd = new SqlCommand(query, conn, transaction);
@@ -135,6 +186,8 @@ namespace CNPM.DAL
                         cmd.Parameters.AddWithValue("@Role", user.Role);
                         cmd.Parameters.AddWithValue("@FullName", user.FullName ?? user.Username);
                         cmd.Parameters.AddWithValue("@Email", user.Email);
+                        cmd.Parameters.AddWithValue("@QueQuan", user.QueQuan ?? "");
+                        cmd.Parameters.AddWithValue("@SoDienThoai", user.SoDienThoai ?? "");
                         cmd.Parameters.AddWithValue("@IsActive", true);
 
                         cmd.ExecuteNonQuery();
@@ -172,6 +225,37 @@ namespace CNPM.DAL
                         transaction.Rollback();
                         throw;
                     }
+                }
+            }
+        }
+
+        public string GetPassword(string username)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = "SELECT PasswordHash FROM Users WHERE Username = @Username";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    object result = cmd.ExecuteScalar();
+                    return result?.ToString();
+                }
+            }
+        }
+
+        public bool ChangePassword(string username, string newPassword)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = "UPDATE Users SET PasswordHash = @NewPassword WHERE Username = @Username";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    cmd.Parameters.AddWithValue("@NewPassword", newPassword);
+                    int rows = cmd.ExecuteNonQuery();
+                    return rows > 0;
                 }
             }
         }

@@ -42,7 +42,8 @@ namespace CNPM.Forms.Auth
                             nextForm = new LecturerForm();
                             break;
                         case "Student":
-                            nextForm = new StudentForm();
+                            int userId = _userBLL.GetUserId(username); // Lấy userId của người dùng
+                            nextForm = new frmTongQuan(userId, username);
                             break;
                         default:
                             MessageBox.Show("Không xác định được vai trò người dùng.");

@@ -46,6 +46,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.Sharp, Version=6.6.0.0, Culture=neutral, PublicKeyToken=d16d1e4e568ec10f, processorArchitecture=MSIL">
+      <HintPath>packages\FontAwesome.Sharp.6.6.0\lib\net48\FontAwesome.Sharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.9.0.4\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -58,6 +61,8 @@
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>packages\NLog.5.4.0\lib\net46\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -79,6 +84,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,6 +94,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\CourseBLL.cs" />
@@ -175,29 +182,47 @@
     <Compile Include="Forms\Shared\CourseDetailForm.Designer.cs">
       <DependentUpon>CourseDetailForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Student\AssignmentSubmissionForm.cs">
+    <Compile Include="Forms\Student\frmTongQuan.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Student\AssignmentSubmissionForm.Designer.cs">
-      <DependentUpon>AssignmentSubmissionForm.cs</DependentUpon>
+    <Compile Include="Forms\Student\frmTongQuan.Designer.cs">
+      <DependentUpon>frmTongQuan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Student\CourseCatalogForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\Student\ucBaiTap.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Student\CourseCatalogForm.Designer.cs">
-      <DependentUpon>CourseCatalogForm.cs</DependentUpon>
+    <Compile Include="Forms\Student\ucBaiTap.Designer.cs">
+      <DependentUpon>ucBaiTap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Student\StudentForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\Student\ucDangKyHocPhan.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Student\StudentForm.Designer.cs">
-      <DependentUpon>StudentForm.cs</DependentUpon>
+    <Compile Include="Forms\Student\ucDangKyHocPhan.Designer.cs">
+      <DependentUpon>ucDangKyHocPhan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Student\StudyMaterialsForm.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\Student\ucDanhSach.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Student\StudyMaterialsForm.Designer.cs">
-      <DependentUpon>StudyMaterialsForm.cs</DependentUpon>
+    <Compile Include="Forms\Student\ucDanhSach.Designer.cs">
+      <DependentUpon>ucDanhSach.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Student\ucDiemTrungBinh.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\ucDiemTrungBinh.Designer.cs">
+      <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Student\ucHienThiBaiTap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\ucHienThiBaiTap.Designer.cs">
+      <DependentUpon>ucHienThiBaiTap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Student\ucTongQuan.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
+      <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\CoursesControl.cs">
       <SubType>UserControl</SubType>
@@ -270,6 +295,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Shared\EnrolledStudentsForm.resx">
       <DependentUpon>EnrolledStudentsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\frmTongQuan.resx">
+      <DependentUpon>frmTongQuan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucDanhSach.resx">
+      <DependentUpon>ucDanhSach.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
+      <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
