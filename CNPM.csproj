@@ -299,6 +299,12 @@
     <EmbeddedResource Include="Forms\Student\frmTongQuan.resx">
       <DependentUpon>frmTongQuan.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucDanhSach.resx">
+      <DependentUpon>ucDanhSach.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
+      <DependentUpon>ucTongQuan.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

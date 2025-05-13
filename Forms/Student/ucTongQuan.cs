@@ -1,83 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using CNPM.BLL;
+using System.IO;
+using System.Drawing;
+
 
 namespace CNPM.Forms.Student
 {
     public partial class ucTongQuan : UserControl
     {
-        private Label lblTitle;
-        private Label lblHoTen;
-        private Label lblEmail;
-        private Label lblHoTenValue;
-        private Label lblEmailValue;
-        private Panel panelInfo;
-        private int _userId;
 
-        public ucTongQuan(int userId)
+        private string _username;
+        UserBLL userBLL = new UserBLL();
+
+        public ucTongQuan(string username)
         {
-            _userId = userId;
+            _username = username;
             InitializeComponent();
             InitializeCustomComponents();
-            LoadStudentInfo();
+            LoadStudentInfo(_username);
         }
 
         private void InitializeCustomComponents()
         {
-            // Khởi tạo panel chứa thông tin
-            panelInfo = new Panel();
-            panelInfo.Dock = DockStyle.Top;
-            panelInfo.Height = 200;
-            panelInfo.Padding = new Padding(20);
-            this.Controls.Add(panelInfo);
-
-            // Tiêu đề
-            lblTitle = new Label();
-            lblTitle.Text = "THÔNG TIN CÁ NHÂN: SINH VIÊN";
-            lblTitle.Font = new Font("Arial", 16, FontStyle.Bold);
-            lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(20, 20);
-            panelInfo.Controls.Add(lblTitle);
-
-            // Label Họ tên
-            lblHoTen = new Label();
-            lblHoTen.Text = "Họ và tên:";
-            lblHoTen.Font = new Font("Arial", 12);
-            lblHoTen.AutoSize = true;
-            lblHoTen.Location = new Point(20, 70);
-            panelInfo.Controls.Add(lblHoTen);
-
-            // Giá trị Họ tên
-            lblHoTenValue = new Label();
-            lblHoTenValue.Font = new Font("Arial", 12);
-            lblHoTenValue.AutoSize = true;
-            lblHoTenValue.Location = new Point(150, 70);
-            panelInfo.Controls.Add(lblHoTenValue);
-
-            // Label Email
-            lblEmail = new Label();
-            lblEmail.Text = "Email:";
-            lblEmail.Font = new Font("Arial", 12);
-            lblEmail.AutoSize = true;
-            lblEmail.Location = new Point(20, 110);
-            panelInfo.Controls.Add(lblEmail);
-
-            // Giá trị Email
-            lblEmailValue = new Label();
-            lblEmailValue.Font = new Font("Arial", 12);
-            lblEmailValue.AutoSize = true;
-            lblEmailValue.Location = new Point(150, 110);
-            panelInfo.Controls.Add(lblEmailValue);
+            
         }
 
-        private void LoadStudentInfo()
+        private void LoadStudentInfo(string username)
         {
             try
             {
@@ -85,16 +35,32 @@ namespace CNPM.Forms.Student
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "SELECT FullName, Email FROM Users WHERE UserID = @UserID AND Role = 'Student'";
+                    string query = "SELECT * FROM Users WHERE Username = @Username";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@UserID", _userId);
+                        cmd.Parameters.AddWithValue("@Username", _username);
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                lblHoTenValue.Text = reader["FullName"].ToString();
-                                lblEmailValue.Text = reader["Email"].ToString();
+                                lblFullName.Text = reader["FullName"].ToString();
+                                lblEmail.Text = reader["Email"].ToString();
+                                lblRole.Text = reader["Role"].ToString();
+                                lblCity.Text = reader["QueQuan"].ToString();
+                                lblPhone.Text = reader["SoDienThoai"].ToString();
+                            }
+                            if (reader["AvatarPath"] != DBNull.Value)
+                            {
+                                string avatarPath = reader["AvatarPath"].ToString();
+                                if (File.Exists(avatarPath))
+                                {
+                                    AvatarPict.Image = new Bitmap(avatarPath);
+                                }
+                                else
+                                {
+                                    // Ảnh mặc định nếu file không còn
+                                    AvatarPict.Image = new Bitmap(@"C:\Users\baong\OneDrive\Desktop\CNPM\Resources\Avatar\defaultAvatar.png");
+                                }
                             }
                         }
                     }
@@ -103,6 +69,89 @@ namespace CNPM.Forms.Student
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi khi tải thông tin học sinh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+        private void btnPass_Click(object sender, EventArgs e)
+        {
+            string oldPass = txtOP.Text.Trim();
+            string newPass = txtNP.Text.Trim();
+
+            if (string.IsNullOrEmpty(oldPass) || string.IsNullOrEmpty(newPass))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            bool success = userBLL.ChangeUserPassword(_username, oldPass, newPass);
+
+            if (success)
+            {
+                MessageBox.Show("Đổi mật khẩu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtOP.Clear();
+                txtNP.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Mật khẩu cũ không đúng!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AvatarPict_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Chọn ảnh đại diện";
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string selectedFile = openFileDialog.FileName;
+                string fileExtension = Path.GetExtension(selectedFile);
+                string newFileName = _username + fileExtension;
+                string saveDirectory = @"C:\Users\baong\OneDrive\Desktop\CNPM\Resources\Avatar\Student";
+                string savePath = Path.Combine(saveDirectory, newFileName);
+
+                try
+                {
+                    Directory.CreateDirectory(saveDirectory); // Tạo thư mục nếu chưa tồn tại
+
+                    // Giải phóng ảnh đang hiển thị (nếu có)
+                    if (AvatarPict.Image != null)
+                    {
+                        AvatarPict.Image.Dispose();
+                        AvatarPict.Image = null;
+                    }
+                    // Copy ảnh mới
+                    File.Copy(selectedFile, savePath, true);
+
+                    // Gọi BLL để cập nhật và xóa ảnh cũ
+                    bool updated = userBLL.ChangeUserAvatar(_username, savePath);
+
+                    if (updated)
+                    {
+                        // Giải phóng ảnh cũ nếu có
+                        if (AvatarPict.Image != null)
+                        {
+                            AvatarPict.Image.Dispose();
+                            AvatarPict.Image = null;
+                        }
+
+                        // Load ảnh mới mà không giữ file bị khóa
+                        AvatarPict.Image = new Bitmap(savePath);
+                        MessageBox.Show("Ảnh đại diện đã được cập nhật!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    else
+                    {
+                        MessageBox.Show("Cập nhật không thành công!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi cập nhật ảnh đại diện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

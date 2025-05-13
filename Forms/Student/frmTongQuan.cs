@@ -1,7 +1,12 @@
-﻿using FontAwesome.Sharp;
+﻿using CNPM.BLL;
+using CNPM.DAL;
+using CNPM.Forms.Auth;
+using CNPM.Models.Users;
+using FontAwesome.Sharp;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CNPM.Forms.Student
 {
@@ -9,10 +14,13 @@ namespace CNPM.Forms.Student
     {
         private Panel panelMain;
         private int _userId;
+        private string _username;
+        UserBLL userBLL = new UserBLL();
 
-        public frmTongQuan(int userId)
+        public frmTongQuan(int userId, string username)
         {
             _userId = userId;
+            _username = username;
             InitializeComponent();
             InitCustomComponent();
             this.Size = new Size(1200, 800);
@@ -36,10 +44,14 @@ namespace CNPM.Forms.Student
             btnDanhSach.Click += btnMenuDanhSach_Click;
             btnDiem.Click += btnMenuDiemTrungBinh_Click;
             btnDangKy.Click += (s, e) => LoadUserControl(new ucDangKyHocPhan(_userId));
-            btnThoat.Click += btnMenuThoat_Click;
 
             // Load UserControl mặc định
-            LoadUserControl(new ucTongQuan(_userId));
+            LoadUserControl(new ucTongQuan(_username));
+                User user = userBLL.GetUserByUsername(_username);
+                if (user != null)
+                {
+                    lblChao.Text = "Xin chào sinh viên " + user.FullName + "!";
+                }
         }
 
         public void LoadUserControl(UserControl uc)
@@ -51,7 +63,7 @@ namespace CNPM.Forms.Student
 
         private void btnMenuTongQuan_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucTongQuan(_userId));
+            LoadUserControl(new ucTongQuan(_username));
         }
 
         private void btnMenuBaiTap_Click(object sender, EventArgs e)
@@ -74,9 +86,11 @@ namespace CNPM.Forms.Student
             Application.Exit();
         }
 
-        private void btnBaiTap_Click(object sender, EventArgs e)
+        private void btnLogOut_Click(object sender, EventArgs e)
         {
-
+            this.Close();
+            // Mở lại form đăng nhập
+            LoginForm loginForm = new LoginForm();
         }
     }
 }
