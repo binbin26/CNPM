@@ -10,17 +10,11 @@ using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
 {
-    public partial class ScoreReportControl : UserControl
+    public partial class Form1 : Form
     {
-        public ScoreReportControl()
+        public Form1()
         {
             InitializeComponent();
-        }
-
-        private void btnViewScores_Click(object sender, EventArgs e)
-        {
-            // Logic xem báo cáo điểm
-            MessageBox.Show("Đã hiển thị báo cáo điểm!", "Thông báo");
         }
     }
 }
