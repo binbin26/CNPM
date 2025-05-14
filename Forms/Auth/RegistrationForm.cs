@@ -28,6 +28,8 @@ namespace CNPM.Forms.Auth
                 string password = txtPassword.Text;
                 string fullName = txtFullName.Text;
                 string email = txtEmail.Text;
+                string city = txtCity.Text;
+                string phone = txtPhone.Text;
 
                 // Kiểm tra dữ liệu đầu vào
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email))
@@ -43,6 +45,8 @@ namespace CNPM.Forms.Auth
                     Password = password, // Mật khẩu gốc (sẽ được hash trong BLL)
                     Role = "Student",     // Mặc định role là Student khi đăng ký
                     FullName = fullName,
+                    QueQuan = city,
+                    SoDienThoai = phone,
                     Email = email
                 };
 

@@ -73,12 +73,12 @@ namespace CNPM.Forms.Student
 
         private void btnMenuDanhSach_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucDanhSach());
+            LoadUserControl(new ucDanhSach(_username));
         }
 
         private void btnMenuDiemTrungBinh_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucDiemTrungBinh());
+            LoadUserControl(new ucDiemTrungBinh(_username));
         }
 
         private void btnMenuThoat_Click(object sender, EventArgs e)

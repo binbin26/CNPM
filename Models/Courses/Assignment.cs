@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace CNPM.Models.Courses
 {
-    class Assignment
+    public class Assignment
     {
+        public int AssignmentID { get; set; }
+        public int CourseID { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime DueDate { get; set; }
+        public decimal MaxScore { get; set; }
+        public int CreatedBy { get; set; }
     }
 }
