@@ -37,7 +37,6 @@ namespace CNPM.DAL
             }
             return courses;
         }
-        // ✅ Bổ sung hàm EnrollStudent vào cuối lớp
         public bool EnrollStudent(int studentID, int courseID)
         {
             using (SqlConnection conn = DatabaseHelper.GetConnection())
@@ -94,6 +93,36 @@ namespace CNPM.DAL
                 }
                 return courses;
         }
+
+        public List<Course> GetCoursesByStudent(int userId)
+        {
+            List<Course> courses = new List<Course>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = @"SELECT c.*
+                         FROM Courses c
+                         JOIN StudentCourse sc ON c.CourseID = sc.CourseID
+                         WHERE sc.UserID = @userID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@userID", userId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Course course = new Course
+                    {
+                        CourseID = Convert.ToInt32(reader["CourseID"]),
+                        CourseName = reader["CourseName"].ToString(),
+                        // thêm các cột khác nếu có
+                    };
+                    courses.Add(course);
+                }
+            }
+            return courses;
+        }
+
+
         public Course GetCourseByID(int courseID)
         {
             using (SqlConnection conn = DatabaseHelper.GetConnection())
@@ -140,6 +169,7 @@ namespace CNPM.DAL
                 return rowsAffected > 0;
             }
         }
+
 
         public List<EnrolledStudent> GetEnrolledStudents(int courseId)
         {

@@ -8,13 +8,12 @@ namespace CNPM.Models.Courses
 {
     public class Assignment
     {
-        public string CourseId { get; set; }      // Mã môn học
-        public string CourseCode { get; set; }      // Mã môn học
-        public string Title { get; set; }      // Mã môn học
-        public string ExerciseName { get; set; }  // Tên bài tập
-        public DateTime DueDate { get; set; }   // Mã sinh viên nộp
-        public string StudentName { get; set; }   // Tên sinh viên nộp
-        public string FilePath { get; set; }      // Đường dẫn file đã nộp
-        public bool IsQuiz { get; set; }         // true: bài trắc nghiệm, false: bài tự luận
+        public int AssignmentID { get; set; }
+        public int CourseID { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime DueDate { get; set; }
+        public decimal MaxScore { get; set; }
+        public int CreatedBy { get; set; }
     }
 }

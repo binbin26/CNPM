@@ -16,13 +16,13 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmTongQuan));
             this.panelMenu = new System.Windows.Forms.Panel();
+            this.btnLogOut = new System.Windows.Forms.Button();
             this.btnDangKy = new FontAwesome.Sharp.IconButton();
             this.btnDiem = new FontAwesome.Sharp.IconButton();
             this.btnDanhSach = new FontAwesome.Sharp.IconButton();
             this.btnBaiTap = new FontAwesome.Sharp.IconButton();
             this.btnTongQuan = new FontAwesome.Sharp.IconButton();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.btnLogOut = new System.Windows.Forms.Button();
             this.lblChao = new System.Windows.Forms.Label();
             this.panelMenu.SuspendLayout();
             this.SuspendLayout();
@@ -42,6 +42,19 @@
             this.panelMenu.Name = "panelMenu";
             this.panelMenu.Size = new System.Drawing.Size(241, 600);
             this.panelMenu.TabIndex = 1;
+            // 
+            // btnLogOut
+            // 
+            this.btnLogOut.BackColor = System.Drawing.Color.DarkGray;
+            this.btnLogOut.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnLogOut.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.btnLogOut.Location = new System.Drawing.Point(6, 553);
+            this.btnLogOut.Name = "btnLogOut";
+            this.btnLogOut.Size = new System.Drawing.Size(226, 35);
+            this.btnLogOut.TabIndex = 2;
+            this.btnLogOut.Text = "Đăng xuất";
+            this.btnLogOut.UseVisualStyleBackColor = false;
+            this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
             // 
             // btnDangKy
             // 
@@ -147,19 +160,6 @@
             this.lblTitle.TabIndex = 6;
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // btnLogOut
-            // 
-            this.btnLogOut.BackColor = System.Drawing.Color.DarkGray;
-            this.btnLogOut.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnLogOut.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btnLogOut.Location = new System.Drawing.Point(6, 553);
-            this.btnLogOut.Name = "btnLogOut";
-            this.btnLogOut.Size = new System.Drawing.Size(226, 35);
-            this.btnLogOut.TabIndex = 2;
-            this.btnLogOut.Text = "Đăng xuất";
-            this.btnLogOut.UseVisualStyleBackColor = false;
-            this.btnLogOut.Click += new System.EventHandler(this.btnLogOut_Click);
-            // 
             // lblChao
             // 
             this.lblChao.AutoSize = true;
@@ -174,7 +174,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 600);
+            this.ClientSize = new System.Drawing.Size(736, 600);
             this.Controls.Add(this.lblChao);
             this.Controls.Add(this.panelMenu);
             this.Name = "frmTongQuan";

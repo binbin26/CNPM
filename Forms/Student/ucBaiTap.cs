@@ -65,11 +65,13 @@ namespace CNPM.Forms.Student
         public class Assignment
         {
             public int AssignmentID { get; set; }
+            public int CourseID { get; set; }
             public string Title { get; set; }
             public string Description { get; set; }
             public DateTime DueDate { get; set; }
             public AssignmentType Type { get; set; }
             public string HanNop { get; set; } // Trạng thái
+            public Decimal MaxScore { get; set; } // Điểm tối đa
         }
         public enum AssignmentType { TuLuan, TracNghiem }
     }

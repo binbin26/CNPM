@@ -97,6 +97,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\AssignmentBLL.cs" />
     <Compile Include="BLL\CourseBLL.cs" />
     <Compile Include="BLL\Courses\ContentService.cs" />
     <Compile Include="BLL\Courses\CourseManagementForm.cs">
@@ -107,7 +108,7 @@
     </Compile>
     <Compile Include="BLL\Courses\CourseManager.cs" />
     <Compile Include="BLL\Courses\EnrollmentService.cs" />
-    <Compile Include="BLL\DocumentRepository.cs" />
+    <Compile Include="DAL\AssignmentDAL.cs" />
     <Compile Include="Forms\Admin\AdminForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,7 +128,6 @@
       <DependentUpon>EnrolledStudentsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BLL\EnrollmentBLL.cs" />
-    <Compile Include="BLL\PermissionHelper.cs" />
     <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="BLL\Users\AuthService.cs" />
     <Compile Include="BLL\Users\RoleManager.cs" />
@@ -187,6 +187,12 @@
     </Compile>
     <Compile Include="Forms\Student\frmTongQuan.Designer.cs">
       <DependentUpon>frmTongQuan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Student\TaiLieu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\TaiLieu.Designer.cs">
+      <DependentUpon>TaiLieu.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Student\ucBaiTap.cs">
       <SubType>UserControl</SubType>
@@ -298,6 +304,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\frmTongQuan.resx">
       <DependentUpon>frmTongQuan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\TaiLieu.resx">
+      <DependentUpon>TaiLieu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucDanhSach.resx">
+      <DependentUpon>ucDanhSach.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
       <DependentUpon>FormSetupQuiz.cs</DependentUpon>
