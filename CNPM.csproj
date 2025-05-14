@@ -98,16 +98,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\AssignmentBLL.cs" />
-    <Compile Include="BLL\CourseBLL.cs" />
-    <Compile Include="BLL\Courses\ContentService.cs" />
+    <Compile Include="BLL\Courses\CourseBLL.cs" />
     <Compile Include="BLL\Courses\CourseManagementForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="BLL\Courses\CourseManagementForm.Designer.cs">
       <DependentUpon>CourseManagementForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="BLL\Courses\CourseManager.cs" />
-    <Compile Include="BLL\Courses\EnrollmentService.cs" />
     <Compile Include="DAL\AssignmentDAL.cs" />
     <Compile Include="Forms\Admin\AdminForm.cs">
       <SubType>Form</SubType>
@@ -128,12 +125,12 @@
       <DependentUpon>EnrolledStudentsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BLL\EnrollmentBLL.cs" />
-    <Compile Include="BLL\UserBLL.cs" />
+    <Compile Include="BLL\Users\UserBLL.cs" />
     <Compile Include="BLL\Users\AuthService.cs" />
     <Compile Include="BLL\Users\RoleManager.cs" />
     <Compile Include="BLL\Users\UserService.cs" />
     <Compile Include="CurrentUser.cs" />
-    <Compile Include="DAL\CourseDAL.cs" />
+    <Compile Include="DAL\Courses\CourseDAL.cs" />
     <Compile Include="DAL\Courses\AssignmentRepository.cs" />
     <Compile Include="DAL\Courses\CourseRepository.cs" />
     <Compile Include="DAL\Courses\DocumentRepository.cs" />
@@ -142,7 +139,7 @@
     <Compile Include="DAL\EduMasterDbContext.cs" />
     <Compile Include="DAL\EnrollmentDAL.cs" />
     <Compile Include="DAL\PermissionDAL.cs" />
-    <Compile Include="DAL\UserDAL.cs" />
+    <Compile Include="DAL\Users\UserDAL.cs" />
     <Compile Include="DAL\Users\StudentRepository.cs" />
     <Compile Include="DAL\Users\TeacherRepository.cs" />
     <Compile Include="DAL\Users\UserRepository.cs" />
@@ -341,6 +338,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucDanhSach.resx">
       <DependentUpon>ucDanhSach.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucDiemTrungBinh.resx">
+      <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
       <DependentUpon>FormSetupQuiz.cs</DependentUpon>

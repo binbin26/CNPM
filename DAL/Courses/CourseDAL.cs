@@ -3,9 +3,7 @@ using CNPM.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CNPM.DAL
 {
@@ -167,6 +165,21 @@ namespace CNPM.DAL
                 conn.Open();
                 int rowsAffected = cmd.ExecuteNonQuery();
                 return rowsAffected > 0;
+            }
+        }
+        //Đảm bảo StudentID và TeacherID luôn là UserID của tài khoản xác định
+        public bool UserExistsWithRole(int userId, string role)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT COUNT(*) FROM Users WHERE UserID = @UserID AND Role = @Role";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UserID", userId);
+                cmd.Parameters.AddWithValue("@Role", role);
+
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
             }
         }
 
