@@ -1,4 +1,5 @@
 ﻿using CNPM.BLL;
+using CNPM.DAL;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -61,9 +62,9 @@ namespace CNPM.Forms.Student
             ? 0
             : Convert.ToInt32(row.Cells["SlotsLeft"].Value);
 
-            DateTime deadline = row.Cells["RegistrationDeadline"].Value == DBNull.Value
+            DateTime deadline = row.Cells["EndDate"].Value == DBNull.Value
                 ? DateTime.MinValue
-                : Convert.ToDateTime(row.Cells["RegistrationDeadline"].Value);
+                : Convert.ToDateTime(row.Cells["EndDate"].Value);
 
             if (slotsLeft <= 0)
             {
@@ -78,7 +79,7 @@ namespace CNPM.Forms.Student
             // Đăng ký
             try
             {
-                using (SqlConnection conn = new SqlConnection(_connectionString))
+                using (SqlConnection conn = DatabaseHelper.GetConnection())
                 {
                     conn.Open();
                     string insert = "INSERT INTO CourseEnrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";

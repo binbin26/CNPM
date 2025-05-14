@@ -33,12 +33,12 @@ namespace CNPM.Forms.Teacher
             panelContent.Controls.Add(courseTab);
         }
 
-        /*private void btnSubmissions_Click(object sender, EventArgs e)
+        private void btnSubmissions_Click(object sender, EventArgs e)
         {
             panelContent.Controls.Clear();
             var submissionsTab = new UcSubmissions();
             submissionsTab.Dock = DockStyle.Fill;
             panelContent.Controls.Add(submissionsTab);
-        }*/
+        }
     }
 }

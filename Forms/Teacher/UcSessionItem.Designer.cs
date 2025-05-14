@@ -1,4 +1,6 @@
-﻿namespace CNPM.Forms.Teacher
+﻿using System.Windows.Forms;
+
+namespace CNPM.Forms.Teacher
 {
     partial class UcSessionItem
     {
@@ -8,7 +10,7 @@
         private System.Windows.Forms.Button btnCreateAssignment;
         private System.Windows.Forms.ListBox listBoxFiles;
         private System.Windows.Forms.ListBox listBoxAssignments;
-
+        private ContextMenuStrip contextMenu;
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -45,10 +47,16 @@
             this.btnCreateAssignment.Text = "Tạo bài tập";
             this.btnCreateAssignment.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnCreateAssignment.Height = 30;
-            //this.btnCreateAssignment.Click += new System.EventHandler(this.btnCreateAssignment_Click);
+            this.btnCreateAssignment.Click += new System.EventHandler(this.btnCreateAssignment_Click);
 
             // listBoxAssignments
             this.listBoxAssignments.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxAssignments.DoubleClick += new System.EventHandler(this.listBoxAssignments_DoubleClick);
+            contextMenu = new ContextMenuStrip();
+            contextMenu.Items.Add("Chỉnh sửa tên bài tập", null, OnRenameAssignment);
+            contextMenu.Items.Add("Xóa bài tập", null, OnDeleteAssignment);
+
+            listBoxAssignments.ContextMenuStrip = contextMenu;
 
             // UcSessionItem
             this.Controls.Add(this.listBoxAssignments);
