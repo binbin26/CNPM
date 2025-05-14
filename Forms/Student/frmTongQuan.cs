@@ -78,7 +78,7 @@ namespace CNPM.Forms.Student
 
         private void btnMenuDiemTrungBinh_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucDiemTrungBinh());
+            LoadUserControl(new ucDiemTrungBinh(_username));
         }
 
         private void btnMenuThoat_Click(object sender, EventArgs e)

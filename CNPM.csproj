@@ -126,15 +126,8 @@
     </Compile>
     <Compile Include="BLL\EnrollmentBLL.cs" />
     <Compile Include="BLL\Users\UserBLL.cs" />
-    <Compile Include="BLL\Users\AuthService.cs" />
-    <Compile Include="BLL\Users\RoleManager.cs" />
-    <Compile Include="BLL\Users\UserService.cs" />
     <Compile Include="CurrentUser.cs" />
     <Compile Include="DAL\Courses\CourseDAL.cs" />
-    <Compile Include="DAL\Courses\AssignmentRepository.cs" />
-    <Compile Include="DAL\Courses\CourseRepository.cs" />
-    <Compile Include="DAL\Courses\DocumentRepository.cs" />
-    <Compile Include="DAL\Courses\ExamRepository.cs" />
     <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\EduMasterDbContext.cs" />
     <Compile Include="DAL\EnrollmentDAL.cs" />
@@ -295,15 +288,11 @@
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Courses\Assignment.cs" />
+    <Compile Include="Models\Courses\CourseGrade.cs" />
     <Compile Include="Models\Courses\Exam.cs" />
     <Compile Include="Models\Courses\Document.cs" />
     <Compile Include="Models\Courses\Course.cs" />
     <Compile Include="Models\EnrolledStudent.cs" />
-    <Compile Include="Models\Shared\Enum.cs" />
-    <Compile Include="Models\Shared\Permission.cs" />
-    <Compile Include="Models\Users\Teacher.cs" />
-    <Compile Include="Models\Users\Student.cs" />
-    <Compile Include="Models\Users\Admin.cs" />
     <Compile Include="Models\Users\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

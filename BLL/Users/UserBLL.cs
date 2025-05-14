@@ -18,6 +18,11 @@ namespace CNPM.BLL
             _userDAL = new UserDAL();
         }
 
+        public UserBLL(UserDAL userDAL)
+        {
+            _userDAL = userDAL;
+        }
+
         public List<User> GetAllUsers()
         {
             try

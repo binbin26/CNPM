@@ -61,6 +61,10 @@ namespace CNPM.BLL
             return _courseDAL.GetCoursesByStudent(userId);
         }
 
+        public List<CourseGrade> GetGradesByStudent(int studentId)
+        {
+            return _courseDAL.GetGradesByStudent(studentId);
+        }
 
         public bool RemoveStudent(int studentId, int courseId)
         {

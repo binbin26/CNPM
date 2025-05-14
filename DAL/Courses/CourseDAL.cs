@@ -229,5 +229,40 @@ namespace CNPM.DAL
                 return rowsAffected > 0;
             }
         }
+
+
+
+        //Lấy điểm của sinh viên theo khóa học
+        public List<CourseGrade> GetGradesByStudent(int studentId)
+        {
+            List<CourseGrade> grades = new List<CourseGrade>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT c.CourseName, g.Score, u.FullName AS GradedBy
+            FROM CourseEnrollments ce
+            JOIN Courses c ON ce.CourseID = c.CourseID
+            LEFT JOIN Grades g ON g.CourseID = ce.CourseID AND g.StudentID = ce.StudentID
+            LEFT JOIN Users u ON g.TeacherID = u.UserID
+            WHERE ce.StudentID = @StudentID";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@StudentID", studentId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    grades.Add(new CourseGrade
+                    {
+                        CourseName = reader["CourseName"].ToString(),
+                        Score = reader["Score"] == DBNull.Value ? (float?)null : Convert.ToSingle(reader["Score"]),
+                        GradedBy = reader["GradedBy"] == DBNull.Value ? "Chưa có" : reader["GradedBy"].ToString()
+                    });
+                }
+            }
+            return grades;
+        }
     }
 }
