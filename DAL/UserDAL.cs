@@ -17,7 +17,7 @@ namespace CNPM.DAL
             {
                 using (SqlConnection conn = DatabaseHelper.GetConnection())
                 {
-                    string query = "SELECT UserID, Username, Role, FullName, Email FROM Users";
+                    string query = "SELECT UserID, Username, Role, FullName, Email, QueQuan, SoDienThoai FROM Users";
                     SqlCommand cmd = new SqlCommand(query, conn);
 
                     conn.Open();

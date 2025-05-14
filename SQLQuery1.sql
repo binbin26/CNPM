@@ -13,6 +13,9 @@ CREATE TABLE Users (
     Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin', 'Teacher', 'Student')),
     FullName NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) UNIQUE NOT NULL,
+    vatarPath NVARCHAR(100),
+    QueQuan NVARCHAR(50),
+    SoDienThoai NVARCHAR(10),
     CreatedAt DATETIME DEFAULT GETDATE(),
     IsActive BIT DEFAULT 1  -- 1: Active, 0: Deactivated
 );
@@ -390,6 +393,6 @@ WHERE Username IN ('teacher08', 'student03', 'student02');
 SELECT *
 FROM Users 
 
-ALTER TABLE Courses
-ADD MaxEnrollment INT DEFAULT 50,
-    RegistrationDeadline DATETIME NULL;
+-- ALTER TABLE Courses
+-- ADD MaxEnrollment INT DEFAULT 50,
+--     RegistrationDeadline DATETIME NULL;
