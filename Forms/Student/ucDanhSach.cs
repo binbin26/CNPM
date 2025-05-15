@@ -21,15 +21,6 @@ namespace CNPM.Forms.Student
             LoadStudentCourses();
         }
 
-
-        private void LoadAssignments(int courseID)
-        {
-            AssignmentBLL assignmentBLL = new AssignmentBLL();
-            List<Assignment> assignments = assignmentBLL.GetAssignmentsByCourse(courseID);
-
-            dtGDanhSach.DataSource = assignments; 
-        }
-
         private void ShowAssignments(int courseID)
         {
             AssignmentBLL assignmentBLL = new AssignmentBLL();
@@ -42,7 +33,7 @@ namespace CNPM.Forms.Student
 
         private void dtGDanhSach_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && dtGDanhSach.Columns[e.ColumnIndex].Name == "btnXemBaiTap")
+            if (e.RowIndex >= 0 && dtGDanhSach.Columns[e.ColumnIndex].Name == "btnXemTaiLieu")
             {
                 int courseId = Convert.ToInt32(dtGDanhSach.Rows[e.RowIndex].Cells["CourseID"].Value);
                 ShowAssignments(courseId);
@@ -63,14 +54,14 @@ namespace CNPM.Forms.Student
             dtGDanhSach.DataSource = enrolledCourses;
 
             // Thêm cột nút nếu chưa có
-            if (!dtGDanhSach.Columns.Contains("btnXemBaiTap"))
+            if (!dtGDanhSach.Columns.Contains("btnXemTaiLieu"))
             {
                 DataGridViewButtonColumn btnXem = new DataGridViewButtonColumn
                 {
                     HeaderText = "Bài tập",
-                    Text = "Xem bài tập",
+                    Text = "Xem tài liệu",
                     UseColumnTextForButtonValue = true,
-                    Name = "btnXemBaiTap",
+                    Name = "btnXemTaiLieu",
                     Width = 120
                 };
                 dtGDanhSach.Columns.Add(btnXem);

@@ -93,7 +93,7 @@ namespace CNPM.Forms.Admin
             GroupBox addGroup = new GroupBox();
             addGroup.Text = "Add New Account";
             addGroup.Location = new Point(10, 10);
-            addGroup.Size = new Size(380, 250);
+            addGroup.Size = new Size(380, 370);
             managementPanel.Controls.Add(addGroup);
 
             // Controls thêm tài khoản
@@ -144,21 +144,43 @@ namespace CNPM.Forms.Admin
             cmbNewRole.Items.AddRange(new string[] { "Admin", "Teacher", "Student" });
             addGroup.Controls.Add(cmbNewRole);
 
+            Label lblQueQuan = new Label();
+            lblQueQuan.Text = "Quê quán:";
+            lblQueQuan.Location = new Point(10, 230);
+            lblQueQuan.AutoSize = true;
+            addGroup.Controls.Add(lblQueQuan);
+
+            txtNewQueQuan = new TextBox();
+            txtNewQueQuan.Location = new Point(10, 250);
+            txtNewQueQuan.Size = new Size(350, 20);
+            addGroup.Controls.Add(txtNewQueQuan);
+
+            Label lblSoDienThoai = new Label();
+            lblSoDienThoai.Text = "Số điện thoại:";
+            lblSoDienThoai.Location = new Point(10, 280);
+            lblSoDienThoai.AutoSize = true;
+            addGroup.Controls.Add(lblSoDienThoai);
+
+            txtNewSoDienThoai = new TextBox();
+            txtNewSoDienThoai.Location = new Point(10, 300);
+            txtNewSoDienThoai.Size = new Size(350, 20);
+            addGroup.Controls.Add(txtNewSoDienThoai);
+
             btnAddAccount = new Button();
             btnAddAccount.Text = "Add Account";
-            btnAddAccount.Location = new Point(260, 270);
+            btnAddAccount.Location = new Point(250, 320);
             btnAddAccount.Size = new Size(100, 30);
             btnAddAccount.BackColor = Color.PowderBlue;
             btnAddAccount.ForeColor = Color.FromArgb(44, 62, 80);
             btnAddAccount.FlatStyle = FlatStyle.Flat;
             btnAddAccount.Click += BtnAddAccount_Click;
-            managementPanel.Controls.Add(btnAddAccount);
+            addGroup.Controls.Add(btnAddAccount);
 
             // Nhóm chỉnh sửa tài khoản
             GroupBox editGroup = new GroupBox();
             editGroup.Text = "Edit Account";
             editGroup.Location = new Point(400, 10);
-            editGroup.Size = new Size(380, 180);
+            editGroup.Size = new Size(380, 300);
             managementPanel.Controls.Add(editGroup);
 
             Label lblSelectAccount = new Label();
@@ -197,25 +219,47 @@ namespace CNPM.Forms.Admin
             cmbEditRole.Items.AddRange(new string[] { "Admin", "Teacher", "Student" });
             editGroup.Controls.Add(cmbEditRole);
 
+            Label lblEditQueQuan = new Label();
+            lblEditQueQuan.Text = "Quê quán:";
+            lblEditQueQuan.Location = new Point(10, 180);
+            lblEditQueQuan.AutoSize = true;
+            editGroup.Controls.Add(lblEditQueQuan);
+
+            txtEditQueQuan = new TextBox();
+            txtEditQueQuan.Location = new Point(10, 200);
+            txtEditQueQuan.Size = new Size(350, 20);
+            editGroup.Controls.Add(txtEditQueQuan);
+
+            Label lblEditSoDienThoai = new Label();
+            lblEditSoDienThoai.Text = "Số điện thoại:";
+            lblEditSoDienThoai.Location = new Point(10, 230);
+            lblEditSoDienThoai.AutoSize = true;
+            editGroup.Controls.Add(lblEditSoDienThoai);
+
+            txtEditSoDienThoai = new TextBox();
+            txtEditSoDienThoai.Location = new Point(10, 250);
+            txtEditSoDienThoai.Size = new Size(350, 20);
+            editGroup.Controls.Add(txtEditSoDienThoai);
+
             btnUpdateAccount = new Button();
             btnUpdateAccount.Text = "Update";
-            btnUpdateAccount.Location = new Point(540, 200);
+            btnUpdateAccount.Location = new Point(140, 270);
             btnUpdateAccount.Size = new Size(100, 30);
             btnUpdateAccount.BackColor = Color.PowderBlue;
             btnUpdateAccount.ForeColor = Color.FromArgb(44, 62, 80);
             btnUpdateAccount.FlatStyle = FlatStyle.Flat;
             btnUpdateAccount.Click += BtnUpdateAccount_Click;
-            managementPanel.Controls.Add(btnUpdateAccount);
+            editGroup.Controls.Add(btnUpdateAccount);
 
             btnDeleteAccount = new Button();
             btnDeleteAccount.Text = "Delete";
-            btnDeleteAccount.Location = new Point(650, 200);
+            btnDeleteAccount.Location = new Point(250, 270);
             btnDeleteAccount.Size = new Size(100, 30);
             btnDeleteAccount.BackColor = Color.PowderBlue;
             btnDeleteAccount.ForeColor = Color.FromArgb(44, 62, 80);
             btnDeleteAccount.FlatStyle = FlatStyle.Flat;
             btnDeleteAccount.Click += BtnDeleteAccount_Click;
-            managementPanel.Controls.Add(btnDeleteAccount);
+            editGroup.Controls.Add(btnDeleteAccount);
 
             // Tab 3: Course Management
             TabPage courseManagementTab = new TabPage("Course Management");
@@ -381,17 +425,24 @@ namespace CNPM.Forms.Admin
             accountsDataGridView.Columns.Add("Username", "Username");
             accountsDataGridView.Columns.Add("Email", "Email");
             accountsDataGridView.Columns.Add("Role", "Role");
+            accountsDataGridView.Columns.Add("QueQuan", "Quê quán");
+            accountsDataGridView.Columns.Add("SoDienThoai", "Số điện thoại");
 
             // Thêm dữ liệu từ danh sách users
-            foreach (var user in users)
+            if (users != null)
             {
-                accountsDataGridView.Rows.Add(
-                    user.UserID,
-                    user.Username,
-                    user.Email,
-                    user.Role
-                );
-                cmbAccounts.Items.Add($"{user.Username} ({user.Role})");
+                foreach (var user in users)
+                {
+                    accountsDataGridView.Rows.Add(
+                        user.UserID,
+                        user.Username,
+                        user.Email,
+                        user.Role,
+                        user.QueQuan,
+                        user.SoDienThoai
+                    );
+                    cmbAccounts.Items.Add($"{user.Username} ({user.Role})");
+                }
             }
 
             if (cmbAccounts.Items.Count > 0)
@@ -539,10 +590,13 @@ namespace CNPM.Forms.Admin
         private void LoadTeachers()
         {
             cmbTeachers.Items.Clear();
-            var teachers = users.Where(u => u.Role == "Teacher").ToList();
-            foreach (var teacher in teachers)
+            if (users != null)
             {
-                cmbTeachers.Items.Add($"{teacher.FullName} ({teacher.Username})");
+                var teachers = users.Where(u => u.Role == "Teacher").ToList();
+                foreach (var teacher in teachers)
+                {
+                    cmbTeachers.Items.Add($"{teacher.FullName} ({teacher.Username})");
+                }
             }
         }
 
@@ -558,17 +612,28 @@ namespace CNPM.Forms.Admin
             coursesDataGridView.Columns.Add("StartDate", "Start Date");
             coursesDataGridView.Columns.Add("EndDate", "End Date");
 
-            foreach (var course in courses)
+            if (courses != null)
             {
-                var teacher = users.FirstOrDefault(u => u.UserID == course.TeacherID);
-                coursesDataGridView.Rows.Add(
-                    course.CourseID,
-                    course.CourseCode,
-                    course.CourseName,
-                    teacher?.FullName ?? "Unknown",
-                    course.StartDate.ToShortDateString(),
-                    course.EndDate.ToShortDateString()
-                );
+                foreach (var course in courses)
+                {
+                    var teacherName = "Unknown";
+                    if (users != null)
+                    {
+                        var teacher = users.FirstOrDefault(u => u.UserID == course.TeacherID);
+                        if (teacher != null)
+                        {
+                            teacherName = teacher.FullName;
+                        }
+                    }
+                    coursesDataGridView.Rows.Add(
+                        course.CourseID,
+                        course.CourseCode,
+                        course.CourseName,
+                        teacherName,
+                        course.StartDate.ToShortDateString(),
+                        course.EndDate.ToShortDateString()
+                    );
+                }
             }
         }
 
@@ -684,5 +749,9 @@ namespace CNPM.Forms.Admin
         private DataGridView coursesDataGridView;
         private Button btnManageStudents;
         private int selectedCourseId = -1;
+        private TextBox txtNewQueQuan;
+        private TextBox txtNewSoDienThoai;
+        private TextBox txtEditQueQuan;
+        private TextBox txtEditSoDienThoai;
     }
 }
