@@ -92,29 +92,33 @@ namespace CNPM.DAL
                 return courses;
         }
 
-        public List<Course> GetCoursesByStudent(int userId)
+        public List<Course> GetCoursesByStudent(int studentId)
         {
             List<Course> courses = new List<Course>();
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
-                conn.Open();
-                string query = @"SELECT c.*
-                         FROM Courses c
-                         JOIN StudentCourse sc ON c.CourseID = sc.CourseID
-                         WHERE sc.UserID = @userID";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@userID", userId);
+                string query = @"
+            SELECT c.*
+            FROM Courses c
+            JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
+            WHERE ce.StudentID = @StudentID";
 
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@StudentID", studentId);
+
+                conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Course course = new Course
+                    courses.Add(new Course
                     {
-                        CourseID = Convert.ToInt32(reader["CourseID"]),
+                        CourseID = (int)reader["CourseID"],
+                        CourseCode = reader["CourseCode"].ToString(),
                         CourseName = reader["CourseName"].ToString(),
-                        // thêm các cột khác nếu có
-                    };
-                    courses.Add(course);
+                        TeacherID = (int)reader["TeacherID"],
+                        StartDate = (DateTime)reader["StartDate"],
+                        EndDate = (DateTime)reader["EndDate"]
+                    });
                 }
             }
             return courses;

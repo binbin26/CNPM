@@ -393,3 +393,43 @@ FROM Users
 ALTER TABLE Courses
 ADD MaxEnrollment INT DEFAULT 50,
     RegistrationDeadline DATETIME NULL;
+
+
+	Select * from Users
+select * from Courses
+select * from StudentCourse
+select * from CourseEnrollments
+ALTER TABLE Courses
+DROP COLUMN RegistrationDeadline;
+
+
+-- Giả sử TeacherID = 101 là một giảng viên hợp lệ
+INSERT INTO Courses (CourseCode, CourseName, TeacherID, StartDate, EndDate, MaxEnrollment)
+VALUES 
+('CS101', N'Nhập môn Lập trình', 10, '2025-09-01', '2025-12-15', 50),
+('CS201', N'Cấu trúc dữ liệu và giải thuật', 10, '2025-09-01', '2025-12-15', 50),
+('DB301', N'Cơ sở dữ liệu', 3, '2025-09-01', '2025-12-15', 50),
+('SE401', N'Phân tích và thiết kế hệ thống', 10, '2025-09-01', '2025-12-15', 50),
+('AI501', N'Trí tuệ nhân tạo', 3, '2025-09-01', '2025-12-15', 50);
+
+INSERT INTO Courses (CourseCode, CourseName, TeacherID, StartDate, EndDate, MaxEnrollment)
+VALUES 
+('CS102', N'Nhập môn Lập trình', 10, '2025-09-01', '2025-12-15', 50);
+
+
+CREATE TABLE Grades (
+    StudentID INT,
+    CourseID INT,
+    Score FLOAT,
+    PRIMARY KEY (StudentID, CourseID),
+    FOREIGN KEY (StudentID) REFERENCES Users(UserID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);
+
+
+ALTER TABLE Grades
+ADD TeacherID INT;
+
+ALTER TABLE Grades
+ADD CONSTRAINT FK_Grades_Teacher
+FOREIGN KEY (TeacherID) REFERENCES Users(UserID);

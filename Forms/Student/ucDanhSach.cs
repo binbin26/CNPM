@@ -17,8 +17,8 @@ namespace CNPM.Forms.Student
         {
             _username = username;
             InitializeComponent();
-            LoadStudentCourses();
             dtGDanhSach.CellClick += dtGDanhSach_CellClick;
+            LoadStudentCourses();
         }
 
 
