@@ -22,8 +22,8 @@ namespace CNPM.BLL
 
         public bool EnrollStudent(int studentID, int courseID)
         {
-            // Validate logic trước khi gọi DAL
-            if (studentID <= 0 || courseID <= 0) return false;
+            // ✅ Đảm bảo StudentID là UserID có Role = 'Student'
+            if (!_courseDAL.UserExistsWithRole(studentID, "Student")) return false;
             return _courseDAL.EnrollStudent(studentID, courseID);
         }
         public List<Course> GetCoursesByTeacher(int teacherID)
@@ -42,6 +42,10 @@ namespace CNPM.BLL
             if (string.IsNullOrWhiteSpace(course.CourseCode)) return false;
             if (string.IsNullOrWhiteSpace(course.CourseName)) return false;
             if (course.TeacherID <= 0) return false;
+
+            // ✅ Đảm bảo TeacherID chính là UserID của Role = 'Teacher'
+            if (!_courseDAL.UserExistsWithRole(course.TeacherID, "Teacher")) return false;
+
             if (course.StartDate >= course.EndDate) return false;
 
             return _courseDAL.AddCourse(course);
@@ -57,6 +61,10 @@ namespace CNPM.BLL
             return _courseDAL.GetCoursesByStudent(userId);
         }
 
+        public List<CourseGrade> GetGradesByStudent(int studentId)
+        {
+            return _courseDAL.GetGradesByStudent(studentId);
+        }
 
         public bool RemoveStudent(int studentId, int courseId)
         {

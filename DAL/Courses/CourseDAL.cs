@@ -3,9 +3,7 @@ using CNPM.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CNPM.DAL
 {
@@ -94,29 +92,33 @@ namespace CNPM.DAL
                 return courses;
         }
 
-        public List<Course> GetCoursesByStudent(int userId)
+        public List<Course> GetCoursesByStudent(int studentId)
         {
             List<Course> courses = new List<Course>();
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
-                conn.Open();
-                string query = @"SELECT c.*
-                         FROM Courses c
-                         JOIN StudentCourse sc ON c.CourseID = sc.CourseID
-                         WHERE sc.UserID = @userID";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@userID", userId);
+                string query = @"
+            SELECT c.*
+            FROM Courses c
+            JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
+            WHERE ce.StudentID = @StudentID";
 
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@StudentID", studentId);
+
+                conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Course course = new Course
+                    courses.Add(new Course
                     {
-                        CourseID = Convert.ToInt32(reader["CourseID"]),
+                        CourseID = (int)reader["CourseID"],
+                        CourseCode = reader["CourseCode"].ToString(),
                         CourseName = reader["CourseName"].ToString(),
-                        // thêm các cột khác nếu có
-                    };
-                    courses.Add(course);
+                        TeacherID = (int)reader["TeacherID"],
+                        StartDate = (DateTime)reader["StartDate"],
+                        EndDate = (DateTime)reader["EndDate"]
+                    });
                 }
             }
             return courses;
@@ -169,6 +171,21 @@ namespace CNPM.DAL
                 return rowsAffected > 0;
             }
         }
+        //Đảm bảo StudentID và TeacherID luôn là UserID của tài khoản xác định
+        public bool UserExistsWithRole(int userId, string role)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT COUNT(*) FROM Users WHERE UserID = @UserID AND Role = @Role";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UserID", userId);
+                cmd.Parameters.AddWithValue("@Role", role);
+
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+        }
 
 
         public List<EnrolledStudent> GetEnrolledStudents(int courseId)
@@ -215,6 +232,41 @@ namespace CNPM.DAL
                 int rowsAffected = cmd.ExecuteNonQuery();
                 return rowsAffected > 0;
             }
+        }
+
+
+
+        //Lấy điểm của sinh viên theo khóa học
+        public List<CourseGrade> GetGradesByStudent(int studentId)
+        {
+            List<CourseGrade> grades = new List<CourseGrade>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT c.CourseName, g.Score, u.FullName AS GradedBy
+            FROM CourseEnrollments ce
+            JOIN Courses c ON ce.CourseID = c.CourseID
+            LEFT JOIN Grades g ON g.CourseID = ce.CourseID AND g.StudentID = ce.StudentID
+            LEFT JOIN Users u ON g.TeacherID = u.UserID
+            WHERE ce.StudentID = @StudentID";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@StudentID", studentId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    grades.Add(new CourseGrade
+                    {
+                        CourseName = reader["CourseName"].ToString(),
+                        Score = reader["Score"] == DBNull.Value ? (float?)null : Convert.ToSingle(reader["Score"]),
+                        GradedBy = reader["GradedBy"] == DBNull.Value ? "Chưa có" : reader["GradedBy"].ToString()
+                    });
+                }
+            }
+            return grades;
         }
     }
 }

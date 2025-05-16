@@ -17,7 +17,7 @@ namespace CNPM.DAL
             {
                 using (SqlConnection conn = DatabaseHelper.GetConnection())
                 {
-                    string query = "SELECT UserID, Username, Role, FullName, Email FROM Users";
+                    string query = "SELECT UserID, Username, Role, FullName, Email, QueQuan, SoDienThoai FROM Users";
                     SqlCommand cmd = new SqlCommand(query, conn);
 
                     conn.Open();
@@ -256,11 +256,10 @@ namespace CNPM.DAL
                     conn.Open();
                     string query = @"
                         SELECT c.CourseID, c.CourseName, u.FullName AS Teacher, 
-                               c.MaxEnrollment - ISNULL(e.NumEnrolled,0) AS SlotsLeft,
-                               c.RegistrationDeadline,
+                               c.MaxEnrollment - ISNULL(e.NumEnrolled,0) AS SlotsLeft, EndDate,
                                CASE 
                                    WHEN ce.EnrollmentID IS NOT NULL THEN N'Đã đăng ký'
-                                   WHEN c.RegistrationDeadline < GETDATE() THEN N'Hết hạn'
+                                   WHEN c.EndDate < GETDATE() THEN N'Hết hạn'
                                    WHEN c.MaxEnrollment - ISNULL(e.NumEnrolled,0) <= 0 THEN N'Hết chỗ'
                                    ELSE N'Chưa đăng ký'
                                END AS Status

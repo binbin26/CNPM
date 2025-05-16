@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CNPM.BLL;
 using CNPM.Models.Courses;
@@ -23,17 +17,8 @@ namespace CNPM.Forms.Student
         {
             _username = username;
             InitializeComponent();
-            LoadStudentCourses();
             dtGDanhSach.CellClick += dtGDanhSach_CellClick;
-        }
-
-
-        private void LoadAssignments(int courseID)
-        {
-            AssignmentBLL assignmentBLL = new AssignmentBLL();
-            List<Assignment> assignments = assignmentBLL.GetAssignmentsByCourse(courseID);
-
-            dtGDanhSach.DataSource = assignments; 
+            LoadStudentCourses();
         }
 
         private void ShowAssignments(int courseID)
@@ -48,7 +33,7 @@ namespace CNPM.Forms.Student
 
         private void dtGDanhSach_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && dtGDanhSach.Columns[e.ColumnIndex].Name == "btnXemBaiTap")
+            if (e.RowIndex >= 0 && dtGDanhSach.Columns[e.ColumnIndex].Name == "btnXemTaiLieu")
             {
                 int courseId = Convert.ToInt32(dtGDanhSach.Rows[e.RowIndex].Cells["CourseID"].Value);
                 ShowAssignments(courseId);
@@ -69,14 +54,14 @@ namespace CNPM.Forms.Student
             dtGDanhSach.DataSource = enrolledCourses;
 
             // Thêm cột nút nếu chưa có
-            if (!dtGDanhSach.Columns.Contains("btnXemBaiTap"))
+            if (!dtGDanhSach.Columns.Contains("btnXemTaiLieu"))
             {
                 DataGridViewButtonColumn btnXem = new DataGridViewButtonColumn
                 {
                     HeaderText = "Bài tập",
-                    Text = "Xem bài tập",
+                    Text = "Xem tài liệu",
                     UseColumnTextForButtonValue = true,
-                    Name = "btnXemBaiTap",
+                    Name = "btnXemTaiLieu",
                     Width = 120
                 };
                 dtGDanhSach.Columns.Add(btnXem);
