@@ -467,6 +467,8 @@ namespace CNPM.Forms.Admin
                 selectedAccountId = user.UserID;
                 txtEditUsername.Text = user.Username;
                 cmbEditRole.SelectedItem = user.Role;
+                txtEditQueQuan.Text = user.QueQuan;
+                txtEditSoDienThoai.Text = user.SoDienThoai;
             }
         }
 
@@ -502,6 +504,20 @@ namespace CNPM.Forms.Admin
                     return;
                 }
 
+                if (string.IsNullOrWhiteSpace(txtNewQueQuan.Text))
+                {
+                    MessageBox.Show("Please enter quê quán", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtNewQueQuan.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(txtNewSoDienThoai.Text))
+                {
+                    MessageBox.Show("Please enter số điện thoại", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtNewSoDienThoai.Focus();
+                    return;
+                }
+
                 var newUser = new User
                 {
                     Username = txtNewUsername.Text.Trim(),
@@ -509,7 +525,9 @@ namespace CNPM.Forms.Admin
                     FullName = txtNewFullName.Text.Trim(),
                     Role = cmbNewRole.SelectedItem.ToString(),
                     Email = $"{txtNewUsername.Text.ToLower().Trim()}@school.com",
-                    IsActive = true
+                    IsActive = true,
+                    QueQuan = txtNewQueQuan.Text.Trim(),
+                    SoDienThoai = txtNewSoDienThoai.Text.Trim()
                 };
 
                 if (_userBLL.AddUser(newUser))
@@ -521,6 +539,8 @@ namespace CNPM.Forms.Admin
                     txtNewUsername.Text = "";
                     txtNewPassword.Text = "";
                     txtNewFullName.Text = "";
+                    txtNewQueQuan.Text = "";
+                    txtNewSoDienThoai.Text = "";
                     cmbNewRole.SelectedIndex = -1;
                 }
             }
@@ -545,6 +565,8 @@ namespace CNPM.Forms.Admin
                 {
                     user.Username = txtEditUsername.Text;
                     user.Role = cmbEditRole.SelectedItem.ToString();
+                    user.QueQuan = txtEditQueQuan.Text;
+                    user.SoDienThoai = txtEditSoDienThoai.Text;
 
                     if (_userBLL.UpdateUser(user))
                     {
