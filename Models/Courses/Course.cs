@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CNPM.Forms.Teacher;
 
 namespace CNPM.Models.Courses
 {
@@ -16,5 +17,6 @@ namespace CNPM.Models.Courses
         public DateTime StartDate { get; set; }
         public int MaxEnrollment { get; set; }
         public DateTime RegistrationDeadline { get; set; }
+        public List<SessionData> Sessions { get; set; } = new List<SessionData>();
     }
 }

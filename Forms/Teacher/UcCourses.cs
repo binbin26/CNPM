@@ -20,29 +20,56 @@ namespace CNPM.Forms.Teacher
 
         private void LoadCourses()
         {
-            // Demo data
             List<string> courses = new List<string> { "Lập trình C#", "Cơ sở dữ liệu", "Phân tích hệ thống" };
 
-            int index = 0;
+            flowPanelCourses.Controls.Clear();
+
             foreach (var course in courses)
             {
-                Button btn = new Button();
-                btn.Text = course;
-                btn.Width = flowPanelCourses.Width - 25;
-                btn.Height = 60;
-                btn.Tag = index++;
-                btn.Click += Course_Click;
-                flowPanelCourses.Controls.Add(btn);
+                Panel pnl = new Panel
+                {
+                    Height = 60,
+                    Width = flowPanelCourses.Width - 25,
+                    BackColor = Color.LightGray,
+                    Margin = new Padding(5),
+                    Cursor = Cursors.Hand,
+                    Tag = course,
+                };
+
+                Label lbl = new Label
+                {
+                    Text = course,
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Padding = new Padding(10),
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    Tag = course,
+                };
+
+                pnl.Click += Course_Click;
+                lbl.Click += Course_Click;
+
+                pnl.Controls.Add(lbl);
+                flowPanelCourses.Controls.Add(pnl);
             }
         }
 
         private void Course_Click(object sender, EventArgs e)
         {
-            Button btn = sender as Button;
+            Control ctrl = sender as Control;
+            string courseName = ctrl?.Tag as string ?? ctrl?.Parent?.Tag as string;
+
+            if (string.IsNullOrEmpty(courseName))
+            {
+                MessageBox.Show("Không lấy được tên khóa học.");
+                return;
+            }
+
             panelCourseDetail.Controls.Clear();
 
             var courseDetail = new UcCourseDetail();
             courseDetail.Dock = DockStyle.Fill;
+            courseDetail.CourseName = courseName; // truyền tên khóa học lấy được
             panelCourseDetail.Controls.Add(courseDetail);
         }
     }

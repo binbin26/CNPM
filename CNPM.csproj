@@ -230,6 +230,7 @@
     <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Teacher\Class.cs" />
     <Compile Include="Forms\Teacher\FormChooseAssignmentType.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -259,6 +260,12 @@
     </Compile>
     <Compile Include="Forms\Teacher\FormViewQuestions.Designer.cs">
       <DependentUpon>FormViewQuestions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Teacher\FormViewStudentQuiz.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\FormViewStudentQuiz.Designer.cs">
+      <DependentUpon>FormViewStudentQuiz.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\MainForm.cs">
       <SubType>Form</SubType>
@@ -347,6 +354,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Teacher\UcCourses.resx">
+      <DependentUpon>UcCourses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

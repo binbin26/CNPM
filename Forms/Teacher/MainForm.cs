@@ -20,9 +20,10 @@ namespace CNPM.Forms.Teacher
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            var courseTab = new UcCourses();
+            /*var courseTab = new UcCourses();
             courseTab.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(courseTab);
+            panelContent.Controls.Add(courseTab);*/
+
         }
 
         private void btnCourses_Click(object sender, EventArgs e)

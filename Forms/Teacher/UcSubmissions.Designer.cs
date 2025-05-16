@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
 {
@@ -6,7 +7,8 @@ namespace CNPM.Forms.Teacher
     {
         private System.ComponentModel.IContainer components = null;
         private FlowLayoutPanel flowPanelCourses;
-        private FlowLayoutPanel panelAssignments;
+        private FlowLayoutPanel flowPanelMCQAssignments;   // Bài tập trắc nghiệm
+        private FlowLayoutPanel flowPanelEssayAssignments; // Bài tập tự luận
         private FlowLayoutPanel panelStudents;
 
         protected override void Dispose(bool disposing)
@@ -18,34 +20,47 @@ namespace CNPM.Forms.Teacher
         private void InitializeComponent()
         {
             this.flowPanelCourses = new FlowLayoutPanel();
-            this.panelAssignments = new FlowLayoutPanel();
+            this.flowPanelMCQAssignments = new FlowLayoutPanel();
+            this.flowPanelEssayAssignments = new FlowLayoutPanel();
             this.panelStudents = new FlowLayoutPanel();
 
             // flowPanelCourses
             this.flowPanelCourses.Dock = DockStyle.Left;
             this.flowPanelCourses.Width = 200;
             this.flowPanelCourses.AutoScroll = true;
-            this.flowPanelCourses.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.flowPanelCourses.BackColor = Color.LightSteelBlue;
             this.flowPanelCourses.FlowDirection = FlowDirection.TopDown;
             this.flowPanelCourses.WrapContents = false;
 
-            // panelAssignments
-            this.panelAssignments.Dock = DockStyle.Left;
-            this.panelAssignments.Width = 250;
-            this.panelAssignments.AutoScroll = true;
-            this.panelAssignments.BackColor = System.Drawing.Color.WhiteSmoke;
+            // Cấu hình flowPanelMCQAssignments
+            this.flowPanelMCQAssignments.Dock = DockStyle.Left;
+            this.flowPanelMCQAssignments.Width = 250;
+            this.flowPanelMCQAssignments.AutoScroll = true;
+            this.flowPanelMCQAssignments.BackColor = Color.LightYellow;
+            this.flowPanelMCQAssignments.FlowDirection = FlowDirection.TopDown;
+            this.flowPanelMCQAssignments.WrapContents = false;
+
+            // Cấu hình flowPanelEssayAssignments
+            this.flowPanelEssayAssignments.Dock = DockStyle.Left;
+            this.flowPanelEssayAssignments.Width = 250;
+            this.flowPanelEssayAssignments.AutoScroll = true;
+            this.flowPanelEssayAssignments.BackColor = Color.LightPink;
+            this.flowPanelEssayAssignments.FlowDirection = FlowDirection.TopDown;
+            this.flowPanelEssayAssignments.WrapContents = false;
 
             // panelStudents
             this.panelStudents.Dock = DockStyle.Fill;
             this.panelStudents.AutoScroll = true;
-            this.panelStudents.BackColor = System.Drawing.Color.White;
+            this.panelStudents.BackColor = Color.White;
 
-            // UcSubmissions
+            // Add controls
             this.Controls.Add(this.panelStudents);
-            this.Controls.Add(this.panelAssignments);
+            this.Controls.Add(this.flowPanelEssayAssignments);
+            this.Controls.Add(this.flowPanelMCQAssignments);
             this.Controls.Add(this.flowPanelCourses);
+
             this.Name = "UcSubmissions";
-            this.Size = new System.Drawing.Size(800, 600);
+            this.Size = new Size(800, 600);
         }
     }
 }
