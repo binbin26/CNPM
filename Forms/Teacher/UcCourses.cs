@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
@@ -69,7 +64,7 @@ namespace CNPM.Forms.Teacher
 
             var courseDetail = new UcCourseDetail();
             courseDetail.Dock = DockStyle.Fill;
-            courseDetail.CourseName = courseName; // truyền tên khóa học lấy được
+            courseDetail.CourseName = courseName;
             panelCourseDetail.Controls.Add(courseDetail);
         }
     }

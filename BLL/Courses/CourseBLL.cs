@@ -20,6 +20,10 @@ namespace CNPM.BLL
             return _courseDAL.GetAllCourses().Where(c => c.EndDate > DateTime.Now).ToList();
         }
 
+        public string RegisterStudentToCourse(int studentId, int courseId)
+        {
+            return _courseDAL.RegisterCourse(studentId, courseId);
+        }
         public bool EnrollStudent(int studentID, int courseID)
         {
             // ✅ Đảm bảo StudentID là UserID có Role = 'Student'
@@ -70,6 +74,18 @@ namespace CNPM.BLL
         {
             if (studentId <= 0 || courseId <= 0) return false;
             return _courseDAL.RemoveStudent(studentId, courseId);
+        }
+
+        public List<ViewModel1> GetFormattedGradesByStudent(int studentId)
+        {
+            var grades = _courseDAL.GetGradesByStudent(studentId);
+
+            return grades.Select(g => new ViewModel1
+            {
+                CourseName = g.CourseName,
+                ScoreText = g.Score.HasValue ? g.Score.Value.ToString("0.00") : "Chưa có điểm",
+                GradedBy = g.GradedBy
+            }).ToList();
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using CNPM.Models.Courses;
 using CNPM.Models.Users;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Runtime.Remoting.Contexts;
 
 namespace CNPM.DAL
 {

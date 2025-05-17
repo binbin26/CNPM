@@ -15,6 +15,7 @@ namespace CNPM.Forms.Admin
     {
         private readonly UserBLL _userBLL;
         private readonly CourseBLL _courseBLL;
+        private readonly int _courseId;
         private List<User> users;
         private List<Course> courses;
 
@@ -744,7 +745,7 @@ namespace CNPM.Forms.Admin
                 return;
             }
 
-            var enrolledStudentsForm = new EnrolledStudentsForm(selectedCourseId);
+            var enrolledStudentsForm = new EnrolledStudentsForm(_courseId, _courseBLL, _userBLL);
             enrolledStudentsForm.ShowDialog();
         }
 

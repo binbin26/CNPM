@@ -234,7 +234,54 @@ namespace CNPM.DAL
             }
         }
 
+        public string RegisterCourse(int studentId, int courseId)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
 
+                // 1. Kiểm tra đã đăng ký chưa
+                string checkExistQuery = "SELECT COUNT(*) FROM CourseEnrollments WHERE StudentID = @StudentID AND CourseID = @CourseID";
+                using (SqlCommand checkCmd = new SqlCommand(checkExistQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@StudentID", studentId);
+                    checkCmd.Parameters.AddWithValue("@CourseID", courseId);
+                    if ((int)checkCmd.ExecuteScalar() > 0)
+                        return "Đã đăng ký học phần này rồi!";
+                }
+
+                // 2. Kiểm tra số lượng còn trống và hạn đăng ký
+                string checkCourseQuery = "SELECT SlotsLeft, EndDate FROM Courses WHERE CourseID = @CourseID";
+                using (SqlCommand courseCmd = new SqlCommand(checkCourseQuery, conn))
+                {
+                    courseCmd.Parameters.AddWithValue("@CourseID", courseId);
+                    using (SqlDataReader reader = courseCmd.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                            return "Học phần không tồn tại!";
+
+                        int slotsLeft = reader["SlotsLeft"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SlotsLeft"]);
+                        DateTime endDate = reader["EndDate"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["EndDate"]);
+
+                        if (slotsLeft <= 0)
+                            return "Học phần đã hết chỗ!";
+                        if (endDate < DateTime.Now)
+                            return "Đã hết hạn đăng ký học phần này!";
+                    }
+                }
+
+                // 3. Tiến hành đăng ký
+                string insertQuery = "INSERT INTO CourseEnrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";
+                using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@StudentID", studentId);
+                    insertCmd.Parameters.AddWithValue("@CourseID", courseId);
+                    insertCmd.ExecuteNonQuery();
+                }
+
+                return "Đăng ký thành công!";
+            }
+        }
 
         //Lấy điểm của sinh viên theo khóa học
         public List<CourseGrade> GetGradesByStudent(int studentId)

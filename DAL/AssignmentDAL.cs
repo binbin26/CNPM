@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using CNPM.Forms.Teacher;
 using CNPM.Models.Assignments;
-using static CNPM.Forms.Teacher.FormChooseAssignmentType;
 
 namespace CNPM.DAL
 {

@@ -11,7 +11,7 @@ namespace CNPM.Forms.Student
     {
         private int _userId;
         private UserBLL userBLL = new UserBLL();
-
+        private CourseBLL courseBLL = new CourseBLL(new CourseDAL());
         public ucDangKyHocPhan(int userId)
         {
             _userId = userId;
@@ -36,7 +36,6 @@ namespace CNPM.Forms.Student
             }
         }
 
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             LoadCourses(txtSearch.Text.Trim());
@@ -49,47 +48,14 @@ namespace CNPM.Forms.Student
                 MessageBox.Show("Vui lòng chọn học phần muốn đăng ký!");
                 return;
             }
+
             var row = dgvCourses.SelectedRows[0];
-            string status = row.Cells["Status"].Value.ToString();
-            if (status != "Chưa đăng ký")
-            {
-                MessageBox.Show("Bạn không thể đăng ký học phần này!");
-                return;
-            }
             int courseId = Convert.ToInt32(row.Cells["CourseID"].Value);
-            int slotsLeft = row.Cells["SlotsLeft"].Value == DBNull.Value
-            ? 0
-            : Convert.ToInt32(row.Cells["SlotsLeft"].Value);
 
-            DateTime deadline = row.Cells["EndDate"].Value == DBNull.Value
-                ? DateTime.MinValue
-                : Convert.ToDateTime(row.Cells["EndDate"].Value);
-
-            if (slotsLeft <= 0)
-            {
-                MessageBox.Show("Học phần đã hết chỗ!");
-                return;
-            }
-            if (deadline < DateTime.Now)
-            {
-                MessageBox.Show("Đã hết hạn đăng ký học phần này!");
-                return;
-            }
-            // Đăng ký
             try
             {
-                using (SqlConnection conn = DatabaseHelper.GetConnection())
-                {
-                    conn.Open();
-                    string insert = "INSERT INTO CourseEnrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";
-                    using (SqlCommand cmd = new SqlCommand(insert, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@StudentID", _userId);
-                        cmd.Parameters.AddWithValue("@CourseID", courseId);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                MessageBox.Show("Đăng ký thành công!");
+                string result = courseBLL.RegisterStudentToCourse(_userId, courseId);
+                MessageBox.Show(result);
                 LoadCourses(txtSearch.Text.Trim());
             }
             catch (Exception ex)
@@ -100,7 +66,6 @@ namespace CNPM.Forms.Student
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            // Đóng UserControl hoặc chuyển về màn hình trước
             this.Parent?.Controls.Remove(this);
         }
     }

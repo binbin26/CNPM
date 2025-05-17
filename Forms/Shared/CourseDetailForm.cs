@@ -1,5 +1,5 @@
 ﻿using CNPM.BLL;
-using Microsoft.Extensions.DependencyInjection;          // ✅ thêm
+using Microsoft.Extensions.DependencyInjection;       
 using System;
 using System.Windows.Forms;
 
@@ -7,7 +7,6 @@ namespace CNPM.Forms.Shared
 {
     public partial class CourseDetailForm : Form
     {
-        // ✅ bỏ khởi tạo trực tiếp, chuyển sang lấy từ DI
         private readonly CourseBLL _courseBLL;
         private readonly IUserContext _userContext;
         private int _courseID;
@@ -15,10 +14,8 @@ namespace CNPM.Forms.Shared
         {
             InitializeComponent();
             _courseID = courseID;
-            // ✅ Lấy các service đã đăng ký trong Program
             _courseBLL = Program.ServiceProvider.GetRequiredService<CourseBLL>();
             _userContext = Program.ServiceProvider.GetRequiredService<IUserContext>();
-
             LoadCourses();
         }
 
@@ -30,8 +27,6 @@ namespace CNPM.Forms.Shared
         {
             int selectedCourseID =
                 (int)dataGridViewCourses.CurrentRow.Cells["CourseID"].Value;
-
-            // ✅ Lấy ID sinh viên từ IUserContext
             int studentID = _userContext.CurrentUser.UserID;
 
             if (_courseBLL.EnrollStudent(studentID, selectedCourseID))

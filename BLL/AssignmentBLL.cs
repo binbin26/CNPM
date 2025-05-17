@@ -1,9 +1,7 @@
 ﻿using CNPM.DAL;
-using CNPM.Forms.Teacher;
 using CNPM.Models.Assignments;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 public class AssignmentBLL
 {
