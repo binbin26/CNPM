@@ -68,7 +68,7 @@ namespace CNPM.Forms.Student
 
         private void btnMenuBaiTap_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucBaiTap(this));
+            LoadUserControl(new ucBaiTap());
         }
 
         private void btnMenuDanhSach_Click(object sender, EventArgs e)

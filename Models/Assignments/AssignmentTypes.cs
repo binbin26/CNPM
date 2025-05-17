@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CNPM.Models.Courses
+namespace CNPM.Models.Assignments
 {
-    class Document
+    public enum AssignmentTypes
     {
+        TracNghiem,
+        TuLuan
     }
 }
+

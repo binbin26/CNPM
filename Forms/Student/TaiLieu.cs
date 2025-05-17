@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CNPM.BLL;
-using CNPM.Models.Courses;
+using CNPM.Models.Assignments;
 
 namespace CNPM.Forms.Student
 {
     public partial class TaiLieu : Form
     {
-        public TaiLieu(List<Assignment> assignments)
+        public TaiLieu(List<Assignments> assignments)
         {
             InitializeComponent();
             dataGridView1.DataSource = assignments; // hoặc gán vào controls phù hợp

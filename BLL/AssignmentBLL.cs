@@ -1,7 +1,9 @@
 ﻿using CNPM.DAL;
-using CNPM.Models.Courses;
+using CNPM.Forms.Teacher;
+using CNPM.Models.Assignments;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 public class AssignmentBLL
 {
@@ -15,8 +17,12 @@ public class AssignmentBLL
     {
 
     }
+    public List<Assignments> GetAssignmentsForStudent(string username)
+    {
+        return _assignmentDAL.GetAssignmentsForStudent(username);
+    }
 
-    public bool AddAssignment(Assignment assignment)
+    public bool AddAssignment(Assignments assignment)
     {
         if (assignment == null) return false;
         if (assignment.CourseID <= 0) return false;
@@ -28,9 +34,9 @@ public class AssignmentBLL
         return _assignmentDAL.AddAssignment(assignment);
     }
 
-    public List<Assignment> GetAssignmentsByCourse(int courseID)
+    public List<Assignments> GetAssignmentsByCourse(int courseID)
     {
-        if (courseID <= 0) return new List<Assignment>();
+        if (courseID <= 0) return new List<Assignments>();
         return _assignmentDAL.GetAssignmentsByCourse(courseID);
     }
 }

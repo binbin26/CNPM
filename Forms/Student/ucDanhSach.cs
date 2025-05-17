@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using CNPM.BLL;
 using CNPM.Models.Courses;
 using CNPM.Models.Users;
+using CNPM.Models.Assignments;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CNPM.Forms.Student
@@ -24,7 +25,7 @@ namespace CNPM.Forms.Student
         private void ShowAssignments(int courseID)
         {
             AssignmentBLL assignmentBLL = new AssignmentBLL();
-            List<Assignment> assignments = assignmentBLL.GetAssignmentsByCourse(courseID);
+            List<Assignments> assignments = assignmentBLL.GetAssignmentsByCourse(courseID);
 
             // Gọi form hiển thị bài tập, hoặc hiển thị ở nơi khác tùy ý bạn
             var frm = new TaiLieu(assignments); // cần tạo form này

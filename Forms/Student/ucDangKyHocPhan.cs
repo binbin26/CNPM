@@ -10,7 +10,6 @@ namespace CNPM.Forms.Student
     public partial class ucDangKyHocPhan : UserControl
     {
         private int _userId;
-        private string _connectionString = "Data Source=.;Initial Catalog=EduMasterDB;Integrated Security=True";
         private UserBLL userBLL = new UserBLL();
 
         public ucDangKyHocPhan(int userId)
