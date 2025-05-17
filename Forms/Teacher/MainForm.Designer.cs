@@ -51,6 +51,7 @@ namespace CNPM.Forms.Teacher
             this.btnSubmissions.TabIndex = 1;
             this.btnSubmissions.Text = "Bài nộp";
             this.btnSubmissions.UseVisualStyleBackColor = false;
+            this.btnSubmissions.Click += new System.EventHandler(this.btnSubmissions_Click);
             // 
             // btnCourses
             // 

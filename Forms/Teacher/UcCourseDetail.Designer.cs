@@ -5,6 +5,7 @@
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Button btnAddSession;
         private System.Windows.Forms.FlowLayoutPanel flowPanelSessions;
+        private System.Windows.Forms.Label lblCourseName;
 
         protected override void Dispose(bool disposing)
         {
@@ -19,7 +20,16 @@
         {
             this.btnAddSession = new System.Windows.Forms.Button();
             this.flowPanelSessions = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblCourseName = new System.Windows.Forms.Label();  // <<< Phải có dòng này khởi tạo Label
             this.SuspendLayout();
+            // 
+            // lblCourseName
+            // 
+            this.lblCourseName.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblCourseName.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblCourseName.Height = 40;
+            this.lblCourseName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblCourseName.Text = "Tên khóa học";
             // 
             // btnAddSession
             // 
@@ -39,6 +49,7 @@
             // 
             this.Controls.Add(this.flowPanelSessions);
             this.Controls.Add(this.btnAddSession);
+            this.Controls.Add(this.lblCourseName);
             this.Name = "UcCourseDetail";
             this.Size = new System.Drawing.Size(550, 600);
             this.ResumeLayout(false);

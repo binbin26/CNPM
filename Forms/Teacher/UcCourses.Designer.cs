@@ -24,16 +24,23 @@
             // flowPanelCourses
             // 
             this.flowPanelCourses.AutoScroll = true;
+            this.flowPanelCourses.BackColor = System.Drawing.Color.White;
             this.flowPanelCourses.Dock = System.Windows.Forms.DockStyle.Left;
-            this.flowPanelCourses.Width = 250;
-            this.flowPanelCourses.BackColor = System.Drawing.Color.LightGray;
             this.flowPanelCourses.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelCourses.Location = new System.Drawing.Point(0, 0);
+            this.flowPanelCourses.Name = "flowPanelCourses";
+            this.flowPanelCourses.Size = new System.Drawing.Size(235, 600);
+            this.flowPanelCourses.TabIndex = 1;
             this.flowPanelCourses.WrapContents = false;
             // 
             // panelCourseDetail
             // 
-            this.panelCourseDetail.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelCourseDetail.BackColor = System.Drawing.Color.White;
+            this.panelCourseDetail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelCourseDetail.Location = new System.Drawing.Point(235, 0);
+            this.panelCourseDetail.Name = "panelCourseDetail";
+            this.panelCourseDetail.Size = new System.Drawing.Size(565, 600);
+            this.panelCourseDetail.TabIndex = 0;
             // 
             // UcCourses
             // 
@@ -42,6 +49,7 @@
             this.Name = "UcCourses";
             this.Size = new System.Drawing.Size(800, 600);
             this.ResumeLayout(false);
+
         }
     }
 }
