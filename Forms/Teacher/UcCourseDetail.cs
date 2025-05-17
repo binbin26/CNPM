@@ -2,6 +2,9 @@
 using System.Windows.Forms;
 using CNPM.DAL;
 using System.Data.SqlClient;
+using CNPM.Models.Courses;
+using System.IO;
+using CNPM.Models.Courses.Sessions;
 
 namespace CNPM.Forms.Teacher
 {
