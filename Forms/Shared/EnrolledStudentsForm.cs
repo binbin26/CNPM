@@ -17,19 +17,19 @@ namespace CNPM.Forms.Shared
         private List<EnrolledStudent> enrolledStudents;
         private List<User> availableStudents;
 
-        public EnrolledStudentsForm(int courseId)
+        public EnrolledStudentsForm(int courseId,CourseBLL courseBLL, UserBLL userBLL)
         {
             InitializeComponent();
             _courseId = courseId;
-            _courseBLL = new CourseBLL(new DAL.CourseDAL());
-            _userBLL = new UserBLL();
+            _courseBLL = courseBLL;
+            _userBLL = userBLL;
             InitializeUI();
             LoadData();
         }
 
         private void InitializeUI()
         {
-            this.Text = "Manage Enrolled Students";
+            this.Text = "Quản lý sinh viên";
             this.Size = new Size(800, 600);
             this.BackColor = Color.PaleTurquoise;
 
@@ -108,11 +108,8 @@ namespace CNPM.Forms.Shared
         {
             try
             {
-                // Load enrolled students
                 enrolledStudents = _courseBLL.GetEnrolledStudents(_courseId);
                 RefreshEnrolledStudentsGrid();
-
-                // Load available students (students who are not enrolled)
                 var allStudents = _userBLL.GetAllUsers().Where(u => u.Role == "Student").ToList();
                 var enrolledStudentIds = enrolledStudents.Select(es => es.StudentID).ToList();
                 availableStudents = allStudents.Where(s => !enrolledStudentIds.Contains(s.UserID)).ToList();
@@ -120,7 +117,7 @@ namespace CNPM.Forms.Shared
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Không thể tải dữ liệu: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -128,7 +125,6 @@ namespace CNPM.Forms.Shared
         {
             enrolledStudentsGrid.Rows.Clear();
             enrolledStudentsGrid.Columns.Clear();
-
             enrolledStudentsGrid.Columns.Add("StudentID", "ID");
             enrolledStudentsGrid.Columns.Add("FullName", "Full Name");
             enrolledStudentsGrid.Columns.Add("Email", "Email");
@@ -147,7 +143,6 @@ namespace CNPM.Forms.Shared
         {
             availableStudentsGrid.Rows.Clear();
             availableStudentsGrid.Columns.Clear();
-
             availableStudentsGrid.Columns.Add("UserID", "ID");
             availableStudentsGrid.Columns.Add("FullName", "Full Name");
             availableStudentsGrid.Columns.Add("Email", "Email");
@@ -166,7 +161,7 @@ namespace CNPM.Forms.Shared
         {
             if (availableStudentsGrid.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select a student to add", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Hãy điền thông tiên Sinh viên cần thêm", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -176,12 +171,12 @@ namespace CNPM.Forms.Shared
                 if (_courseBLL.EnrollStudent(studentId, _courseId))
                 {
                     LoadData();
-                    MessageBox.Show("Student added successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Thêm Sinh viên thành công", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding student: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi thêm Sinh viên: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -189,7 +184,7 @@ namespace CNPM.Forms.Shared
         {
             if (enrolledStudentsGrid.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select a student to remove", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Hãy chọn Sinh viên muốn xóa", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -199,12 +194,12 @@ namespace CNPM.Forms.Shared
                 if (_courseBLL.RemoveStudent(studentId, _courseId))
                 {
                     LoadData();
-                    MessageBox.Show("Student removed successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Xóa Sinh viên thành công", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error removing student: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi xóa Sinh viên: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

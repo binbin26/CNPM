@@ -44,8 +44,6 @@ namespace CNPM.BLL
 
             if (user == null)
                 return false;
-
-            // Ví dụ: logic hash password có thể được thêm ở đây
             return user.Password == password;
         }
 
@@ -56,48 +54,51 @@ namespace CNPM.BLL
 
             if (_userDAL.GetUserByUsername(user.Username) != null)
                 throw new InvalidOperationException("Tên đăng nhập đã tồn tại.");
-
-            // Áp dụng hash mật khẩu
-            user.Password = HashPassword(user.Password);
-
             return _userDAL.AddUser(user);
-        }
-
-        private string HashPassword(string password)
-        {
-            // Thực hiện mã hóa mật khẩu nếu cần
-            return password; // thay bằng thuật toán hash thực tế
         }
 
         public bool AddUser(User user)
         {
             try
             {
-                // Validate user data
-                if (string.IsNullOrWhiteSpace(user.Username) || 
+                if (string.IsNullOrWhiteSpace(user.Username) ||
                     string.IsNullOrWhiteSpace(user.Password) ||
                     string.IsNullOrWhiteSpace(user.Role) ||
                     string.IsNullOrWhiteSpace(user.SoDienThoai) ||
                     string.IsNullOrWhiteSpace(user.QueQuan) ||
                     string.IsNullOrWhiteSpace(user.Email))
                 {
-                    throw new Exception("Required fields cannot be empty");
+                    throw new Exception("Các trường bắt buộc không được để trống.");
                 }
-
-                // Check if username already exists
+                if (!System.Text.RegularExpressions.Regex.IsMatch(user.Username, @"^[a-zA-Z0-9]{5,20}$"))
+                {
+                    throw new Exception("Tên đăng nhập chỉ được chứa chữ cái và số, độ dài từ 5 đến 20 ký tự.");
+                }
+                if (!System.Text.RegularExpressions.Regex.IsMatch(user.Password, @"^(?=.*[A-Za-z])(?=.*\d).{6,}$"))
+                {
+                    throw new Exception("Mật khẩu phải có ít nhất 6 ký tự, bao gồm cả chữ cái và số.");
+                }
+                if (!System.Text.RegularExpressions.Regex.IsMatch(user.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    throw new Exception("Email không hợp lệ.");
+                }
+                if (!System.Text.RegularExpressions.Regex.IsMatch(user.SoDienThoai, @"^\d{10}$"))
+                {
+                    throw new Exception("Số điện thoại phải chứa 10 chữ số.");
+                }
                 var existingUser = _userDAL.GetUserByUsername(user.Username);
                 if (existingUser != null)
                 {
-                    throw new Exception("Username already exists");
+                    throw new Exception("Tên đăng nhập đã tồn tại.");
                 }
-
                 return _userDAL.AddUser(user);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error adding user: " + ex.Message);
+                throw new Exception("Lỗi khi thêm người dùng: " + ex.Message);
             }
         }
+
         public User GetUserByUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -113,14 +114,11 @@ namespace CNPM.BLL
         {
             try
             {
-                // Validate user data
                 if (string.IsNullOrWhiteSpace(user.Username) || 
                     string.IsNullOrWhiteSpace(user.Role))
                 {
                     throw new Exception("Required fields cannot be empty");
                 }
-
-                // Check if user exists
                 var existingUser = _userDAL.GetUserByUsername(user.Username);
                 if (existingUser == null)
                 {
@@ -157,7 +155,6 @@ namespace CNPM.BLL
                 {
                     return false;
                 }
-                // So sánh password trực tiếp vì trong database đang lưu plain text
                 bool isPasswordValid = password == user.PasswordHash;
                 return isPasswordValid;
             }
@@ -172,17 +169,12 @@ namespace CNPM.BLL
         {
             try
             {
-                // Lấy thông tin người dùng từ UserDAL
                 User user = _userDAL.GetUserByUsername(username);
-
-                // Kiểm tra nếu người dùng không tồn tại
                 if (user == null)
                 {
                     Logger.LogError($"Không tìm thấy người dùng với username: {username}");
                     return null;
                 }
-
-                // Trả về vai trò của người dùng
                 return user.Role;
             }
             catch (Exception ex)
@@ -209,7 +201,7 @@ namespace CNPM.BLL
                     return _userDAL.ChangePassword(username, newPassword);
                 }
 
-                return false; // Sai mật khẩu cũ
+                return false;
             }
 
         public DataTable GetAvailableCourses(int userId, string search)
@@ -238,7 +230,6 @@ namespace CNPM.BLL
                 Directory.CreateDirectory(avatarFolderPath);
             }
 
-            // Tạo tên file mới để tránh trùng
             string fileName = $"{username}_{Guid.NewGuid()}{Path.GetExtension(selectedImagePath)}";
             string destinationPath = Path.Combine(avatarFolderPath, fileName);
 
@@ -249,10 +240,7 @@ namespace CNPM.BLL
 
             try
             {
-                // Copy ảnh mới vào thư mục lưu trữ
                 File.Copy(selectedImagePath, destinationPath, true);
-
-                // Xóa ảnh cũ nếu có
                 if (!string.IsNullOrWhiteSpace(oldAvatarPath) && File.Exists(oldAvatarPath))
                 {
                     try
@@ -268,7 +256,6 @@ namespace CNPM.BLL
                         // Không throw lỗi ở đây để tránh gián đoạn quá trình cập nhật
                     }
                 }
-
                 // Cập nhật đường dẫn mới vào DB
                 return _userDAL.UpdateAvatarPath(username, destinationPath);
             }
@@ -278,7 +265,6 @@ namespace CNPM.BLL
                 return false;
             }
         }
-
 
         public int GetUserId(string username)
         {

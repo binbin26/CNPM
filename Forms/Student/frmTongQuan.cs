@@ -1,12 +1,9 @@
 ﻿using CNPM.BLL;
-using CNPM.DAL;
 using CNPM.Forms.Auth;
 using CNPM.Models.Users;
-using FontAwesome.Sharp;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CNPM.Forms.Student
 {
@@ -30,13 +27,11 @@ namespace CNPM.Forms.Student
 
         private void InitCustomComponent()
         {
-            // Khởi tạo panelMain (bên phải)
             panelMain = new Panel();
             panelMain.Dock = DockStyle.Fill;
             panelMain.BackColor = Color.White;
             this.Controls.Add(panelMain);
-            // panelMenu đã được khởi tạo sẵn ở Designer, Dock = Left
-            this.Controls.SetChildIndex(panelMain, 0); // Đảm bảo panelMain nằm bên phải panelMenu
+            this.Controls.SetChildIndex(panelMain, 0); 
 
             // Gán sự kiện cho các nút
             btnTongQuan.Click += btnMenuTongQuan_Click;
@@ -45,7 +40,6 @@ namespace CNPM.Forms.Student
             btnDiem.Click += btnMenuDiemTrungBinh_Click;
             btnDangKy.Click += (s, e) => LoadUserControl(new ucDangKyHocPhan(_userId));
 
-            // Load UserControl mặc định
             LoadUserControl(new ucTongQuan(_username));
                 User user = userBLL.GetUserByUsername(_username);
                 if (user != null)
@@ -68,7 +62,7 @@ namespace CNPM.Forms.Student
 
         private void btnMenuBaiTap_Click(object sender, EventArgs e)
         {
-            LoadUserControl(new ucBaiTap(this));
+            LoadUserControl(new ucBaiTap());
         }
 
         private void btnMenuDanhSach_Click(object sender, EventArgs e)
@@ -89,8 +83,8 @@ namespace CNPM.Forms.Student
         private void btnLogOut_Click(object sender, EventArgs e)
         {
             this.Close();
-            // Mở lại form đăng nhập
             LoginForm loginForm = new LoginForm();
+            loginForm.Show();
         }
     }
 }

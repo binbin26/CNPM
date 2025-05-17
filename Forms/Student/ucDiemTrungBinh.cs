@@ -3,7 +3,6 @@ using CNPM.DAL;
 using CNPM.Models.Users;
 using System.Data;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace CNPM.Forms.Student
 {
@@ -22,6 +21,7 @@ namespace CNPM.Forms.Student
         {
             if (string.IsNullOrWhiteSpace(_username))
                 return;
+
             User user = userBLL.GetUserByUsername(_username);
 
             if (user == null || user.Role != "Student")
@@ -31,20 +31,16 @@ namespace CNPM.Forms.Student
             }
 
             var courseBLL = new CourseBLL(new CourseDAL());
-            var grades = courseBLL.GetGradesByStudent(user.UserID); // dùng đúng UserID từ username
+            var gradeVMs = courseBLL.GetFormattedGradesByStudent(user.UserID);
 
             var dt = new DataTable();
             dt.Columns.Add("Tên khóa học");
             dt.Columns.Add("Điểm");
             dt.Columns.Add("Giáo viên chấm điểm");
 
-            foreach (var grade in grades)
+            foreach (var grade in gradeVMs)
             {
-                dt.Rows.Add(
-                    grade.CourseName,
-                    grade.Score.HasValue ? grade.Score.Value.ToString("0.00") : "Chưa có điểm",
-                    grade.GradedBy
-                );
+                dt.Rows.Add(grade.CourseName, grade.ScoreText, grade.GradedBy);
             }
 
             dtGPoint.DataSource = dt;

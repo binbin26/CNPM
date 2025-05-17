@@ -4,9 +4,6 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using CNPM.BLL;
-using CNPM.Forms.Admin;
-using CNPM.Forms.Teacher;
-
 
 namespace CNPM
 {

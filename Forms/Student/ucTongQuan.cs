@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using CNPM.BLL;
 using System.IO;
 using System.Drawing;
+using CNPM.DAL;
 
 
 namespace CNPM.Forms.Student
@@ -31,8 +32,7 @@ namespace CNPM.Forms.Student
         {
             try
             {
-                string connectionString = "Data Source=.;Initial Catalog=EduMasterDB;Integrated Security=True";
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = DatabaseHelper.GetConnection())
                 {
                     conn.Open();
                     string query = "SELECT * FROM Users WHERE Username = @Username";
@@ -58,7 +58,6 @@ namespace CNPM.Forms.Student
                                 }
                                 else
                                 {
-                                    // Ảnh mặc định nếu file không còn
                                     AvatarPict.Image = new Bitmap(@"C:\Users\baong\OneDrive\Desktop\CNPM\Resources\Avatar\defaultAvatar.png");
                                 }
                             }
@@ -71,8 +70,6 @@ namespace CNPM.Forms.Student
                 MessageBox.Show("Lỗi khi tải thông tin học sinh: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-
 
         private void btnPass_Click(object sender, EventArgs e)
         {
@@ -115,30 +112,22 @@ namespace CNPM.Forms.Student
 
                 try
                 {
-                    Directory.CreateDirectory(saveDirectory); // Tạo thư mục nếu chưa tồn tại
-
-                    // Giải phóng ảnh đang hiển thị (nếu có)
+                    Directory.CreateDirectory(saveDirectory); 
                     if (AvatarPict.Image != null)
                     {
                         AvatarPict.Image.Dispose();
                         AvatarPict.Image = null;
                     }
-                    // Copy ảnh mới
                     File.Copy(selectedFile, savePath, true);
-
-                    // Gọi BLL để cập nhật và xóa ảnh cũ
                     bool updated = userBLL.ChangeUserAvatar(_username, savePath);
 
                     if (updated)
                     {
-                        // Giải phóng ảnh cũ nếu có
                         if (AvatarPict.Image != null)
                         {
                             AvatarPict.Image.Dispose();
                             AvatarPict.Image = null;
                         }
-
-                        // Load ảnh mới mà không giữ file bị khóa
                         AvatarPict.Image = new Bitmap(savePath);
                         MessageBox.Show("Ảnh đại diện đã được cập nhật!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

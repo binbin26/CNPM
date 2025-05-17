@@ -1,13 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CNPM.Models.Courses;
 using System.Windows.Forms;
 using CNPM.DAL;
 using System.Data.SqlClient;

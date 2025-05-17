@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace CNPM.Forms.Teacher
+namespace CNPM.Models.Courses.Sessions
 {
     public class SessionData
     {
@@ -19,12 +15,10 @@ namespace CNPM.Forms.Teacher
         public string FilePath { get; set; }
     }
 
-
     public class AssignmentData
     {
         public string Title { get; set; }
+        public string AssignmentType { get; set; }
         public string FilePath { get; set; }
-        public string AssignmentType { get; set; } // "MultipleChoice" hoặc "Essay"
-                                                   // Nếu bài trắc nghiệm có thể thêm các thông tin câu hỏi ở đây (nếu muốn)
     }
 }
