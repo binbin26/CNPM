@@ -29,7 +29,8 @@ namespace CNPM.DAL
                         CourseName = reader["CourseName"].ToString(),
                         TeacherID = (int)reader["TeacherID"],
                         StartDate = (DateTime)reader["StartDate"],
-                        EndDate = (DateTime)reader["EndDate"]
+                        EndDate = (DateTime)reader["EndDate"],
+                        MaxEnrollment = reader["MaxEnrollment"] != DBNull.Value ? (int)reader["MaxEnrollment"] : 0
                     });
                 }
             }
@@ -85,7 +86,8 @@ namespace CNPM.DAL
                             CourseName = reader["CourseName"].ToString(),
                             TeacherID = (int)reader["TeacherID"],
                             StartDate = (DateTime)reader["StartDate"],
-                            EndDate = (DateTime)reader["EndDate"]
+                            EndDate = (DateTime)reader["EndDate"],
+                            MaxEnrollment = reader["MaxEnrollment"] != DBNull.Value ? (int)reader["MaxEnrollment"] : 0
                         });
                     }
                 }
@@ -117,7 +119,8 @@ namespace CNPM.DAL
                         CourseName = reader["CourseName"].ToString(),
                         TeacherID = (int)reader["TeacherID"],
                         StartDate = (DateTime)reader["StartDate"],
-                        EndDate = (DateTime)reader["EndDate"]
+                        EndDate = (DateTime)reader["EndDate"],
+                        MaxEnrollment = reader["MaxEnrollment"] != DBNull.Value ? (int)reader["MaxEnrollment"] : 0
                     });
                 }
             }
@@ -145,7 +148,8 @@ namespace CNPM.DAL
                         CourseName = reader["CourseName"].ToString(),
                         TeacherID = (int)reader["TeacherID"],
                         StartDate = (DateTime)reader["StartDate"],
-                        EndDate = (DateTime)reader["EndDate"]
+                        EndDate = (DateTime)reader["EndDate"],
+                        MaxEnrollment = reader["MaxEnrollment"] != DBNull.Value ? (int)reader["MaxEnrollment"] : 0
                     };
                 }
                 return null;
