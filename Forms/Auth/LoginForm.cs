@@ -27,6 +27,7 @@ namespace CNPM.Forms.Auth
 
                 if (_userBLL.ValidateLogin(username, password))
                 {
+                    int userId = _userBLL.GetUserId(username);
                     // Get user role
                     string role = _userBLL.GetUserRole(username); // Implement this method in UserBLL
                     MessageBox.Show("Đăng nhập thành công!");
@@ -39,10 +40,9 @@ namespace CNPM.Forms.Auth
                             nextForm = new AdminForm();
                             break;
                         case "Teacher":
-                            nextForm = new MainForm();
+                            nextForm = new TeacherForm(userId);
                             break;
                         case "Student":
-                            int userId = _userBLL.GetUserId(username); // Lấy userId của người dùng
                             nextForm = new frmTongQuan(userId, username);
                             break;
                         default:

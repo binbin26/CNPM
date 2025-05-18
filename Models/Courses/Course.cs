@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CNPM.Forms.Teacher;
+using CNPM.Models.Courses.Sessions;
 
 namespace CNPM.Models.Courses
 {

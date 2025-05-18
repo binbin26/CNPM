@@ -5,31 +5,31 @@ namespace CNPM.Forms.Teacher
 {
     public partial class FormSetupQuiz : Form
     {
-        public int QuestionCount { get; private set; }
-        public int Duration { get; private set; }
+        private int SessionID, CourseID;
 
-        public FormSetupQuiz()
+        public FormSetupQuiz(int sessionId, int courseId)
         {
             InitializeComponent();
+            SessionID = sessionId;
+            CourseID = courseId;
         }
 
-        private void btnNext_Click(object sender, EventArgs e)
+        private void btnConfirm_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(txtQuestionCount.Text, out int qCount) || qCount <= 0)
+            if (!int.TryParse(txtQuestionCount.Text, out int count) || count <= 0)
             {
-                MessageBox.Show("Số câu hỏi không hợp lệ.");
+                MessageBox.Show("Số câu hỏi không hợp lệ");
                 return;
             }
-
             if (!int.TryParse(txtDuration.Text, out int duration) || duration <= 0)
             {
-                MessageBox.Show("Thời lượng không hợp lệ.");
+                MessageBox.Show("Thời lượng không hợp lệ");
                 return;
             }
 
-            QuestionCount = qCount;
-            Duration = duration;
-            DialogResult = DialogResult.OK;
+            var create = new FormCreateQuizQuestions(count, duration, SessionID, CourseID);
+            create.ShowDialog();
+            this.Close();
         }
     }
 }

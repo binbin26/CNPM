@@ -1,57 +1,46 @@
-﻿namespace CNPM.Forms.Teacher
+﻿using System.Windows.Forms;
+using System;
+using System.Drawing;
+
+namespace CNPM.Forms.Teacher
 {
     partial class UcCourseDetail
     {
         private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.Button btnAddSession;
-        private System.Windows.Forms.FlowLayoutPanel flowPanelSessions;
-        private System.Windows.Forms.Label lblCourseName;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        private Label lblCourseName;
+        private Button btnAddSession;
+        private FlowLayoutPanel flowPanelSessions;
 
         private void InitializeComponent()
         {
-            this.btnAddSession = new System.Windows.Forms.Button();
-            this.flowPanelSessions = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblCourseName = new System.Windows.Forms.Label();  // <<< Phải có dòng này khởi tạo Label
+            this.lblCourseName = new Label();
+            this.btnAddSession = new Button();
+            this.flowPanelSessions = new FlowLayoutPanel();
             this.SuspendLayout();
-            // 
+
             // lblCourseName
-            // 
-            this.lblCourseName.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblCourseName.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblCourseName.Dock = DockStyle.Top;
             this.lblCourseName.Height = 40;
-            this.lblCourseName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblCourseName.Text = "Tên khóa học";
-            // 
+            this.lblCourseName.TextAlign = ContentAlignment.MiddleCenter;
+            this.lblCourseName.Font = new System.Drawing.Font("Segoe UI", 14, FontStyle.Bold);
+
             // btnAddSession
-            // 
-            this.btnAddSession.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnAddSession.Dock = DockStyle.Top;
             this.btnAddSession.Height = 40;
             this.btnAddSession.Text = "Thêm buổi học";
-            this.btnAddSession.Click += new System.EventHandler(this.btnAddSession_Click);
-            // 
+            this.btnAddSession.Click += new EventHandler(this.btnAddSession_Click);
+
             // flowPanelSessions
-            // 
-            this.flowPanelSessions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowPanelSessions.Dock = DockStyle.Fill;
             this.flowPanelSessions.AutoScroll = true;
-            this.flowPanelSessions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelSessions.FlowDirection = FlowDirection.TopDown;
             this.flowPanelSessions.WrapContents = false;
-            // 
+
             // UcCourseDetail
-            // 
             this.Controls.Add(this.flowPanelSessions);
             this.Controls.Add(this.btnAddSession);
             this.Controls.Add(this.lblCourseName);
-            this.Name = "UcCourseDetail";
-            this.Size = new System.Drawing.Size(550, 600);
+            this.Size = new System.Drawing.Size(600, 600);
             this.ResumeLayout(false);
         }
     }

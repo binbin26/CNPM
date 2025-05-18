@@ -4,6 +4,8 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using CNPM.BLL;
+using CNPM.Forms.Teacher;
+using CNPM.Models.Users;
 
 namespace CNPM
 {
@@ -25,7 +27,7 @@ namespace CNPM
                 MessageBox.Show("Không thể kết nối đến database!");
                 return;
             }
-            Application.Run(new MainForm());
+            Application.Run(new LoginForm());
 
         }
         // ✅ Thêm method để đăng ký các dịch vụ

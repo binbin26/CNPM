@@ -243,11 +243,11 @@
     <Compile Include="Forms\Teacher\FormViewStudentQuiz.Designer.cs">
       <DependentUpon>FormViewStudentQuiz.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\MainForm.cs">
+    <Compile Include="Forms\Teacher\TeacherForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Forms\Teacher\TeacherForm.Designer.cs">
+      <DependentUpon>TeacherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\Question.cs" />
     <Compile Include="Forms\Teacher\UcCourseDetail.cs">
@@ -261,6 +261,12 @@
     </Compile>
     <Compile Include="Forms\Teacher\UcCourses.Designer.cs">
       <DependentUpon>UcCourses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Teacher\UcProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\UcProfile.Designer.cs">
+      <DependentUpon>UcProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\UcQuestionCreator.cs">
       <SubType>UserControl</SubType>
@@ -327,11 +333,14 @@
     <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
       <DependentUpon>FormSetupQuiz.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Teacher\TeacherForm.resx">
+      <DependentUpon>TeacherForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\UcCourses.resx">
       <DependentUpon>UcCourses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Teacher\UcSubmissions.resx">
+      <DependentUpon>UcSubmissions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
