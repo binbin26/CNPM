@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using CNPM.DAL;
-using CNPM.Models.Courses;
-using NLog.Targets;
+using CNPM.Models.Courses.Sessions;
 
 namespace CNPM.Forms.Teacher
 {

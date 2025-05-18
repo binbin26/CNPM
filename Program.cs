@@ -25,7 +25,7 @@ namespace CNPM
                 MessageBox.Show("Không thể kết nối đến database!");
                 return;
             }
-            Application.Run(new MainForm());
+            Application.Run(new LoginForm());
 
         }
         // ✅ Thêm method để đăng ký các dịch vụ
