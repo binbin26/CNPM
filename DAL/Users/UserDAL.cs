@@ -3,7 +3,7 @@ using CNPM.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data; // Thêm namespace này để sử dụng SqlTransaction
+using System.Data;
 
 
 namespace CNPM.DAL
@@ -305,6 +305,68 @@ namespace CNPM.DAL
                 }
             }
         }
+
+        //Report 1
+        public List<StudentProgressDTO> GetProgressByUsername(string username)
+        {
+            List<StudentProgressDTO> result = new List<StudentProgressDTO>();
+
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT 
+                c.CourseName,
+                ISNULL(total.TotalAssignments, 0) AS TotalAssignments,
+                ISNULL(sub.SubmittedAssignments, 0) AS SubmittedAssignments,
+                g.Score AS Grade
+            FROM Users u
+            INNER JOIN CourseEnrollments ce ON u.UserID = ce.StudentID
+            INNER JOIN Courses c ON ce.CourseID = c.CourseID
+            LEFT JOIN (
+                SELECT a.CourseID, COUNT(*) AS TotalAssignments
+                FROM Assignments a
+                GROUP BY a.CourseID
+            ) total ON c.CourseID = total.CourseID
+            LEFT JOIN (
+                SELECT a.CourseID, ss.StudentID, COUNT(*) AS SubmittedAssignments
+                FROM StudentSubmissions ss
+                INNER JOIN Assignments a ON ss.AssignmentID = a.AssignmentID
+                GROUP BY a.CourseID, ss.StudentID
+            ) sub ON sub.CourseID = c.CourseID AND sub.StudentID = u.UserID
+            LEFT JOIN Grades g ON g.CourseID = c.CourseID AND g.StudentID = u.UserID
+            WHERE u.Username = @Username";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Username", username);
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var total = Convert.ToInt32(reader["TotalAssignments"]);
+                        var submitted = Convert.ToInt32(reader["SubmittedAssignments"]);
+                        double? grade = reader["Grade"] != DBNull.Value ? Convert.ToDouble(reader["Grade"]) : (double?)null;
+                        double completion = total == 0 ? 0 : Math.Round((double)submitted * 100 / total, 2);
+
+                        string status = grade.HasValue
+                            ? (grade >= 8 ? "Hoàn thành tốt" : (grade >= 5 ? "Cần cố gắng" : "Chưa đạt"))
+                            : "Chưa có điểm";
+
+                        result.Add(new StudentProgressDTO
+                        {
+                            CourseName = reader["CourseName"].ToString(),
+                            TotalAssignments = total,
+                            SubmittedAssignments = submitted,
+                            CompletionRate = completion,
+                            Grade = grade,
+                            Status = status
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }
-

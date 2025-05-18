@@ -6,6 +6,7 @@ using CNPM.Models.Courses;
 using CNPM.Models.Users;
 using CNPM.Models.Assignments;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using CNPM.Forms.Teacher;
 
 namespace CNPM.Forms.Student
 {
@@ -67,6 +68,12 @@ namespace CNPM.Forms.Student
                 };
                 dtGDanhSach.Columns.Add(btnXem);
             }
+        }
+
+        private void btnProgress_Click(object sender, EventArgs e)
+        {
+            var frm = new Progress(_username);
+            frm.ShowDialog();
         }
     }
 }

@@ -97,7 +97,7 @@
             // btnPass
             // 
             this.btnPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnPass.Location = new System.Drawing.Point(390, 468);
+            this.btnPass.Location = new System.Drawing.Point(362, 468);
             this.btnPass.Name = "btnPass";
             this.btnPass.Size = new System.Drawing.Size(207, 76);
             this.btnPass.TabIndex = 16;

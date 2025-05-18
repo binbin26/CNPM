@@ -171,6 +171,12 @@
     <Compile Include="Forms\Student\frmTongQuan.Designer.cs">
       <DependentUpon>frmTongQuan.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Student\Progress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\Progress.Designer.cs">
+      <DependentUpon>Progress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Student\TaiLieu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -292,6 +298,7 @@
     <Compile Include="Models\Courses\Course.cs" />
     <Compile Include="Models\EnrolledStudent.cs" />
     <Compile Include="Models\Courses\Session\SessionData.cs" />
+    <Compile Include="Models\Users\StudentProgressDTO.cs" />
     <Compile Include="Models\Users\User.cs" />
     <Compile Include="Models\ViewModel1.cs" />
     <Compile Include="Program.cs" />
@@ -318,6 +325,9 @@
     <EmbeddedResource Include="Forms\Student\frmTongQuan.resx">
       <DependentUpon>frmTongQuan.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\Progress.resx">
+      <DependentUpon>Progress.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\TaiLieu.resx">
       <DependentUpon>TaiLieu.cs</DependentUpon>
     </EmbeddedResource>
@@ -329,6 +339,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucDiemTrungBinh.resx">
       <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
+      <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
       <DependentUpon>FormSetupQuiz.cs</DependentUpon>

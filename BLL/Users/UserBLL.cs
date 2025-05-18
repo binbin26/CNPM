@@ -209,6 +209,11 @@ namespace CNPM.BLL
             return _userDAL.GetAvailableCourses(userId, search);
         }
 
+        public List<StudentProgressDTO> GetStudentProgress(string username)
+        {
+            return _userDAL.GetProgressByUsername(username);
+        }
+
         public bool UpdateUserAvatarPath(string username, string imagePath)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(imagePath))

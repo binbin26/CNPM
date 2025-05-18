@@ -30,6 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.dtGDanhSach = new System.Windows.Forms.DataGridView();
+            this.btnProgress = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dtGDanhSach)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,10 +55,23 @@
             this.dtGDanhSach.Size = new System.Drawing.Size(925, 537);
             this.dtGDanhSach.TabIndex = 1;
             // 
+            // btnProgress
+            // 
+            this.btnProgress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnProgress.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.btnProgress.Location = new System.Drawing.Point(822, 39);
+            this.btnProgress.Name = "btnProgress";
+            this.btnProgress.Size = new System.Drawing.Size(164, 29);
+            this.btnProgress.TabIndex = 2;
+            this.btnProgress.Text = "Tình hình học tập";
+            this.btnProgress.UseVisualStyleBackColor = true;
+            this.btnProgress.Click += new System.EventHandler(this.btnProgress_Click);
+            // 
             // ucDanhSach
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnProgress);
             this.Controls.Add(this.dtGDanhSach);
             this.Controls.Add(this.label1);
             this.Name = "ucDanhSach";
@@ -72,5 +86,6 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dtGDanhSach;
+        private System.Windows.Forms.Button btnProgress;
     }
 }
