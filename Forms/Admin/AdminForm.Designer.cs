@@ -8,6 +8,7 @@ using CNPM.BLL;
 using CNPM.Models.Users;
 using CNPM.Models.Courses;
 using CNPM.Forms.Shared;
+using System.IO;
 
 namespace CNPM.Forms.Admin
 {
@@ -202,7 +203,7 @@ namespace CNPM.Forms.Admin
             lblOldPassword.Font = labelFont;
             infoPanel.Controls.Add(lblOldPassword);
 
-            TextBox txtOldPassword = new TextBox();
+            txtOldPassword = new TextBox();
             txtOldPassword.Location = new Point(25 + labelWidth + 10, yPos);
             txtOldPassword.Size = new Size(110, 20);
             txtOldPassword.Name = "txtOldPassword";
@@ -215,11 +216,12 @@ namespace CNPM.Forms.Admin
             btnChangePassword.Location = new Point(25 + labelWidth + 130, yPos - 2);
             btnChangePassword.Size = new Size(100, 26);
             btnChangePassword.Name = "btnChangePassword";
-            btnChangePassword.BackColor = Color.FromArgb(0, 122, 204); // xanh dương đậm
+            btnChangePassword.BackColor = Color.FromArgb(0, 122, 204);
             btnChangePassword.ForeColor = Color.White;
             btnChangePassword.FlatStyle = FlatStyle.Flat;
             btnChangePassword.FlatAppearance.BorderSize = 0;
             btnChangePassword.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnChangePassword.Click += BtnChangePassword_Click;
             infoPanel.Controls.Add(btnChangePassword);
 
             yPos += spacing;
@@ -230,7 +232,7 @@ namespace CNPM.Forms.Admin
             lblNewPassword.Font = labelFont;
             infoPanel.Controls.Add(lblNewPassword);
 
-            TextBox txtNewPassword = new TextBox();
+            txtNewPassword = new TextBox();
             txtNewPassword.Location = new Point(25 + labelWidth + 10, yPos);
             txtNewPassword.Size = new Size(110, 20);
             txtNewPassword.Name = "txtNewPassword";
@@ -275,6 +277,7 @@ namespace CNPM.Forms.Admin
             btnChangeAvatar.FlatStyle = FlatStyle.Flat;
             btnChangeAvatar.FlatAppearance.BorderSize = 0;
             btnChangeAvatar.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnChangeAvatar.Click += BtnChangeAvatar_Click;
             infoPanel.Controls.Add(btnChangeAvatar);
 
             tabControl.TabPages.Add(personalInfoTab);
@@ -1003,6 +1006,128 @@ namespace CNPM.Forms.Admin
             }
         }
 
+        private void BtnChangePassword_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var admin = _userContext.CurrentUser;
+                if (admin == null)
+                {
+                    MessageBox.Show("User information not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Lấy mật khẩu cũ và mới từ TextBox
+                string oldPassword = txtOldPassword?.Text?.Trim() ?? string.Empty;
+                string newPassword = txtNewPassword?.Text?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(oldPassword))
+                {
+                    MessageBox.Show("Vui lòng nhập mật khẩu cũ", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtOldPassword.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(newPassword))
+                {
+                    MessageBox.Show("Vui lòng nhập mật khẩu mới", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtNewPassword.Focus();
+                    return;
+                }
+
+                // Kiểm tra mật khẩu cũ
+                if (admin.PasswordHash != oldPassword)
+                {
+                    MessageBox.Show("Mật khẩu cũ không đúng", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtOldPassword.Clear();
+                    txtOldPassword.Focus();
+                    return;
+                }
+
+                // Cập nhật mật khẩu mới vào PasswordHash
+                admin.PasswordHash = newPassword;
+                if (_userBLL.UpdateUser(admin))
+                {
+                    MessageBox.Show("Đổi mật khẩu thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txtOldPassword.Clear();
+                    txtNewPassword.Clear();
+                }
+                else
+                {
+                    MessageBox.Show("Không thể đổi mật khẩu", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi đổi mật khẩu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnChangeAvatar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var admin = _userContext.CurrentUser;
+                if (admin == null)
+                {
+                    MessageBox.Show("User information not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                    openFileDialog.Title = "Select an Avatar Image";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFilePath = openFileDialog.FileName;
+                        
+                        // Tạo thư mục Avatars nếu chưa tồn tại
+                        string avatarDirectory = Path.Combine(Application.StartupPath, "Avatars");
+                        if (!Directory.Exists(avatarDirectory))
+                        {
+                            Directory.CreateDirectory(avatarDirectory);
+                        }
+
+                        // Tạo tên file mới dựa trên UserID
+                        string newFileName = $"avatar_{admin.UserID}{Path.GetExtension(selectedFilePath)}";
+                        string newFilePath = Path.Combine(avatarDirectory, newFileName);
+
+                        // Xóa avatar cũ nếu tồn tại
+                        if (!string.IsNullOrEmpty(admin.AvatarPath) && File.Exists(admin.AvatarPath))
+                        {
+                            try
+                            {
+                                File.Delete(admin.AvatarPath);
+                            }
+                            catch { /* Ignore error if can't delete old avatar */ }
+                        }
+
+                        // Copy file mới vào thư mục Avatars
+                        File.Copy(selectedFilePath, newFilePath, true);
+
+                        // Cập nhật đường dẫn avatar trong database
+                        admin.AvatarPath = newFilePath;
+                        if (_userBLL.UpdateUser(admin))
+                        {
+                            // Cập nhật hiển thị avatar
+                            picAvatar.Image = Image.FromFile(newFilePath);
+                            MessageBox.Show("Avatar updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to update avatar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error changing avatar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         // Các controls
         private Label dateLabel;
         private DataGridView accountsDataGridView;
@@ -1031,5 +1156,6 @@ namespace CNPM.Forms.Admin
         private TextBox txtEditQueQuan;
         private TextBox txtEditSoDienThoai;
         private TabControl tabControl;
+        private TextBox txtOldPassword;
     }
 }
