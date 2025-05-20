@@ -19,6 +19,11 @@ CREATE TABLE Users (
     CreatedAt DATETIME DEFAULT GETDATE(),
     IsActive BIT DEFAULT 1  -- 1: Active, 0: Deactivated
 );
+ALTER TABLE Users 
+ADD AvatarPath NVARCHAR(100), 
+	QueQuan NVARCHAR(50), 
+	SoDienThoai NVARCHAR(10);
+
 --Courses
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
@@ -568,3 +573,14 @@ ADD CONSTRAINT FK_Grades_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID
 
 ALTER TABLE Grades
 ADD CONSTRAINT FK_Grades_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE Users 
+ADD AvatarPath NVARCHAR(100), 
+	QueQuan NVARCHAR(50), 
+	SoDienThoai NVARCHAR(10);
+
+ALTER TABLE Sessions
+ALTER COLUMN CreatedBy INT NULL;
+
+ALTER TABLE CourseDocuments
+ALTER COLUMN UploadedBy INT NULL;
