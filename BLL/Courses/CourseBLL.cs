@@ -9,8 +9,13 @@ namespace CNPM.BLL
 {
     public class CourseBLL
     {
-        private readonly CourseDAL _courseDAL = new CourseDAL();
-        // ✅ BỔ SUNG constructor có DI
+        private CourseDAL _courseDAL;
+
+        public CourseBLL()
+        {
+            _courseDAL = new CourseDAL();
+        }
+
         public CourseBLL(CourseDAL courseDAL)
         {
             _courseDAL = courseDAL;

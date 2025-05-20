@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using CNPM.Forms.Admin;
 using CNPM.Forms.Student;
 using CNPM.Forms.Teacher;
+using CNPM.Models.Users;
 
 namespace CNPM.Forms.Auth
 {
@@ -20,29 +21,33 @@ namespace CNPM.Forms.Auth
         private void btnLogin_Click(object sender, EventArgs e)
         {
             UserBLL _userBLL = new UserBLL();
+            CourseBLL _courseBLL = new CourseBLL();
             string username = txtUsername.Text.Trim();
             string password = txtPassword.Text;
             try
             {
-
+                int userId = _userBLL.GetUserId(username);
+                var courses = _courseBLL.GetCoursesByTeacher(userId);
                 if (_userBLL.ValidateLogin(username, password))
                 {
                     // Get user role
-                    string role = _userBLL.GetUserRole(username); // Implement this method in UserBLL
+                    string role = _userBLL.GetUserRole(username);
+                    int courseId = courses[0].CourseID;
+                    string courseName = courses[0].CourseName;
                     MessageBox.Show("Đăng nhập thành công!");
                     Logger.LogInfo($"Đăng nhập thành công với tài khoản: {username}");
                     // Navigate based on role
                     Form nextForm = null;
                     switch (role)
                     {
+
                         case "Admin":
                             nextForm = new AdminForm();
                             break;
                         case "Teacher":
-                            nextForm = new MainForm();
+                            nextForm = new MainForm(courses,userId,username);
                             break;
                         case "Student":
-                            int userId = _userBLL.GetUserId(username); // Lấy userId của người dùng
                             nextForm = new frmTongQuan(userId, username);
                             break;
                         default:

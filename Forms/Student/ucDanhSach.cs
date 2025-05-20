@@ -5,8 +5,6 @@ using CNPM.BLL;
 using CNPM.Models.Courses;
 using CNPM.Models.Users;
 using CNPM.Models.Assignments;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using CNPM.Forms.Teacher;
 
 namespace CNPM.Forms.Student
 {

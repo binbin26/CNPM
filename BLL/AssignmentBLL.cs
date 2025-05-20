@@ -2,6 +2,7 @@
 using CNPM.Models.Assignments;
 using System;
 using System.Collections.Generic;
+using CNPM.Models.Courses;
 
 public class AssignmentBLL
 {
@@ -36,5 +37,22 @@ public class AssignmentBLL
     {
         if (courseID <= 0) return new List<Assignments>();
         return _assignmentDAL.GetAssignmentsByCourse(courseID);
+    }
+
+    public List<ProgressReportDTO> GetCourseProgress(int courseId)
+    {
+        var data = _assignmentDAL.GetProgressByCourse(courseId);
+
+        foreach (var item in data)
+        {
+            item.CompletionRate = item.TotalAssignments == 0 ? 0 :
+                (double)item.SubmittedAssignments / item.TotalAssignments;
+
+            item.Rating = item.AverageGrade >= 8 ? "Giỏi" :
+                          item.AverageGrade >= 6.5 ? "Khá" :
+                          item.AverageGrade >= 5 ? "Trung bình" : "Yếu";
+        }
+
+        return data;
     }
 }

@@ -27,12 +27,14 @@ namespace CNPM.Forms.Teacher
             this.btnSubmissions = new System.Windows.Forms.Button();
             this.btnCourses = new System.Windows.Forms.Button();
             this.panelContent = new System.Windows.Forms.Panel();
+            this.btnThongke = new System.Windows.Forms.Button();
             this.panelTabs.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTabs
             // 
             this.panelTabs.BackColor = System.Drawing.Color.MidnightBlue;
+            this.panelTabs.Controls.Add(this.btnThongke);
             this.panelTabs.Controls.Add(this.btnSubmissions);
             this.panelTabs.Controls.Add(this.btnCourses);
             this.panelTabs.Dock = System.Windows.Forms.DockStyle.Left;
@@ -74,6 +76,18 @@ namespace CNPM.Forms.Teacher
             this.panelContent.Size = new System.Drawing.Size(800, 600);
             this.panelContent.TabIndex = 1;
             // 
+            // btnThongke
+            // 
+            this.btnThongke.BackColor = System.Drawing.Color.DodgerBlue;
+            this.btnThongke.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btnThongke.Location = new System.Drawing.Point(0, 108);
+            this.btnThongke.Name = "btnThongke";
+            this.btnThongke.Size = new System.Drawing.Size(200, 58);
+            this.btnThongke.TabIndex = 2;
+            this.btnThongke.Text = "Thống kê";
+            this.btnThongke.UseVisualStyleBackColor = false;
+            this.btnThongke.Click += new System.EventHandler(this.btnThongke_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -89,5 +103,7 @@ namespace CNPM.Forms.Teacher
             this.ResumeLayout(false);
 
         }
+
+        private Button btnThongke;
     }
 }
