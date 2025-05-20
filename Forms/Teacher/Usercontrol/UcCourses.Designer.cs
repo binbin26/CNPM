@@ -12,18 +12,14 @@ namespace CNPM.Forms.Teacher
             this.btnThongke = new System.Windows.Forms.Button();
             this.flowPanelCourses.SuspendLayout();
             this.SuspendLayout();
-            // 
             // flowPanelCourses
-            // 
-            this.flowPanelCourses.AutoScroll = true;
             this.flowPanelCourses.Controls.Add(this.btnThongke);
-            this.flowPanelCourses.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowPanelCourses.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowPanelCourses.Location = new System.Drawing.Point(0, 0);
-            this.flowPanelCourses.Name = "flowPanelCourses";
-            this.flowPanelCourses.Size = new System.Drawing.Size(800, 600);
-            this.flowPanelCourses.TabIndex = 0;
+            this.flowPanelCourses.Dock = DockStyle.Fill;
+            this.flowPanelCourses.AutoScroll = true;
+            this.flowPanelCourses.FlowDirection = FlowDirection.TopDown;
             this.flowPanelCourses.WrapContents = false;
+            this.flowPanelCourses.Padding = new Padding(10);
+            this.flowPanelCourses.BackColor = System.Drawing.Color.WhiteSmoke;
             // 
             // btnThongke
             // 
@@ -40,12 +36,9 @@ namespace CNPM.Forms.Teacher
             // 
             this.Controls.Add(this.flowPanelCourses);
             this.Name = "UcCourses";
-            this.Size = new System.Drawing.Size(800, 600);
-            this.flowPanelCourses.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(980, 700); // phù hợp với form chính
             this.ResumeLayout(false);
-
         }
-
         private Button btnThongke;
     }
 }

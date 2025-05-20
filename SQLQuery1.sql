@@ -622,3 +622,6 @@ ADD SessionID INT NULL;
 ALTER TABLE CourseDocuments
 ADD CONSTRAINT FK_CourseDocuments_Sessions FOREIGN KEY (SessionID)
 REFERENCES Sessions(SessionID);
+
+ALTER TABLE StudentSubmissions
+ADD AssignmentType NVARCHAR(10) NULL;

@@ -214,16 +214,16 @@
     <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\CourseProgress.cs">
+    <Compile Include="Forms\Teacher\Form\CourseProgress.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\CourseProgress.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\CourseProgress.Designer.cs">
       <DependentUpon>CourseProgress.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormChooseAssignmentType.cs">
+    <Compile Include="Forms\Teacher\Form\FormGradeEssay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormGradeEssay.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\FormGradeEssay.Designer.cs">
       <DependentUpon>FormGradeEssay.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs">
@@ -269,13 +269,13 @@
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\Question.cs" />
-    <Compile Include="Forms\Teacher\SelectCourseForm.cs">
+    <Compile Include="Forms\Teacher\Form\SelectCourseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\SelectCourseForm.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\SelectCourseForm.Designer.cs">
       <DependentUpon>SelectCourseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UcCourseDetail.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourseDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\Teacher\Usercontrol\UcCourseDetail.Designer.cs">
@@ -363,20 +363,14 @@
     <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\CourseProgress.resx">
+    <EmbeddedResource Include="Forms\Teacher\Form\CourseProgress.resx">
       <DependentUpon>CourseProgress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
-      <DependentUpon>FormSetupQuiz.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\Form\TeacherForm.resx">
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\SelectCourseForm.resx">
+    <EmbeddedResource Include="Forms\Teacher\Form\SelectCourseForm.resx">
       <DependentUpon>SelectCourseForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\UcCourses.resx">
-      <DependentUpon>UcCourses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcSubmissions.resx">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
