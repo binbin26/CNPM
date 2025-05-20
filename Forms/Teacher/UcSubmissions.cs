@@ -1,244 +1,180 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using CNPM.DAL;
+using CNPM.Models;
+using CNPM.Models.Courses;
 
 namespace CNPM.Forms.Teacher
 {
     public partial class UcSubmissions : UserControl
     {
-        private Dictionary<string, List<Assignment>> courseAssignments;
+        private int TeacherID;
 
-        public UcSubmissions()
+        public UcSubmissions(int teacherId)
         {
             InitializeComponent();
+            TeacherID = teacherId;
             LoadCourses();
         }
 
         private void LoadCourses()
         {
-            List<string> courses = new List<string> { "Lập trình C#", "Cơ sở dữ liệu" };
+            flowPanelCourses.Controls.Clear();
+            string query = "SELECT CourseID, CourseName FROM Courses WHERE TeacherID = @TeacherID";
 
-            foreach (var course in courses)
+            using (var conn = DatabaseHelper.GetConnection())
+            using (var cmd = new SqlCommand(query, conn))
             {
-                Panel pnl = new Panel
+                cmd.Parameters.AddWithValue("@TeacherID", TeacherID);
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
                 {
-                    Height = 60,
-                    Width = flowPanelCourses.Width - 25,
-                    BackColor = Color.LightGray,
-                    Margin = new Padding(5),
-                    Cursor = Cursors.Hand,
-                    Tag = course
-                };
-
-                Label lbl = new Label
-                {
-                    Text = course,
-                    Dock = DockStyle.Fill,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Padding = new Padding(10),
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                    Tag = course
-                };
-
-                pnl.Click += Course_Click;
-                lbl.Click += Course_Click;
-
-                pnl.Controls.Add(lbl);
-                flowPanelCourses.Controls.Add(pnl);
-            }
-
-            // Demo bài tập với cả 2 loại
-            courseAssignments = new Dictionary<string, List<Assignment>>
-            {
-                {
-                    "Lập trình C#",
-                    new List<Assignment>
+                    while (reader.Read())
                     {
-                        new Assignment("BT Trắc nghiệm 1", AssignmentType.MultipleChoice,
-                            new List<StudentSubmission>
-                            {
-                                new StudentSubmission("Nguyễn Văn A", selectedAnswers: new List<string>{"A","B","C"}),
-                                new StudentSubmission("Trần Thị B", selectedAnswers: new List<string>{"B","B","D"})
-                            },
-                            new List<Question>
-                            {
-                                new Question{Content="Câu 1?", OptionA="A1", OptionB="B1", OptionC="C1", OptionD="D1", CorrectAnswer="A"},
-                                new Question{Content="Câu 2?", OptionA="A2", OptionB="B2", OptionC="C2", OptionD="D2", CorrectAnswer="B"},
-                                new Question{Content="Câu 3?", OptionA="A3", OptionB="B3", OptionC="C3", OptionD="D3", CorrectAnswer="C"}
-                            }
-                        ),
-                        new Assignment("BT Tự luận 1", AssignmentType.Essay,
-                            new List<StudentSubmission>
-                            {
-                                new StudentSubmission("Nguyễn Văn A", @"C:\FakePath\BT_TuLuan_NVA.docx"),
-                                new StudentSubmission("Trần Thị B", @"C:\FakePath\BT_TuLuan_TTB.docx")
-                            })
-                    }
-                },
-                {
-                    "Cơ sở dữ liệu",
-                    new List<Assignment>
-                    {
-                        new Assignment("BT Trắc nghiệm SQL", AssignmentType.MultipleChoice,
-                            new List<StudentSubmission>
-                            {
-                                new StudentSubmission("Lê Văn C", selectedAnswers: new List<string>{"C","B","A"}),
-                                new StudentSubmission("Phạm Thị D", selectedAnswers: new List<string>{"D","C","B"})
-                            },
-                            new List<Question>
-                            {
-                                new Question{Content="Câu SQL 1?", OptionA="A", OptionB="B", OptionC="C", OptionD="D", CorrectAnswer="C"},
-                                new Question{Content="Câu SQL 2?", OptionA="A", OptionB="B", OptionC="C", OptionD="D", CorrectAnswer="B"},
-                                new Question{Content="Câu SQL 3?", OptionA="A", OptionB="B", OptionC="C", OptionD="D", CorrectAnswer="A"}
-                            }
-                        )
+                        int courseId = reader.GetInt32(0);
+                        string courseName = reader.GetString(1);
+
+                        Panel panel = new Panel
+                        {
+                            Height = 60,
+                            Width = flowPanelCourses.Width - 30,
+                            BackColor = Color.LightSteelBlue,
+                            Margin = new Padding(5),
+                            Cursor = Cursors.Hand,
+                            Tag = new Course { CourseID = courseId, CourseName = courseName, TeacherID = TeacherID }
+                        };
+
+                        Label label = new Label
+                        {
+                            Text = courseName,
+                            Dock = DockStyle.Fill,
+                            TextAlign = ContentAlignment.MiddleLeft,
+                            Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                            Padding = new Padding(10)
+                        };
+
+                        panel.Controls.Add(label);
+                        panel.Click += Course_Click;
+                        label.Click += Course_Click;
+
+                        flowPanelCourses.Controls.Add(panel);
                     }
                 }
-            };
+            }
         }
-
         private void Course_Click(object sender, EventArgs e)
         {
-            panelStudents.Controls.Clear();
-            flowPanelMCQAssignments.Controls.Clear();
-            flowPanelEssayAssignments.Controls.Clear();
-
-            Control clicked = sender as Control;
-            string course = clicked.Tag as string ?? clicked.Parent?.Tag as string;
-
-            if (string.IsNullOrEmpty(course))
+            Control control = sender as Control;
+            if (control?.Tag is int cid)
             {
-                MessageBox.Show("Không lấy được tên môn học.");
-                return;
+                LoadAssignments(cid);
             }
-
-            if (courseAssignments.ContainsKey(course))
+            else if (control?.Parent?.Tag is int pid)
             {
-                foreach (var assignment in courseAssignments[course])
-                {
-                    Label lbl = new Label
-                    {
-                        Text = assignment.Title,
-                        Height = 40,
-                        AutoSize = false,
-                        Width = flowPanelMCQAssignments.Width - 25,
-                        Padding = new Padding(10),
-                        Margin = new Padding(5),
-                        BorderStyle = BorderStyle.FixedSingle,
-                        Tag = assignment,
-                        Cursor = Cursors.Hand
-                    };
-
-                    lbl.Click += Assignment_Click;
-
-                    if (assignment.Type == AssignmentType.MultipleChoice)
-                        flowPanelMCQAssignments.Controls.Add(lbl);
-                    else if (assignment.Type == AssignmentType.Essay)
-                        flowPanelEssayAssignments.Controls.Add(lbl);
-                }
+                LoadAssignments(pid);
             }
         }
 
-        private void Assignment_Click(object sender, EventArgs e)
+        private void LoadAssignments(int courseId)
         {
-            panelStudents.Controls.Clear();
+            flowPanelAssignments.Controls.Clear();
+            flowPanelSubmissions.Controls.Clear();
 
-            if ((sender as Control).Tag is Assignment assignment)
+            string query = "SELECT AssignmentID, Title FROM Assignments WHERE CourseID = @CourseID";
+            using (var conn = DatabaseHelper.GetConnection())
+            using (var cmd = new SqlCommand(query, conn))
             {
-                foreach (var sub in assignment.Submissions)
+                cmd.Parameters.AddWithValue("@CourseID", courseId);
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
                 {
-                    Button btn = new Button
+                    while (reader.Read())
                     {
-                        Text = sub.StudentName,
-                        AutoSize = false,
-                        Height = 35,
-                        Width = panelStudents.Width - 25,
-                        Margin = new Padding(5),
-                        Tag = new Tuple<Assignment, StudentSubmission>(assignment, sub),
-                        Cursor = Cursors.Hand
-                    };
+                        int aid = reader.GetInt32(0);
+                        string title = reader.GetString(1);
 
-                    btn.Click += Submission_Click;
-
-                    panelStudents.Controls.Add(btn);
-                }
-            }
-        }
-
-        private void Submission_Click(object sender, EventArgs e)
-        {
-            var tag = (sender as Control).Tag as Tuple<Assignment, StudentSubmission>;
-            if (tag == null) return;
-
-            var assignment = tag.Item1;
-            var submission = tag.Item2;
-
-            if (assignment.Type == AssignmentType.MultipleChoice)
-            {
-                // Mở form xem bài tập trắc nghiệm của sinh viên
-                var formView = new FormViewStudentQuiz(assignment.Questions, submission.SelectedAnswers);
-                formView.ShowDialog();
-            }
-            else if (assignment.Type == AssignmentType.Essay)
-            {
-                // Hiển thị SaveFileDialog để lưu file bài nộp tự luận
-                if (File.Exists(submission.FilePath))
-                {
-                    SaveFileDialog dlg = new SaveFileDialog
-                    {
-                        FileName = Path.GetFileName(submission.FilePath)
-                    };
-                    if (dlg.ShowDialog() == DialogResult.OK)
-                    {
-                        File.Copy(submission.FilePath, dlg.FileName, true);
-                        MessageBox.Show("Đã lưu bài nộp.");
+                        var btn = new Button
+                        {
+                            Text = title,
+                            Height = 40,
+                            Width = 300,
+                            Tag = aid,
+                            Margin = new Padding(5)
+                        };
+                        btn.Click += (s, e) => LoadSubmissions(aid);
+                        flowPanelAssignments.Controls.Add(btn);
                     }
                 }
-                else
+            }
+        }
+
+        private void LoadSubmissions(int assignmentId)
+        {
+            flowPanelSubmissions.Controls.Clear();
+            string query = @"SELECT ss.StudentID, u.FullName, ss.FilePath
+                             FROM StudentSubmissions ss
+                             JOIN Users u ON ss.StudentID = u.UserID
+                             WHERE ss.AssignmentID = @AID";
+
+            using (var conn = DatabaseHelper.GetConnection())
+            using (var cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@AID", assignmentId);
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
                 {
-                    MessageBox.Show("Không tìm thấy file bài nộp.");
+                    while (reader.Read())
+                    {
+                        int sid = reader.GetInt32(0);
+                        string name = reader.GetString(1);
+                        string path = reader.IsDBNull(2) ? null : reader.GetString(2);
+
+                        var btn = new Button
+                        {
+                            Text = name,
+                            Height = 35,
+                            Width = 280,
+                            Tag = new SubmissionModel { StudentID = sid, FilePath = path, AssignmentID = assignmentId }
+                        };
+                        btn.Click += ViewSubmission_Click;
+                        flowPanelSubmissions.Controls.Add(btn);
+                    }
                 }
+            }
+        }
+
+        private void ViewSubmission_Click(object sender, EventArgs e)
+        {
+            var model = (SubmissionModel)((Button)sender).Tag;
+
+            if (!string.IsNullOrEmpty(model.FilePath))
+            {
+                SaveFileDialog dialog = new SaveFileDialog
+                {
+                    FileName = Path.GetFileName(model.FilePath)
+                };
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.Copy(model.FilePath, dialog.FileName, true);
+                    MessageBox.Show("Tải file thành công!");
+                }
+            }
+            else
+            {
+                FormViewStudentQuiz quiz = new FormViewStudentQuiz(model.AssignmentID, model.StudentID);
+                quiz.ShowDialog();
             }
         }
     }
 
-    public enum AssignmentType
+    public class SubmissionModel
     {
-        MultipleChoice,
-        Essay
-    }
-
-    public class Assignment
-    {
-        public string Title { get; set; }
-        public AssignmentType Type { get; set; }
-        public List<StudentSubmission> Submissions { get; set; }
-        public List<Question> Questions { get; set; } // Dùng cho trắc nghiệm
-
-        public Assignment(string title, AssignmentType type, List<StudentSubmission> submissions = null, List<Question> questions = null)
-        {
-            Title = title;
-            Type = type;
-            Submissions = submissions ?? new List<StudentSubmission>();
-            Questions = questions;
-        }
-    }
-
-    public class StudentSubmission
-    {
-        public string StudentName { get; set; }
-        public string FilePath { get; set; } // Dùng cho tự luận
-
-        // Dữ liệu bài làm trắc nghiệm
-        public List<string> SelectedAnswers { get; set; } // Ví dụ: ["A", "C", "B"]
-
-        public StudentSubmission(string name, string path = null, List<string> selectedAnswers = null)
-        {
-            StudentName = name;
-            FilePath = path;
-            SelectedAnswers = selectedAnswers;
-        }
+        public int AssignmentID { get; set; }
+        public int StudentID { get; set; }
+        public string FilePath { get; set; }
     }
 }

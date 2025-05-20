@@ -20,7 +20,7 @@ namespace CNPM.Forms.Teacher
                 var lbl = new Label
                 {
                     AutoSize = true,
-                    Text = $"Câu {index++}: {q.Content}\n" +
+                    Text = $"Câu {index++}: {q.QuestionText}\n" +
                            $"A. {q.OptionA}\n" +
                            $"B. {q.OptionB}\n" +
                            $"C. {q.OptionC}\n" +

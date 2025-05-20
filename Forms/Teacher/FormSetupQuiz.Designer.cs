@@ -1,62 +1,51 @@
-﻿namespace CNPM.Forms.Teacher
+﻿using System;
+using System.Windows.Forms;
+
+namespace CNPM.Forms.Teacher
 {
     partial class FormSetupQuiz
     {
-        private System.ComponentModel.IContainer components = null;
-        private System.Windows.Forms.TextBox txtQuestionCount;
-        private System.Windows.Forms.TextBox txtDuration;
-        private System.Windows.Forms.Button btnNext;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-                components.Dispose();
-            base.Dispose(disposing);
-        }
+        private System.Windows.Forms.TextBox txtQuestionCount, txtDuration;
+        private System.Windows.Forms.Button btnConfirm;
 
         private void InitializeComponent()
         {
-            this.txtQuestionCount = new System.Windows.Forms.TextBox();
-            this.txtDuration = new System.Windows.Forms.TextBox();
-            this.btnNext = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
-            // txtQuestionCount
-            // 
-            this.txtQuestionCount.Location = new System.Drawing.Point(30, 20);
-            this.txtQuestionCount.Name = "txtQuestionCount";
-            this.txtQuestionCount.Size = new System.Drawing.Size(200, 22);
-            this.txtQuestionCount.TabIndex = 0;
-            this.txtQuestionCount.Text = "Số câu hỏi";
-            // 
-            // txtDuration
-            // 
-            this.txtDuration.Location = new System.Drawing.Point(30, 60);
-            this.txtDuration.Name = "txtDuration";
-            this.txtDuration.Size = new System.Drawing.Size(200, 22);
-            this.txtDuration.TabIndex = 1;
-            this.txtDuration.Text = "Thời lượng";
-            // 
-            // btnNext
-            // 
-            this.btnNext.Location = new System.Drawing.Point(30, 100);
-            this.btnNext.Name = "btnNext";
-            this.btnNext.Size = new System.Drawing.Size(100, 30);
-            this.btnNext.TabIndex = 2;
-            this.btnNext.Text = "Tiếp tục";
-            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
-            // 
-            // FormSetupQuiz
-            // 
-            this.ClientSize = new System.Drawing.Size(280, 160);
-            this.Controls.Add(this.txtQuestionCount);
-            this.Controls.Add(this.txtDuration);
-            this.Controls.Add(this.btnNext);
-            this.Name = "FormSetupQuiz";
-            this.Text = "Cài đặt bài trắc nghiệm";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            this.txtQuestionCount = new System.Windows.Forms.TextBox { Text = "Số câu hỏi", Location = new System.Drawing.Point(20, 20), Width = 200, ForeColor = System.Drawing.Color.Gray };
+            this.txtDuration = new System.Windows.Forms.TextBox { Text = "Thời lượng (phút)", Location = new System.Drawing.Point(20, 60), Width = 200, ForeColor = System.Drawing.Color.Gray };
+            this.btnConfirm = new System.Windows.Forms.Button { Text = "Tiếp tục", Location = new System.Drawing.Point(20, 100), Width = 100 };
 
+            this.txtQuestionCount.Enter += RemovePlaceholder;
+            this.txtDuration.Enter += RemovePlaceholder;
+            this.txtQuestionCount.Leave += AddPlaceholder;
+            this.txtDuration.Leave += AddPlaceholder;
+            this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
+
+            this.Controls.Add(txtQuestionCount);
+            this.Controls.Add(txtDuration);
+            this.Controls.Add(btnConfirm);
+            this.ClientSize = new System.Drawing.Size(260, 160);
+            this.Text = "Cài đặt bài trắc nghiệm";
+        }
+
+        private void RemovePlaceholder(object sender, System.EventArgs e)
+        {
+            var tb = sender as System.Windows.Forms.TextBox;
+            if (tb != null && tb.ForeColor == System.Drawing.Color.Gray)
+            {
+                tb.Text = "";
+                tb.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+
+        private void AddPlaceholder(object sender, System.EventArgs e)
+        {
+            var tb = sender as System.Windows.Forms.TextBox;
+            if (tb != null && string.IsNullOrWhiteSpace(tb.Text))
+            {
+                if (tb == txtQuestionCount) tb.Text = "Số câu hỏi";
+                else if (tb == txtDuration) tb.Text = "Thời lượng (phút)";
+                tb.ForeColor = System.Drawing.Color.Gray;
+            }
         }
     }
 }

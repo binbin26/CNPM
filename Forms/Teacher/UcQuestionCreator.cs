@@ -15,23 +15,24 @@ namespace CNPM.Forms.Teacher
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            var question = new Question
+            string correct = txtCorrect.Text.Trim().ToUpper();
+            if (!new[] { "A", "B", "C", "D" }.Contains(correct))
             {
-                Content = txtQuestion.Text,
+                MessageBox.Show("Đáp án phải là A, B, C hoặc D");
+                return;
+            }
+
+            var q = new Question
+            {
+                QuestionText = txtQuestion.Text,
                 OptionA = txtA.Text,
                 OptionB = txtB.Text,
                 OptionC = txtC.Text,
                 OptionD = txtD.Text,
-                CorrectAnswer = txtCorrect.Text.ToUpper()
+                CorrectAnswer = correct
             };
 
-            if (!new[] { "A", "B", "C", "D" }.Contains(question.CorrectAnswer))
-            {
-                MessageBox.Show("Đáp án đúng phải là A, B, C hoặc D.");
-                return;
-            }
-
-            QuestionSubmitted?.Invoke(question);
+            QuestionSubmitted?.Invoke(q);
         }
     }
 }

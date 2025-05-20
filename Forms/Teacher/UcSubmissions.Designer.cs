@@ -5,62 +5,67 @@ namespace CNPM.Forms.Teacher
 {
     partial class UcSubmissions
     {
-        private System.ComponentModel.IContainer components = null;
         private FlowLayoutPanel flowPanelCourses;
-        private FlowLayoutPanel flowPanelMCQAssignments;   // Bài tập trắc nghiệm
-        private FlowLayoutPanel flowPanelEssayAssignments; // Bài tập tự luận
-        private FlowLayoutPanel panelStudents;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null)) components.Dispose();
-            base.Dispose(disposing);
-        }
+        private FlowLayoutPanel flowPanelAssignments;
+        private FlowLayoutPanel flowPanelSubmissions;
+        private Panel panelCourse1;
 
         private void InitializeComponent()
         {
-            this.flowPanelCourses = new FlowLayoutPanel();
-            this.flowPanelMCQAssignments = new FlowLayoutPanel();
-            this.flowPanelEssayAssignments = new FlowLayoutPanel();
-            this.panelStudents = new FlowLayoutPanel();
-
+            this.flowPanelCourses = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowPanelAssignments = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowPanelSubmissions = new System.Windows.Forms.FlowLayoutPanel();
+            this.panelCourse1 = new System.Windows.Forms.Panel();
+            this.SuspendLayout();
+            // 
             // flowPanelCourses
-            this.flowPanelCourses.Dock = DockStyle.Left;
-            this.flowPanelCourses.Width = 200;
+            // 
             this.flowPanelCourses.AutoScroll = true;
-            this.flowPanelCourses.BackColor = Color.LightSteelBlue;
-            this.flowPanelCourses.FlowDirection = FlowDirection.TopDown;
-            this.flowPanelCourses.WrapContents = false;
-
-            // Cấu hình flowPanelMCQAssignments
-            this.flowPanelMCQAssignments.Dock = DockStyle.Left;
-            this.flowPanelMCQAssignments.Width = 250;
-            this.flowPanelMCQAssignments.AutoScroll = true;
-            this.flowPanelMCQAssignments.BackColor = Color.LightYellow;
-            this.flowPanelMCQAssignments.FlowDirection = FlowDirection.TopDown;
-            this.flowPanelMCQAssignments.WrapContents = false;
-
-            // Cấu hình flowPanelEssayAssignments
-            this.flowPanelEssayAssignments.Dock = DockStyle.Left;
-            this.flowPanelEssayAssignments.Width = 250;
-            this.flowPanelEssayAssignments.AutoScroll = true;
-            this.flowPanelEssayAssignments.BackColor = Color.LightPink;
-            this.flowPanelEssayAssignments.FlowDirection = FlowDirection.TopDown;
-            this.flowPanelEssayAssignments.WrapContents = false;
-
-            // panelStudents
-            this.panelStudents.Dock = DockStyle.Fill;
-            this.panelStudents.AutoScroll = true;
-            this.panelStudents.BackColor = Color.White;
-
-            // Add controls
-            this.Controls.Add(this.panelStudents);
-            this.Controls.Add(this.flowPanelEssayAssignments);
-            this.Controls.Add(this.flowPanelMCQAssignments);
+            this.flowPanelCourses.Dock = System.Windows.Forms.DockStyle.Left;
+            this.flowPanelCourses.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelCourses.Location = new System.Drawing.Point(0, 0);
+            this.flowPanelCourses.Name = "flowPanelCourses";
+            this.flowPanelCourses.Size = new System.Drawing.Size(220, 600);
+            this.flowPanelCourses.TabIndex = 2;
+            // 
+            // flowPanelAssignments
+            // 
+            this.flowPanelAssignments.AutoScroll = true;
+            this.flowPanelAssignments.Dock = System.Windows.Forms.DockStyle.Left;
+            this.flowPanelAssignments.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelAssignments.Location = new System.Drawing.Point(220, 0);
+            this.flowPanelAssignments.Name = "flowPanelAssignments";
+            this.flowPanelAssignments.Size = new System.Drawing.Size(280, 600);
+            this.flowPanelAssignments.TabIndex = 1;
+            // 
+            // flowPanelSubmissions
+            // 
+            this.flowPanelSubmissions.AutoScroll = true;
+            this.flowPanelSubmissions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowPanelSubmissions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowPanelSubmissions.Location = new System.Drawing.Point(500, 0);
+            this.flowPanelSubmissions.Name = "flowPanelSubmissions";
+            this.flowPanelSubmissions.Size = new System.Drawing.Size(500, 600);
+            this.flowPanelSubmissions.TabIndex = 0;
+            // 
+            // panelCourse1
+            // 
+            this.panelCourse1.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.panelCourse1.Location = new System.Drawing.Point(0, 0);
+            this.panelCourse1.Name = "panelCourse1";
+            this.panelCourse1.Size = new System.Drawing.Size(300, 60);
+            this.panelCourse1.TabIndex = 0;
+            this.panelCourse1.Tag = 101;
+            // 
+            // UcSubmissions
+            // 
+            this.Controls.Add(this.flowPanelSubmissions);
+            this.Controls.Add(this.flowPanelAssignments);
             this.Controls.Add(this.flowPanelCourses);
-
             this.Name = "UcSubmissions";
-            this.Size = new Size(800, 600);
+            this.Size = new System.Drawing.Size(1000, 600);
+            this.ResumeLayout(false);
+
         }
     }
 }

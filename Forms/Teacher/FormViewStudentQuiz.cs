@@ -1,72 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Data.SqlClient;
 using System.Windows.Forms;
+using CNPM.DAL;
 
 namespace CNPM.Forms.Teacher
 {
     public partial class FormViewStudentQuiz : Form
     {
-        private List<Question> questions;
-        private List<string> selectedAnswers;
+        private int AssignmentID, StudentID;
 
-        public FormViewStudentQuiz(List<Question> questions, List<string> selectedAnswers)
+        public FormViewStudentQuiz(int aid, int sid)
         {
             InitializeComponent();
-
-            this.questions = questions ?? new List<Question>();
-            this.selectedAnswers = selectedAnswers ?? new List<string>();
-
-            LoadQuestions();
+            AssignmentID = aid;
+            StudentID = sid;
+            LoadData();
         }
 
-        private void LoadQuestions()
+        private void LoadData()
         {
-            flowLayoutPanelQuestions.Controls.Clear();
+            var questions = new List<Question>();
+            var answers = new Dictionary<int, string>();
 
-            for (int i = 0; i < questions.Count; i++)
+            using (var conn = DatabaseHelper.GetConnection())
             {
-                var q = questions[i];
-                string studentAnswer = i < selectedAnswers.Count ? selectedAnswers[i] : "";
+                conn.Open();
 
-                var panel = new Panel
+                var q1 = "SELECT QuestionID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer FROM Questions WHERE AssignmentID = @AID";
+                using (var cmd = new SqlCommand(q1, conn))
                 {
-                    Width = flowLayoutPanelQuestions.Width - 25,
-                    Height = 150,
-                    BorderStyle = BorderStyle.FixedSingle,
-                    Margin = new Padding(5)
-                };
-
-                var lblQ = new Label
-                {
-                    Text = $"Câu {i + 1}: {q.Content}",
-                    AutoSize = false,
-                    Width = panel.Width - 20,
-                    Height = 30,
-                    Location = new Point(10, 5),
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold)
-                };
-                panel.Controls.Add(lblQ);
-
-                // Tạo checkbox cho 4 đáp án
-                string[] options = { q.OptionA, q.OptionB, q.OptionC, q.OptionD };
-                char[] optionLabels = { 'A', 'B', 'C', 'D' };
-
-                for (int j = 0; j < 4; j++)
-                {
-                    var chk = new CheckBox
+                    cmd.Parameters.AddWithValue("@AID", AssignmentID);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        Text = $"{optionLabels[j]}. {options[j]}",
-                        AutoSize = true,
-                        Location = new Point(20, 40 + j * 25),
-                        Enabled = false,
-                        Checked = studentAnswer.Equals(optionLabels[j].ToString(), StringComparison.OrdinalIgnoreCase)
-                    };
-
-                    panel.Controls.Add(chk);
+                        while (reader.Read())
+                        {
+                            questions.Add(new Question
+                            {
+                                QuestionID = reader.GetInt32(0),
+                                QuestionText = reader.GetString(1),
+                                OptionA = reader.GetString(2),
+                                OptionB = reader.GetString(3),
+                                OptionC = reader.GetString(4),
+                                OptionD = reader.GetString(5),
+                                CorrectAnswer = reader.GetString(6)
+                            });
+                        }
+                    }
                 }
 
-                flowLayoutPanelQuestions.Controls.Add(panel);
+                var q2 = "SELECT QuestionID, SelectedAnswer FROM StudentAnswers WHERE AssignmentID = @AID AND StudentID = @SID";
+                using (var cmd = new SqlCommand(q2, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AID", AssignmentID);
+                    cmd.Parameters.AddWithValue("@SID", StudentID);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            answers[reader.GetInt32(0)] = reader.GetString(1);
+                        }
+                    }
+                }
+            }
+
+            RenderQuiz(questions, answers);
+        }
+
+        private void RenderQuiz(List<Question> questions, Dictionary<int, string> answers)
+        {
+            flowPanelQuestions.Controls.Clear();
+            int index = 1;
+            foreach (var q in questions)
+            {
+                var lbl = new Label
+                {
+                    Text = $"Câu {index++}: {q.QuestionText}\nA. {q.OptionA}    B. {q.OptionB}\nC. {q.OptionC}    D. {q.OptionD}\nĐáp án đúng: {q.CorrectAnswer}\nSinh viên chọn: {(answers.ContainsKey(q.QuestionID) ? answers[q.QuestionID] : "[Chưa chọn]")}",
+                    AutoSize = true,
+                    Padding = new Padding(10)
+                };
+                flowPanelQuestions.Controls.Add(lbl);
             }
         }
     }

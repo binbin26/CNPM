@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using System;
 using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
@@ -10,19 +10,56 @@ namespace CNPM.Forms.Teacher
 
         private void InitializeComponent()
         {
-            txtQuestion = new TextBox { Text = "Nhập nội dung câu hỏi", Width = 400, Location = new Point(10, 10) };
-            txtA = new TextBox { Text = "Đáp án A", Width = 400, Location = new Point(10, 40) };
-            txtB = new TextBox { Text = "Đáp án B", Width = 400, Location = new Point(10, 70) };
-            txtC = new TextBox { Text = "Đáp án C", Width = 400, Location = new Point(10, 100) };
-            txtD = new TextBox { Text = "Đáp án D", Width = 400, Location = new Point(10, 130) };
-            txtCorrect = new TextBox { Text = "Nhập đáp án đúng (A/B/C/D)", Width = 400, Location = new Point(10, 160) };
-            btnSubmit = new Button { Text = "Xác nhận", Location = new Point(10, 200) };
+            txtQuestion = new TextBox { Text = "Câu hỏi", Width = 500, Top = 10, Left = 10, ForeColor = System.Drawing.Color.Gray };
+            txtA = new TextBox { Text = "Đáp án A", Width = 500, Top = 40, Left = 10, ForeColor = System.Drawing.Color.Gray };
+            txtB = new TextBox { Text = "Đáp án B", Width = 500, Top = 70, Left = 10, ForeColor = System.Drawing.Color.Gray };
+            txtC = new TextBox { Text = "Đáp án C", Width = 500, Top = 100, Left = 10, ForeColor = System.Drawing.Color.Gray };
+            txtD = new TextBox { Text = "Đáp án D", Width = 500, Top = 130, Left = 10, ForeColor = System.Drawing.Color.Gray };
+            txtCorrect = new TextBox { Text = "Đáp án đúng (A/B/C/D)", Width = 500, Top = 160, Left = 10, ForeColor = System.Drawing.Color.Gray };
 
-            btnSubmit.Click += btnSubmit_Click;
+            txtQuestion.Enter += RemovePlaceholder;
+            txtA.Enter += RemovePlaceholder;
+            txtB.Enter += RemovePlaceholder;
+            txtC.Enter += RemovePlaceholder;
+            txtD.Enter += RemovePlaceholder;
+            txtCorrect.Enter += RemovePlaceholder;
 
-            Controls.AddRange(new Control[] { txtQuestion, txtA, txtB, txtC, txtD, txtCorrect, btnSubmit });
+            txtQuestion.Leave += AddPlaceholder;
+            txtA.Leave += AddPlaceholder;
+            txtB.Leave += AddPlaceholder;
+            txtC.Leave += AddPlaceholder;
+            txtD.Leave += AddPlaceholder;
+            txtCorrect.Leave += AddPlaceholder;
 
-            Size = new Size(420, 250);
+            btnSubmit = new Button { Text = "Xác nhận", Top = 200, Left = 10 };
+            btnSubmit.Click += new EventHandler(this.btnSubmit_Click);
+
+            this.Controls.AddRange(new Control[] { txtQuestion, txtA, txtB, txtC, txtD, txtCorrect, btnSubmit });
+            this.Size = new System.Drawing.Size(540, 250);
+        }
+        private void RemovePlaceholder(object sender, EventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb != null && tb.ForeColor == System.Drawing.Color.Gray)
+            {
+                tb.Text = "";
+                tb.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+
+        private void AddPlaceholder(object sender, EventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb != null && string.IsNullOrWhiteSpace(tb.Text))
+            {
+                if (tb == txtQuestion) tb.Text = "Câu hỏi";
+                else if (tb == txtA) tb.Text = "Đáp án A";
+                else if (tb == txtB) tb.Text = "Đáp án B";
+                else if (tb == txtC) tb.Text = "Đáp án C";
+                else if (tb == txtD) tb.Text = "Đáp án D";
+                else if (tb == txtCorrect) tb.Text = "Đáp án đúng (A/B/C/D)";
+                tb.ForeColor = System.Drawing.Color.Gray;
+            }
         }
     }
 }

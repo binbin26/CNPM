@@ -1,43 +1,38 @@
-﻿using System.Windows.Forms;
-using System;
-using System.Drawing;
+﻿using System;
+using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
 {
     partial class FormChooseAssignmentType
     {
-        private System.Windows.Forms.RadioButton rbMultipleChoice;
-        private System.Windows.Forms.RadioButton rbEssay;
-        private System.Windows.Forms.Button btnConfirm;
+        private Button btnMultipleChoice;
+        private Button btnEssay;
 
         private void InitializeComponent()
         {
-            rbMultipleChoice = new RadioButton();
-            rbEssay = new RadioButton();
-            btnConfirm = new Button();
+            this.btnMultipleChoice = new Button();
+            this.btnEssay = new Button();
 
-            rbMultipleChoice.Text = "Bài tập trắc nghiệm";
-            rbMultipleChoice.Size = new Size(200, 20);
-            rbMultipleChoice.Location = new Point(20, 20);
+            this.SuspendLayout();
 
-            rbEssay.Text = "Bài tập tự luận";
-            rbEssay.Size = new Size(200, 30);
-            rbEssay.Location = new Point(20, 50);
+            // btnMultipleChoice
+            this.btnMultipleChoice.Text = "Bài tập trắc nghiệm";
+            this.btnMultipleChoice.Size = new System.Drawing.Size(200, 40);
+            this.btnMultipleChoice.Location = new System.Drawing.Point(30, 20);
+            this.btnMultipleChoice.Click += new EventHandler(this.btnMultipleChoice_Click);
 
-            btnConfirm.Text = "Xác nhận";
-            btnConfirm.Location = new Point(20, 90);
-            btnConfirm.Click += new EventHandler(btnConfirm_Click);
+            // btnEssay
+            this.btnEssay.Text = "Bài tập tự luận";
+            this.btnEssay.Size = new System.Drawing.Size(200, 40);
+            this.btnEssay.Location = new System.Drawing.Point(30, 70);
+            this.btnEssay.Click += new EventHandler(this.btnEssay_Click);
 
-            Controls.Add(rbMultipleChoice);
-            Controls.Add(rbEssay);
-            Controls.Add(btnConfirm);
-
-            Text = "Chọn loại bài tập";
-            Size = new Size(250, 180);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            StartPosition = FormStartPosition.CenterParent;
+            // FormChooseAssignmentType
+            this.ClientSize = new System.Drawing.Size(260, 140);
+            this.Controls.Add(this.btnEssay);
+            this.Controls.Add(this.btnMultipleChoice);
+            this.Text = "Chọn loại bài tập";
+            this.ResumeLayout(false);
         }
     }
 }

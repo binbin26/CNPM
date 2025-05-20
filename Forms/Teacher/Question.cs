@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CNPM.Forms.Teacher
+namespace CNPM
 {
     public class Question
     {
-        public string Content { get; set; }
+        public int QuestionID { get; set; }
+        public string QuestionText { get; set; }
         public string OptionA { get; set; }
         public string OptionB { get; set; }
         public string OptionC { get; set; }
@@ -16,3 +17,4 @@ namespace CNPM.Forms.Teacher
         public string CorrectAnswer { get; set; }
     }
 }
+

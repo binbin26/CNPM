@@ -1,134 +1,66 @@
 ﻿using System;
+using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 using CNPM.DAL;
-using System.Data.SqlClient;
 using CNPM.Models.Courses;
-using System.IO;
-using CNPM.Models.Courses.Sessions;
 
 namespace CNPM.Forms.Teacher
 {
     public partial class UcCourseDetail : UserControl
     {
-        private int sessionCount = 1;
-        public Course CurrentCourse { get; set; }
-        public int TeacherID { get; set; } = 10;
+        private Course currentCourse;
 
-        public UcCourseDetail()
+        public UcCourseDetail(Course course)
         {
             InitializeComponent();
+            currentCourse = course;
+            lblCourseName.Text = course.CourseName;
+            LoadSessions();
         }
 
-        private void btnAddSession_Click(object sender, EventArgs e)
-        {
-            var title = "Buổi " + sessionCount++;
-            var ucSession = new UcSessionItem(title, CurrentCourse.CourseID, TeacherID);
-            ucSession.Width = flowPanelSessions.Width - 30;
-            flowPanelSessions.Controls.Add(ucSession);
-        }
-
-        public void LoadSessionsFromDatabase()
+        private void LoadSessions()
         {
             flowPanelSessions.Controls.Clear();
-            sessionCount = 1;
+            string query = "SELECT SessionID, Title FROM Sessions WHERE CourseID = @CourseID ORDER BY CreatedAt DESC";
 
-            string query = "SELECT Title, FilePath FROM Sessions WHERE CourseID = @CourseID ORDER BY CreatedAt";
             using (var conn = DatabaseHelper.GetConnection())
             using (var cmd = new SqlCommand(query, conn))
             {
-                cmd.Parameters.AddWithValue("@CourseID", CurrentCourse.CourseID);
+                cmd.Parameters.AddWithValue("@CourseID", currentCourse.CourseID);
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        string title = reader.GetString(0);
-                        string relativePath = reader.GetString(1);
-                        string filePath = Path.Combine(Application.StartupPath, relativePath);
+                        int sessionId = reader.GetInt32(0);
+                        string title = reader.GetString(1);
 
-                        if (File.Exists(filePath))
-                        {
-                            SessionData session = LoadSessionFromFileText(filePath);
-                            var uc = new UcSessionItem(session.Title, CurrentCourse.CourseID, TeacherID);
-                            uc.Width = flowPanelSessions.Width - 30;
-                            uc.LoadFromSessionData(session);
-                            flowPanelSessions.Controls.Add(uc);
-
-                            if (session.Title.StartsWith("Buổi "))
-                            {
-                                var parts = session.Title.Split(' ');
-                                if (parts.Length >= 2 && int.TryParse(parts[1], out int n) && n >= sessionCount)
-                                    sessionCount = n + 1;
-                            }
-                        }
+                        var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title);
+                        sessionItem.Width = flowPanelSessions.Width - 25;
+                        flowPanelSessions.Controls.Add(sessionItem);
                     }
                 }
             }
         }
 
-        private SessionData LoadSessionFromFileText(string filePath)
+        private void btnAddSession_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(filePath)) return null;
-            var lines = File.ReadAllLines(filePath);
-            SessionData session = new SessionData();
-            int i = 0;
+            string title = "Buổi " + (flowPanelSessions.Controls.Count + 1);
+            string query = "INSERT INTO Sessions (CourseID, Title, CreatedAt) OUTPUT INSERTED.SessionID VALUES (@CourseID, @Title, GETDATE())";
 
-            if (lines.Length > 0 && lines[0].StartsWith("SessionTitle: "))
-                session.Title = lines[0].Substring("SessionTitle: ".Length).Trim();
-
-            i = 1;
-            while (i < lines.Length && lines[i].Trim() != "AttachedFiles:") i++;
-            i++;
-            while (i < lines.Length && !lines[i].StartsWith("Assignments:"))
+            using (var conn = DatabaseHelper.GetConnection())
+            using (var cmd = new SqlCommand(query, conn))
             {
-                var line = lines[i].Trim();
-                if (line.StartsWith("- "))
-                {
-                    var parts = line.Substring(2).Split('|');
-                    if (parts.Length >= 2)
-                    {
-                        session.AttachedFiles.Add(new FileItem
-                        {
-                            FileName = parts[0],
-                            FilePath = parts[1]
-                        });
-                    }
-                }
-                i++;
+                cmd.Parameters.AddWithValue("@CourseID", currentCourse.CourseID);
+                cmd.Parameters.AddWithValue("@Title", title);
+                conn.Open();
+                int sessionId = (int)cmd.ExecuteScalar();
+
+                var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title);
+                sessionItem.Width = flowPanelSessions.Width - 25;
+                flowPanelSessions.Controls.Add(sessionItem);
             }
-
-            if (i < lines.Length && lines[i].Trim() == "Assignments:")
-            {
-                i++;
-                while (i < lines.Length)
-                {
-                    var line = lines[i].Trim();
-                    if (line.StartsWith("- "))
-                    {
-                        var parts = line.Substring(2).Split('|');
-                        if (parts.Length >= 2)
-                        {
-                            session.Assignments.Add(new AssignmentData
-                            {
-                                Title = parts[0],
-                                AssignmentType = parts[1],
-                                FilePath = parts.Length > 2 ? parts[2] : null
-                            });
-                        }
-                    }
-                    i++;
-                }
-            }
-
-            return session;
-        }
-
-        public void SetCourse(Course course, int teacherId)
-        {
-            this.CurrentCourse = course;
-            this.TeacherID = teacherId;
-            lblCourseName.Text = course.CourseName;
-            LoadSessionsFromDatabase();
         }
     }
 }
