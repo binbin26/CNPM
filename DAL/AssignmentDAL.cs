@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using CNPM.Models.Assignments;
+using CNPM.Models.Courses;
 
 namespace CNPM.DAL
 {
     public class AssignmentDAL
     {
-        // (Nếu bạn đã có DatabaseHelper.GetConnection() thì không cần connectionString riêng)
-
-        /// <summary>
-        /// Thêm bài tập mới vào bảng Assignments
-        /// </summary>
         public bool AddAssignment(Assignments assignment)
         {
             if (assignment == null) return false;
@@ -40,9 +36,6 @@ namespace CNPM.DAL
             }
         }
 
-        /// <summary>
-        /// Lấy toàn bộ bài tập theo CourseID
-        /// </summary>
         public List<Assignments> GetAssignmentsByCourse(int courseID)
         {
             var list = new List<Assignments>();
@@ -65,9 +58,6 @@ namespace CNPM.DAL
             return list;
         }
 
-        /// <summary>
-        /// Lấy tất cả bài tập của các khóa học mà sinh viên (username) đã đăng ký
-        /// </summary>
         public List<Assignments> GetAssignmentsForStudent(string username)
         {
             var list = new List<Assignments>();
@@ -96,9 +86,6 @@ namespace CNPM.DAL
             return list;
         }
 
-        /// <summary>
-        /// Map 1 record SqlDataReader sang đối tượng Assignment
-        /// </summary>
         private Assignments MapReaderToAssignment(SqlDataReader reader)
         {
             return new Assignments
@@ -115,5 +102,64 @@ namespace CNPM.DAL
                 AssignmentType = (AssignmentTypes)reader.GetInt32(reader.GetOrdinal("AssignmentType"))
             };
         }
+        public List<ProgressReportDTO> GetProgressByCourse(int courseId)
+        {
+            var reports = new List<ProgressReportDTO>();
+
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT 
+    u.FullName,
+    ISNULL(a.TotalAssignments, 0) AS TotalAssignments,
+    ISNULL(s.Submitted, 0) AS SubmittedAssignments,
+    ISNULL(g.AverageGrade, 0) AS AverageGrade
+FROM CourseEnrollments ce
+JOIN Users u ON ce.StudentID = u.UserID
+LEFT JOIN (
+    SELECT CourseID, COUNT(*) AS TotalAssignments
+    FROM Assignments
+    WHERE CourseID = @CourseID
+    GROUP BY CourseID
+) a ON a.CourseID = ce.CourseID
+LEFT JOIN (
+    SELECT ss.StudentID, a.CourseID, COUNT(*) AS Submitted
+    FROM StudentSubmissions ss
+    JOIN Assignments a ON ss.AssignmentID = a.AssignmentID
+    WHERE a.CourseID = @CourseID
+    GROUP BY ss.StudentID, a.CourseID
+) s ON s.StudentID = ce.StudentID AND s.CourseID = ce.CourseID
+LEFT JOIN (
+    SELECT g.StudentID, g.CourseID, AVG(g.Score) AS AverageGrade
+    FROM Grades g
+    WHERE g.CourseID = @CourseID
+    GROUP BY g.StudentID, g.CourseID
+) g ON g.StudentID = ce.StudentID AND g.CourseID = ce.CourseID
+WHERE ce.CourseID = @CourseID";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var report = new ProgressReportDTO
+                            {
+                                FullName = reader.GetString(0),
+                                TotalAssignments = reader.GetInt32(1),
+                                SubmittedAssignments = reader.GetInt32(2),
+                                AverageGrade = Convert.ToDouble(reader["AverageGrade"]),
+                            };
+                            reports.Add(report);
+                        }
+                    }
+                }
+            }
+
+            return reports;
+        }
+
     }
 }

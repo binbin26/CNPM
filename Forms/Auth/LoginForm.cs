@@ -45,6 +45,7 @@ namespace CNPM.Forms.Auth
                     Form nextForm = null;
                     switch (role)
                     {
+
                         case "Admin":
                             nextForm = new AdminForm();
                             break;
