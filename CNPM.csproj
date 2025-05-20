@@ -213,83 +213,89 @@
     <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormChooseAssignmentType.cs">
+    <Compile Include="Forms\Teacher\FormGradeEssay.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormChooseAssignmentType.Designer.cs">
+    <Compile Include="Forms\Teacher\FormGradeEssay.Designer.cs">
+      <DependentUpon>FormGradeEssay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.Designer.cs">
       <DependentUpon>FormChooseAssignmentType.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormCreateQuizQuestions.cs">
+    <Compile Include="Forms\Teacher\Form\FormCreateQuizQuestions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormCreateQuizQuestions.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\FormCreateQuizQuestions.Designer.cs">
       <DependentUpon>FormCreateQuizQuestions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormRenameAssignment.cs">
+    <Compile Include="Forms\Teacher\Form\FormRenameAssignment.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormRenameAssignment.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\FormRenameAssignment.Designer.cs">
       <DependentUpon>FormRenameAssignment.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormSetupQuiz.cs">
+    <Compile Include="Forms\Teacher\Form\FormSetupQuiz.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormSetupQuiz.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\FormSetupQuiz.Designer.cs">
       <DependentUpon>FormSetupQuiz.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormViewQuestions.cs">
+    <Compile Include="Forms\Teacher\Form\FormViewQuestions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormViewQuestions.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\FormViewQuestions.Designer.cs">
       <DependentUpon>FormViewQuestions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\FormViewStudentQuiz.cs">
+    <Compile Include="Forms\Teacher\Form\FormViewStudentQuiz.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\FormViewStudentQuiz.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\FormViewStudentQuiz.Designer.cs">
       <DependentUpon>FormViewStudentQuiz.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\TeacherForm.cs">
+    <Compile Include="Forms\Teacher\Form\TeacherForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\TeacherForm.Designer.cs">
+    <Compile Include="Forms\Teacher\Form\TeacherForm.Designer.cs">
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Teacher\Question.cs" />
-    <Compile Include="Forms\Teacher\UcCourseDetail.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourseDetail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UcCourseDetail.Designer.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourseDetail.Designer.cs">
       <DependentUpon>UcCourseDetail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UcCourses.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourses.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UcCourses.Designer.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourses.Designer.cs">
       <DependentUpon>UcCourses.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UcProfile.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcProfile.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UcProfile.Designer.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcProfile.Designer.cs">
       <DependentUpon>UcProfile.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UcQuestionCreator.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcQuestionCreator.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UcQuestionCreator.Designer.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcQuestionCreator.Designer.cs">
       <DependentUpon>UcQuestionCreator.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UcSessionItem.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcSessionItem.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UcSessionItem.Designer.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcSessionItem.Designer.cs">
       <DependentUpon>UcSessionItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\UcSubmissions.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Teacher\UcSubmissions.Designer.cs">
+    <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.Designer.cs">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Assignments\Assignments.cs" />
@@ -343,16 +349,16 @@
     <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
+    <EmbeddedResource Include="Forms\Teacher\Form\FormSetupQuiz.resx">
       <DependentUpon>FormSetupQuiz.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\TeacherForm.resx">
+    <EmbeddedResource Include="Forms\Teacher\Form\TeacherForm.resx">
       <DependentUpon>TeacherForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\UcCourses.resx">
+    <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcCourses.resx">
       <DependentUpon>UcCourses.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\UcSubmissions.resx">
+    <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcSubmissions.resx">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

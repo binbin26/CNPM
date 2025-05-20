@@ -17,17 +17,21 @@ namespace CNPM.Forms.Teacher
             int index = 1;
             foreach (var q in questions)
             {
-                var lbl = new Label
+                Label lbl = new Label
                 {
                     AutoSize = true,
+                    Padding = new Padding(10),
                     Text = $"Câu {index++}: {q.QuestionText}\n" +
                            $"A. {q.OptionA}\n" +
                            $"B. {q.OptionB}\n" +
                            $"C. {q.OptionC}\n" +
                            $"D. {q.OptionD}\n" +
                            $"Đáp án đúng: {q.CorrectAnswer}",
-                    Margin = new Padding(10),
+                    Font = new System.Drawing.Font("Segoe UI", 10),
+                    BackColor = System.Drawing.Color.WhiteSmoke,
+                    Margin = new Padding(10)
                 };
+
                 flowLayoutPanel1.Controls.Add(lbl);
             }
         }
