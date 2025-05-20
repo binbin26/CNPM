@@ -8,6 +8,7 @@ using CNPM.BLL;
 using CNPM.Models.Users;
 using CNPM.Models.Courses;
 using CNPM.Forms.Shared;
+using System.IO;
 
 namespace CNPM.Forms.Admin
 {
@@ -18,16 +19,30 @@ namespace CNPM.Forms.Admin
         private readonly int _courseId;
         private List<User> users;
         private List<Course> courses;
+        private readonly IUserContext _userContext;
+        private TextBox txtFullName;
+        private TextBox txtEmail;
+        private TextBox txtPhone;
+        private TextBox txtHometown;
+        private TextBox txtRole;
+        private Label lblFullNameValue;
+        private Label lblEmailValue;
+        private Label lblPhoneValue;
+        private Label lblHometownValue;
+        private Label lblRoleValue;
+        private PictureBox picAvatar;
 
         public AdminForm()
         {
             InitializeComponent();
             _userBLL = new UserBLL();
             _courseBLL = new CourseBLL(new CourseDAL());
+            _userContext = (IUserContext)Program.ServiceProvider.GetService(typeof(IUserContext));
             InitializeUI();
             LoadUsers();
             LoadCourses();
             UpdateDateLabel();
+            LoadAdminInfo();
         }
 
         private void InitializeUI()
@@ -54,9 +69,218 @@ namespace CNPM.Forms.Admin
             this.Controls.Add(dateLabel);
 
             // Tạo tab control
-            TabControl tabControl = new TabControl();
+            tabControl = new TabControl();
             tabControl.Location = new Point(20, 100);
             tabControl.Size = new Size(840, 480);
+
+            // Tab Personal Information
+            TabPage personalInfoTab = new TabPage("Personal Information");
+            personalInfoTab.BackColor = Color.White;
+
+            // Panel Personal Info: padding nhỏ hơn
+            Panel infoPanel = new Panel();
+            infoPanel.Dock = DockStyle.Fill;
+            infoPanel.BackColor = Color.White;
+            infoPanel.BorderStyle = BorderStyle.FixedSingle;
+            infoPanel.Padding = new Padding(15, 15, 15, 15);
+            personalInfoTab.Controls.Add(infoPanel);
+
+            // Đặt lại yPos = 20 để kéo thấp phần thông tin vừa phải
+            int yPos = 20;
+            int labelWidth = 110;
+            int valueWidth = 180;
+            int spacing = 28;
+            Color labelColor = Color.FromArgb(44, 62, 80);
+            Color valueColor = Color.FromArgb(52, 73, 94);
+            Font labelFont = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            Font valueFont = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+
+            // Tiêu đề căn giữa, font vừa phải
+            Label titleLabel = new Label();
+            titleLabel.Text = "Thông tin Admin";
+            titleLabel.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            titleLabel.ForeColor = labelColor;
+            titleLabel.TextAlign = ContentAlignment.MiddleCenter;
+            titleLabel.Dock = DockStyle.Top;
+            titleLabel.Height = 36;
+            personalInfoTab.Controls.Add(titleLabel);
+
+            // Họ và tên
+            Label lblFullName = new Label();
+            lblFullName.Text = "Họ và tên:";
+            lblFullName.Location = new Point(25, yPos);
+            lblFullName.AutoSize = true;
+            lblFullName.Font = labelFont;
+            lblFullName.ForeColor = labelColor;
+            infoPanel.Controls.Add(lblFullName);
+
+            lblFullNameValue = new Label();
+            lblFullNameValue.Location = new Point(25 + labelWidth + 10, yPos);
+            lblFullNameValue.Size = new Size(valueWidth, 22);
+            lblFullNameValue.Name = "lblFullNameValue";
+            lblFullNameValue.Font = valueFont;
+            lblFullNameValue.ForeColor = valueColor;
+            infoPanel.Controls.Add(lblFullNameValue);
+
+            yPos += spacing;
+            // Email
+            Label lblEmail = new Label();
+            lblEmail.Text = "Email:";
+            lblEmail.Location = new Point(25, yPos);
+            lblEmail.AutoSize = true;
+            lblEmail.Font = labelFont;
+            lblEmail.ForeColor = labelColor;
+            infoPanel.Controls.Add(lblEmail);
+
+            lblEmailValue = new Label();
+            lblEmailValue.Location = new Point(25 + labelWidth + 10, yPos);
+            lblEmailValue.Size = new Size(valueWidth, 22);
+            lblEmailValue.Name = "lblEmailValue";
+            lblEmailValue.Font = valueFont;
+            lblEmailValue.ForeColor = valueColor;
+            infoPanel.Controls.Add(lblEmailValue);
+
+            yPos += spacing;
+            // Số điện thoại
+            Label lblPhone = new Label();
+            lblPhone.Text = "Số điện thoại:";
+            lblPhone.Location = new Point(25, yPos);
+            lblPhone.AutoSize = true;
+            lblPhone.Font = labelFont;
+            lblPhone.ForeColor = labelColor;
+            infoPanel.Controls.Add(lblPhone);
+
+            lblPhoneValue = new Label();
+            lblPhoneValue.Location = new Point(25 + labelWidth + 10, yPos);
+            lblPhoneValue.Size = new Size(valueWidth, 22);
+            lblPhoneValue.Name = "lblPhoneValue";
+            lblPhoneValue.Font = valueFont;
+            lblPhoneValue.ForeColor = valueColor;
+            infoPanel.Controls.Add(lblPhoneValue);
+
+            yPos += spacing;
+            // Quê quán
+            Label lblHometown = new Label();
+            lblHometown.Text = "Quê quán:";
+            lblHometown.Location = new Point(25, yPos);
+            lblHometown.AutoSize = true;
+            lblHometown.Font = labelFont;
+            lblHometown.ForeColor = labelColor;
+            infoPanel.Controls.Add(lblHometown);
+
+            lblHometownValue = new Label();
+            lblHometownValue.Location = new Point(25 + labelWidth + 10, yPos);
+            lblHometownValue.Size = new Size(valueWidth, 22);
+            lblHometownValue.Name = "lblHometownValue";
+            lblHometownValue.Font = valueFont;
+            lblHometownValue.ForeColor = valueColor;
+            infoPanel.Controls.Add(lblHometownValue);
+
+            yPos += spacing;
+            // Chức vụ
+            Label lblRole = new Label();
+            lblRole.Text = "Chức vụ:";
+            lblRole.Location = new Point(25, yPos);
+            lblRole.AutoSize = true;
+            lblRole.Font = labelFont;
+            lblRole.ForeColor = labelColor;
+            infoPanel.Controls.Add(lblRole);
+
+            lblRoleValue = new Label();
+            lblRoleValue.Location = new Point(25 + labelWidth + 10, yPos);
+            lblRoleValue.Size = new Size(valueWidth, 22);
+            lblRoleValue.Name = "lblRoleValue";
+            lblRoleValue.Font = valueFont;
+            lblRoleValue.ForeColor = valueColor;
+            infoPanel.Controls.Add(lblRoleValue);
+
+            yPos += spacing * 2;
+            // Đổi mật khẩu
+            Label lblOldPassword = new Label();
+            lblOldPassword.Text = "Mật khẩu cũ:";
+            lblOldPassword.Location = new Point(25, yPos);
+            lblOldPassword.AutoSize = true;
+            lblOldPassword.Font = labelFont;
+            infoPanel.Controls.Add(lblOldPassword);
+
+            txtOldPassword = new TextBox();
+            txtOldPassword.Location = new Point(25 + labelWidth + 10, yPos);
+            txtOldPassword.Size = new Size(110, 20);
+            txtOldPassword.Name = "txtOldPassword";
+            txtOldPassword.PasswordChar = '*';
+            txtOldPassword.Font = valueFont;
+            infoPanel.Controls.Add(txtOldPassword);
+
+            Button btnChangePassword = new Button();
+            btnChangePassword.Text = "Đổi mật khẩu";
+            btnChangePassword.Location = new Point(25 + labelWidth + 130, yPos - 2);
+            btnChangePassword.Size = new Size(100, 26);
+            btnChangePassword.Name = "btnChangePassword";
+            btnChangePassword.BackColor = Color.FromArgb(0, 122, 204);
+            btnChangePassword.ForeColor = Color.White;
+            btnChangePassword.FlatStyle = FlatStyle.Flat;
+            btnChangePassword.FlatAppearance.BorderSize = 0;
+            btnChangePassword.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnChangePassword.Click += BtnChangePassword_Click;
+            infoPanel.Controls.Add(btnChangePassword);
+
+            yPos += spacing;
+            Label lblNewPassword = new Label();
+            lblNewPassword.Text = "Mật khẩu mới:";
+            lblNewPassword.Location = new Point(25, yPos);
+            lblNewPassword.AutoSize = true;
+            lblNewPassword.Font = labelFont;
+            infoPanel.Controls.Add(lblNewPassword);
+
+            txtNewPassword = new TextBox();
+            txtNewPassword.Location = new Point(25 + labelWidth + 10, yPos);
+            txtNewPassword.Size = new Size(110, 20);
+            txtNewPassword.Name = "txtNewPassword";
+            txtNewPassword.PasswordChar = '*';
+            txtNewPassword.Font = valueFont;
+            infoPanel.Controls.Add(txtNewPassword);
+
+            yPos += spacing * 2;
+            Button btnLogout = new Button();
+            btnLogout.Text = "Đăng xuất";
+            btnLogout.Location = new Point(25, yPos);
+            btnLogout.Size = new Size(100, 28);
+            btnLogout.Name = "btnLogout";
+            btnLogout.BackColor = Color.FromArgb(0, 122, 204); // xanh dương đậm
+            btnLogout.ForeColor = Color.White;
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnLogout.Click += (s, e) => { this.Close(); };
+            infoPanel.Controls.Add(btnLogout);
+
+            // Thêm PictureBox và nút Change Avatar ở bên phải panel
+            int avatarBoxX = 420; // hoặc phù hợp với chiều rộng panel
+            int avatarBoxY = 30;
+            int avatarBoxSize = 100;
+
+            picAvatar = new PictureBox();
+            picAvatar.Name = "picAvatar";
+            picAvatar.Location = new Point(avatarBoxX, avatarBoxY);
+            picAvatar.Size = new Size(avatarBoxSize, avatarBoxSize);
+            picAvatar.SizeMode = PictureBoxSizeMode.Zoom;
+            picAvatar.BorderStyle = BorderStyle.FixedSingle;
+            infoPanel.Controls.Add(picAvatar);
+
+            Button btnChangeAvatar = new Button();
+            btnChangeAvatar.Text = "Change Avatar";
+            btnChangeAvatar.Name = "btnChangeAvatar";
+            btnChangeAvatar.Location = new Point(avatarBoxX, avatarBoxY + avatarBoxSize + 10);
+            btnChangeAvatar.Size = new Size(avatarBoxSize, 28);
+            btnChangeAvatar.BackColor = Color.FromArgb(0, 122, 204);
+            btnChangeAvatar.ForeColor = Color.White;
+            btnChangeAvatar.FlatStyle = FlatStyle.Flat;
+            btnChangeAvatar.FlatAppearance.BorderSize = 0;
+            btnChangeAvatar.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnChangeAvatar.Click += BtnChangeAvatar_Click;
+            infoPanel.Controls.Add(btnChangeAvatar);
+
+            tabControl.TabPages.Add(personalInfoTab);
 
             // Tab 1: Account List
             TabPage accountListTab = new TabPage("Account List");
@@ -109,11 +333,11 @@ namespace CNPM.Forms.Admin
             txtNewUsername.Size = new Size(350, 20);
             addGroup.Controls.Add(txtNewUsername);
 
-            Label lblFullName = new Label();
-            lblFullName.Text = "Full Name:";
-            lblFullName.Location = new Point(10, 80);
-            lblFullName.AutoSize = true;
-            addGroup.Controls.Add(lblFullName);
+            Label lblNewFullName = new Label();
+            lblNewFullName.Text = "Full Name:";
+            lblNewFullName.Location = new Point(10, 80);
+            lblNewFullName.AutoSize = true;
+            addGroup.Controls.Add(lblNewFullName);
 
             txtNewFullName = new TextBox();
             txtNewFullName.Location = new Point(10, 100);
@@ -132,11 +356,11 @@ namespace CNPM.Forms.Admin
             txtNewPassword.PasswordChar = '*';
             addGroup.Controls.Add(txtNewPassword);
 
-            Label lblRole = new Label();
-            lblRole.Text = "Role:";
-            lblRole.Location = new Point(10, 180);
-            lblRole.AutoSize = true;
-            addGroup.Controls.Add(lblRole);
+            Label lblNewRole = new Label();
+            lblNewRole.Text = "Role:";
+            lblNewRole.Location = new Point(10, 180);
+            lblNewRole.AutoSize = true;
+            addGroup.Controls.Add(lblNewRole);
 
             cmbNewRole = new ComboBox();
             cmbNewRole.Location = new Point(10, 200);
@@ -381,6 +605,7 @@ namespace CNPM.Forms.Admin
             coursePanel.Controls.Add(btnManageStudents);
 
             this.Controls.Add(tabControl);
+            this.picAvatar = picAvatar;
         }
 
         private void LoadUsers()
@@ -634,6 +859,7 @@ namespace CNPM.Forms.Admin
             coursesDataGridView.Columns.Add("TeacherName", "Teacher");
             coursesDataGridView.Columns.Add("StartDate", "Start Date");
             coursesDataGridView.Columns.Add("EndDate", "End Date");
+            coursesDataGridView.Columns.Add("MaxEnrollment", "Max Enrollment");
 
             if (courses != null)
             {
@@ -654,7 +880,8 @@ namespace CNPM.Forms.Admin
                         course.CourseName,
                         teacherName,
                         course.StartDate.ToShortDateString(),
-                        course.EndDate.ToShortDateString()
+                        course.EndDate.ToShortDateString(),
+                        course.MaxEnrollment
                     );
                 }
             }
@@ -749,6 +976,158 @@ namespace CNPM.Forms.Admin
             enrolledStudentsForm.ShowDialog();
         }
 
+        private void LoadAdminInfo()
+        {
+            var admin = _userContext.CurrentUser;
+            if (admin != null && admin.Role == "Admin")
+            {
+                lblFullNameValue.Text = admin.FullName;
+                lblEmailValue.Text = admin.Email;
+                lblPhoneValue.Text = admin.SoDienThoai;
+                lblHometownValue.Text = admin.QueQuan;
+                lblRoleValue.Text = "Admin";
+
+                if (admin != null && !string.IsNullOrEmpty(admin.AvatarPath) && System.IO.File.Exists(admin.AvatarPath))
+                {
+                    picAvatar.Image = Image.FromFile(admin.AvatarPath);
+                }
+                else
+                {
+                    picAvatar.Image = new Bitmap(1, 1);
+                }
+            }
+            else
+            {
+                lblFullNameValue.Text = "N/A";
+                lblEmailValue.Text = "N/A";
+                lblPhoneValue.Text = "N/A";
+                lblHometownValue.Text = "N/A";
+                lblRoleValue.Text = "Admin";
+            }
+        }
+
+        private void BtnChangePassword_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var admin = _userContext.CurrentUser;
+                if (admin == null)
+                {
+                    MessageBox.Show("User information not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Lấy mật khẩu cũ và mới từ TextBox
+                string oldPassword = txtOldPassword?.Text?.Trim() ?? string.Empty;
+                string newPassword = txtNewPassword?.Text?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(oldPassword))
+                {
+                    MessageBox.Show("Vui lòng nhập mật khẩu cũ", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtOldPassword.Focus();
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(newPassword))
+                {
+                    MessageBox.Show("Vui lòng nhập mật khẩu mới", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtNewPassword.Focus();
+                    return;
+                }
+
+                // Kiểm tra mật khẩu cũ
+                if (admin.PasswordHash != oldPassword)
+                {
+                    MessageBox.Show("Mật khẩu cũ không đúng", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtOldPassword.Clear();
+                    txtOldPassword.Focus();
+                    return;
+                }
+
+                // Cập nhật mật khẩu mới vào PasswordHash
+                admin.PasswordHash = newPassword;
+                if (_userBLL.UpdateUser(admin))
+                {
+                    MessageBox.Show("Đổi mật khẩu thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txtOldPassword.Clear();
+                    txtNewPassword.Clear();
+                }
+                else
+                {
+                    MessageBox.Show("Không thể đổi mật khẩu", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi đổi mật khẩu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnChangeAvatar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var admin = _userContext.CurrentUser;
+                if (admin == null)
+                {
+                    MessageBox.Show("User information not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+                    openFileDialog.Title = "Select an Avatar Image";
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFilePath = openFileDialog.FileName;
+                        
+                        // Tạo thư mục Avatars nếu chưa tồn tại
+                        string avatarDirectory = Path.Combine(Application.StartupPath, "Avatars");
+                        if (!Directory.Exists(avatarDirectory))
+                        {
+                            Directory.CreateDirectory(avatarDirectory);
+                        }
+
+                        // Tạo tên file mới dựa trên UserID
+                        string newFileName = $"avatar_{admin.UserID}{Path.GetExtension(selectedFilePath)}";
+                        string newFilePath = Path.Combine(avatarDirectory, newFileName);
+
+                        // Xóa avatar cũ nếu tồn tại
+                        if (!string.IsNullOrEmpty(admin.AvatarPath) && File.Exists(admin.AvatarPath))
+                        {
+                            try
+                            {
+                                File.Delete(admin.AvatarPath);
+                            }
+                            catch { /* Ignore error if can't delete old avatar */ }
+                        }
+
+                        // Copy file mới vào thư mục Avatars
+                        File.Copy(selectedFilePath, newFilePath, true);
+
+                        // Cập nhật đường dẫn avatar trong database
+                        admin.AvatarPath = newFilePath;
+                        if (_userBLL.UpdateUser(admin))
+                        {
+                            // Cập nhật hiển thị avatar
+                            picAvatar.Image = Image.FromFile(newFilePath);
+                            MessageBox.Show("Avatar updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to update avatar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error changing avatar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         // Các controls
         private Label dateLabel;
         private DataGridView accountsDataGridView;
@@ -776,5 +1155,7 @@ namespace CNPM.Forms.Admin
         private TextBox txtNewSoDienThoai;
         private TextBox txtEditQueQuan;
         private TextBox txtEditSoDienThoai;
+        private TabControl tabControl;
+        private TextBox txtOldPassword;
     }
 }

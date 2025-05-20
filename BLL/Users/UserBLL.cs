@@ -289,5 +289,10 @@ namespace CNPM.BLL
                 return -1;
             }
         }
+
+        public User GetAdminInfo()
+        {
+            return _userDAL.GetAdminInfo();
+        }
     }
 }

@@ -368,5 +368,32 @@ namespace CNPM.DAL
 
             return result;
         }
+
+        public User GetAdminInfo()
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT TOP 1 * FROM Users WHERE Role = 'Admin'";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new User
+                        {
+                            UserID = reader["UserID"] != DBNull.Value ? (int)reader["UserID"] : 0,
+                            Username = reader["Username"]?.ToString(),
+                            Role = reader["Role"]?.ToString(),
+                            FullName = reader["FullName"]?.ToString(),
+                            QueQuan = reader["QueQuan"]?.ToString(),
+                            SoDienThoai = reader["SoDienThoai"]?.ToString(),
+                            Email = reader["Email"]?.ToString()
+                        };
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
