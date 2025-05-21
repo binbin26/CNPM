@@ -255,7 +255,7 @@ namespace CNPM.DAL
                 }
 
                 // 2. Kiểm tra số lượng còn trống và hạn đăng ký
-                string checkCourseQuery = "SELECT SlotsLeft, EndDate FROM Courses WHERE CourseID = @CourseID";
+                string checkCourseQuery = "SELECT MaxEnrollment, EndDate FROM Courses WHERE CourseID = @CourseID";
                 using (SqlCommand courseCmd = new SqlCommand(checkCourseQuery, conn))
                 {
                     courseCmd.Parameters.AddWithValue("@CourseID", courseId);
@@ -264,7 +264,7 @@ namespace CNPM.DAL
                         if (!reader.Read())
                             return "Học phần không tồn tại!";
 
-                        int slotsLeft = reader["SlotsLeft"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SlotsLeft"]);
+                        int slotsLeft = reader["MaxEnrollment"] == DBNull.Value ? 0 : Convert.ToInt32(reader["MaxEnrollment"]);
                         DateTime endDate = reader["EndDate"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["EndDate"]);
 
                         if (slotsLeft <= 0)

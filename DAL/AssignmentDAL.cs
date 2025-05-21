@@ -211,5 +211,147 @@ ORDER BY q.QuestionID";
             }
             return list;
         }
+        //Lấy bài tập tự luận (UcSubmissions)
+        public List<EssaySubmissionDTO> GetEssaySubmissions(int assignmentId, int teacherId)
+        {
+            List<EssaySubmissionDTO> submissions = new List<EssaySubmissionDTO>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT s.*
+            FROM StudentSubmissions s
+            JOIN Assignments a ON s.AssignmentID = a.AssignmentID
+            WHERE s.AssignmentID = @AssignmentID AND a.TeacherID = @TeacherID AND a.AssignmentType = N'TuLuan'";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                    cmd.Parameters.AddWithValue("@TeacherID", teacherId);
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            submissions.Add(new EssaySubmissionDTO
+                            {
+                                StudentID = (int)reader["StudentID"],
+                                AssignmentID = (int)reader["AssignmentID"],
+                                FilePath = reader["FilePath"].ToString(),
+                                Score = reader["Score"] == DBNull.Value ? null : (decimal?)reader["Score"]
+                            });
+                        }
+                    }
+                }
+            }
+            return submissions;
+        }
+
+        //Update điểm cho bài tập tự luận (UcSubmissions)
+        public bool UpdateSubmissionScore(int assignmentId, int studentId, decimal score, int teacherId)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            UPDATE StudentSubmissions
+            SET Score = @Score
+            WHERE AssignmentID = @AssignmentID 
+              AND StudentID = @StudentID 
+              AND EXISTS (
+                  SELECT 1 FROM Assignments 
+                  WHERE AssignmentID = @AssignmentID AND TeacherID = @TeacherID
+              )";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Score", score);
+                    cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                    cmd.Parameters.AddWithValue("@StudentID", studentId);
+                    cmd.Parameters.AddWithValue("@TeacherID", teacherId);
+                    conn.Open();
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+        //Tự chấm điểm trắc nghiệm (UcQuiz)
+        public bool AutoGradeQuiz(int assignmentId, int studentId)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+        SELECT COUNT(*) AS TotalQuestions,
+               SUM(CASE WHEN sa.IsCorrect = 1 THEN 1 ELSE 0 END) AS CorrectAnswers
+        FROM StudentAnswers sa
+        JOIN Questions q ON sa.QuestionID = q.QuestionID
+        WHERE sa.StudentID = @StudentID AND q.AssignmentID = @AssignmentID";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@StudentID", studentId);
+                    cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int total = reader.GetInt32(0);
+                            int correct = reader.GetInt32(1);
+                            decimal score = (decimal)correct / total * 10;
+
+                            reader.Close();
+                            // Cập nhật điểm
+                            string update = @"
+                        UPDATE StudentSubmissions 
+                        SET Score = @Score
+                        WHERE AssignmentID = @AssignmentID AND StudentID = @StudentID";
+
+                            using (var updateCmd = new SqlCommand(update, conn))
+                            {
+                                updateCmd.Parameters.AddWithValue("@Score", score);
+                                updateCmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                                updateCmd.Parameters.AddWithValue("@StudentID", studentId);
+
+                                return updateCmd.ExecuteNonQuery() > 0;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        //Lấy danh sách bài nộp trắc nghiệm(UcQuiz)
+        public List<QuizSubmissionDTO> GetQuizSubmissions(int assignmentId, int teacherId)
+        {
+            List<QuizSubmissionDTO> submissions = new List<QuizSubmissionDTO>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+        SELECT u.FullName, s.StudentID, s.Score
+        FROM StudentSubmissions s
+        JOIN Users u ON s.StudentID = u.UserID
+        JOIN Assignments a ON s.AssignmentID = a.AssignmentID
+        WHERE s.AssignmentID = @AssignmentID AND a.TeacherID = @TeacherID AND a.AssignmentType = N'TracNghiem'";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                    cmd.Parameters.AddWithValue("@TeacherID", teacherId);
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            submissions.Add(new QuizSubmissionDTO
+                            {
+                                StudentID = (int)reader["StudentID"],
+                                StudentName = reader["FullName"].ToString(),
+                                Score = reader["Score"] == DBNull.Value ? null : (decimal?)reader["Score"]
+                            });
+                        }
+                    }
+                }
+            }
+            return submissions;
+        }
     }
 }
