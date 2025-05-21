@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CNPM.Forms.Teacher.Usercontrol;
+using System;
 using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher

@@ -2,9 +2,11 @@
 using CNPM.DAL;
 using CNPM.Models.Assignments;
 using CNPM.Models.Courses;
+using CNPM.Models.Courses.Sessions;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CNPM.Utilities;
 
 public class AssignmentBLL
 {
@@ -62,6 +64,62 @@ public class AssignmentBLL
     {
         return _assignmentDAL.GetQuestionPerformance(assignmentId);
     }
+    /// Lấy danh sách bài tự luận của một bài tập
+    public List<EssaySubmissionDTO> GetEssaySubmissions(int assignmentId, int teacherId)
+    {
+        try
+        {
+            return _assignmentDAL.GetEssaySubmissions(assignmentId, teacherId);
+        }
+        catch (Exception ex)
+        {
+            // Ghi log, hoặc thông báo lỗi tùy yêu cầu của hệ thống
+            MessageBox.Show("Lỗi khi lấy bài tự luận: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return new List<EssaySubmissionDTO>(); // hoặc null tùy cách bạn muốn xử lý
+        }
+    }
+    //Cập nhật điểm bài tự luận từ giảng viên
+    public bool UpdateSubmissionScore(int assignmentId, int studentId, decimal score, int teacherId)
+    {
+        try
+        {
+            return _assignmentDAL.UpdateSubmissionScore(assignmentId, studentId, score, teacherId);
+        }
+        catch (Exception ex)
+        {
+            // Có thể log lỗi nếu cần, hoặc truyền lên lớp gọi
+            throw new ApplicationException("Lỗi khi cập nhật điểm bài nộp.", ex);
+        }
+    }
+
+    //Chấm điểm tự động bài trắc nghiệm
+    public bool AutoGradeQuiz(int assignmentId, int teacherId)
+    {
+        try
+        {
+            return _assignmentDAL.AutoGradeQuiz(assignmentId, teacherId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi tự động chấm điểm bài trắc nghiệm"+ ex.Message);
+            return false;
+        }
+    }
+    //Lấy danh sách bài làm trắc nghiệm của một bài tập
+    public List<QuizSubmissionDTO> GetQuizSubmissions(int assignmentId, int teacherId)
+    {
+        try
+        {
+            return _assignmentDAL.GetQuizSubmissions(assignmentId, teacherId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi lấy danh sách bài làm trắc nghiệm: " + ex.Message);
+            return new List<QuizSubmissionDTO>();
+        }
+    }
+
+
     public void ExportQuestionStatsToExcel(List<QuestionStatsDTO> data, string filePath)
     {
         var wb = new XLWorkbook();
@@ -85,4 +143,5 @@ public class AssignmentBLL
         ws.Columns().AdjustToContents();
         wb.SaveAs(filePath);
     }
+
 }
