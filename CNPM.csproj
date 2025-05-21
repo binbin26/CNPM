@@ -241,6 +241,7 @@
     <Compile Include="Forms\Teacher\Form\CourseProgress.cs">
       <SubType>Form</SubType>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Forms\Teacher\Form\CourseProgress.Designer.cs">
       <DependentUpon>CourseProgress.cs</DependentUpon>
     </Compile>
@@ -340,8 +341,76 @@
     <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.Designer.cs">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </Compile>
+=======
+    <Compile Include="Forms\Teacher\Form\CourseProgress.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormCreateQuizQuestions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormCreateQuizQuestions.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormGradeEssay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormGradeEssay.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormRenameAssignment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormRenameAssignment.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormSetupQuiz.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormSetupQuiz.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormViewQuestions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormViewQuestions.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\FormViewStudentQuiz.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormViewStudentQuiz.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\MultipleChoiceProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\MultipleChoiceProgress.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\SelectCourseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\SelectCourseForm.Designer.cs" />
+    <Compile Include="Forms\Teacher\Form\TeacherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\TeacherForm.Designer.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourseDetail.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourseDetail.Designer.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourses.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Usercontrol\UcCourses.Designer.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcProfile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Usercontrol\UcProfile.Designer.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcQuestionCreator.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Usercontrol\UcQuestionCreator.Designer.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcSessionItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Usercontrol\UcSessionItem.Designer.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.Designer.cs" />
+>>>>>>> 45949bb0f3128053413c03260f41a209136d604d
     <Compile Include="Models\Assignments\Assignments.cs" />
     <Compile Include="Models\Assignments\AssignmentTypes.cs" />
+    <Compile Include="Models\Assignments\Question.cs" />
     <Compile Include="Models\Assignments\QuestionStatsDTO.cs" />
     <Compile Include="Models\Courses\CourseGrade.cs" />
     <Compile Include="Models\Courses\Course.cs" />
@@ -393,6 +462,7 @@
     <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="Forms\Teacher\Form\CourseProgress.resx">
       <DependentUpon>CourseProgress.cs</DependentUpon>
     </EmbeddedResource>
@@ -414,6 +484,18 @@
     <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcSubmissions.resx">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </EmbeddedResource>
+=======
+    <EmbeddedResource Include="Forms\Teacher\Form\CourseProgress.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Form\FormSetupQuiz.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Form\MultipleChoiceProgress.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Form\SelectCourseForm.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Form\TeacherForm.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcCourseDetail.resx">
+      <DependentUpon>UcCourseDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcCourses.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcSubmissions.resx" />
+>>>>>>> 45949bb0f3128053413c03260f41a209136d604d
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

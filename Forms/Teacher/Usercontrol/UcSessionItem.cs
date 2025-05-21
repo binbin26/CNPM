@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using CNPM.DAL;
+using CNPM.Models.Assignments;
 
 namespace CNPM.Forms.Teacher
 {

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using CNPM.DAL;
+using CNPM.Models.Assignments;
 
 namespace CNPM.Forms.Teacher
 {

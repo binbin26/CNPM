@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using CNPM.Models.Assignments;
 
 namespace CNPM.Forms.Teacher
 {
