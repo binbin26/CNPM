@@ -238,103 +238,6 @@
     <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\CourseProgress.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\CourseProgress.Designer.cs">
-      <DependentUpon>CourseProgress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormChooseAssignmentType.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormChooseAssignmentType.Designer.cs">
-      <DependentUpon>FormChooseAssignmentType.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormCreateQuizQuestions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormCreateQuizQuestions.Designer.cs">
-      <DependentUpon>FormCreateQuizQuestions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormRenameAssignment.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormRenameAssignment.Designer.cs">
-      <DependentUpon>FormRenameAssignment.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormSetupQuiz.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormSetupQuiz.Designer.cs">
-      <DependentUpon>FormSetupQuiz.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormViewQuestions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormViewQuestions.Designer.cs">
-      <DependentUpon>FormViewQuestions.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormViewStudentQuiz.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\FormViewStudentQuiz.Designer.cs">
-      <DependentUpon>FormViewStudentQuiz.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\MultipleChoiceProgress.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\MultipleChoiceProgress.Designer.cs">
-      <DependentUpon>MultipleChoiceProgress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\TeacherForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\TeacherForm.Designer.cs">
-      <DependentUpon>TeacherForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\Question.cs" />
-    <Compile Include="Forms\Teacher\SelectCourseForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\SelectCourseForm.Designer.cs">
-      <DependentUpon>SelectCourseForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcCourseDetail.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcCourseDetail.Designer.cs">
-      <DependentUpon>UcCourseDetail.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcCourses.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcCourses.Designer.cs">
-      <DependentUpon>UcCourses.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcProfile.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcProfile.Designer.cs">
-      <DependentUpon>UcProfile.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcQuestionCreator.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcQuestionCreator.Designer.cs">
-      <DependentUpon>UcQuestionCreator.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcSessionItem.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcSessionItem.Designer.cs">
-      <DependentUpon>UcSessionItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcSubmissions.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\UcSubmissions.Designer.cs">
-      <DependentUpon>UcSubmissions.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\Assignments\Assignments.cs" />
     <Compile Include="Models\Assignments\AssignmentTypes.cs" />
     <Compile Include="Models\Assignments\QuestionStatsDTO.cs" />
@@ -388,30 +291,6 @@
     <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\CourseProgress.resx">
-      <DependentUpon>CourseProgress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\FormSetupQuiz.resx">
-      <DependentUpon>FormSetupQuiz.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\MultipleChoiceProgress.resx">
-      <DependentUpon>MultipleChoiceProgress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\TeacherForm.resx">
-      <DependentUpon>TeacherForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\SelectCourseForm.resx">
-      <DependentUpon>SelectCourseForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\UcCourseDetail.resx">
-      <DependentUpon>UcCourseDetail.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\UcCourses.resx">
-      <DependentUpon>UcCourses.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Teacher\UcSubmissions.resx">
-      <DependentUpon>UcSubmissions.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -437,6 +316,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Forms\Teacher\" />
     <Folder Include="Models\Upload\Assignments\" />
     <Folder Include="Models\Upload\Submissions\" />
     <Folder Include="Resources\Documentation\" />

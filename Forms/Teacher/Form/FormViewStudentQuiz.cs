@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 using CNPM.DAL;
 
@@ -8,26 +9,29 @@ namespace CNPM.Forms.Teacher
 {
     public partial class FormViewStudentQuiz : Form
     {
-        private int AssignmentID, StudentID;
+        private int AssignmentID;
+        private int StudentID;
 
-        public FormViewStudentQuiz(int aid, int sid)
+        public FormViewStudentQuiz(int assignmentId, int studentId)
         {
             InitializeComponent();
-            AssignmentID = aid;
-            StudentID = sid;
+            AssignmentID = assignmentId;
+            StudentID = studentId;
             LoadData();
         }
 
         private void LoadData()
         {
-            var questions = new List<Question>();
-            var answers = new Dictionary<int, string>();
+            List<Question> questions = new List<Question>();
+            Dictionary<int, string> studentAnswers = new Dictionary<int, string>();
 
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
 
-                var q1 = "SELECT QuestionID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer FROM Questions WHERE AssignmentID = @AID";
+                // Lấy danh sách câu hỏi
+                string q1 = "SELECT QuestionID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer " +
+                            "FROM Questions WHERE AssignmentID = @AID";
                 using (var cmd = new SqlCommand(q1, conn))
                 {
                     cmd.Parameters.AddWithValue("@AID", AssignmentID);
@@ -49,7 +53,9 @@ namespace CNPM.Forms.Teacher
                     }
                 }
 
-                var q2 = "SELECT QuestionID, SelectedAnswer FROM StudentAnswers WHERE AssignmentID = @AID AND StudentID = @SID";
+                // Lấy đáp án sinh viên đã chọn
+                string q2 = "SELECT QuestionID, SelectedAnswer FROM StudentAnswers " +
+                            "WHERE AssignmentID = @AID AND StudentID = @SID";
                 using (var cmd = new SqlCommand(q2, conn))
                 {
                     cmd.Parameters.AddWithValue("@AID", AssignmentID);
@@ -58,27 +64,42 @@ namespace CNPM.Forms.Teacher
                     {
                         while (reader.Read())
                         {
-                            answers[reader.GetInt32(0)] = reader.GetString(1);
+                            studentAnswers[reader.GetInt32(0)] = reader.GetString(1);
                         }
                     }
                 }
             }
 
-            RenderQuiz(questions, answers);
+            RenderQuiz(questions, studentAnswers);
         }
 
-        private void RenderQuiz(List<Question> questions, Dictionary<int, string> answers)
+        private void RenderQuiz(List<Question> questions, Dictionary<int, string> studentAnswers)
         {
             flowPanelQuestions.Controls.Clear();
             int index = 1;
+
             foreach (var q in questions)
             {
-                var lbl = new Label
+                string studentAnswer = studentAnswers.ContainsKey(q.QuestionID)
+                    ? studentAnswers[q.QuestionID]
+                    : "[Chưa chọn]";
+
+                Label lbl = new Label
                 {
-                    Text = $"Câu {index++}: {q.QuestionText}\nA. {q.OptionA}    B. {q.OptionB}\nC. {q.OptionC}    D. {q.OptionD}\nĐáp án đúng: {q.CorrectAnswer}\nSinh viên chọn: {(answers.ContainsKey(q.QuestionID) ? answers[q.QuestionID] : "[Chưa chọn]")}",
                     AutoSize = true,
-                    Padding = new Padding(10)
+                    Padding = new Padding(10),
+                    Font = new Font("Segoe UI", 10),
+                    Text = $"Câu {index++}: {q.QuestionText}\n" +
+                           $"A. {q.OptionA}\n" +
+                           $"B. {q.OptionB}\n" +
+                           $"C. {q.OptionC}\n" +
+                           $"D. {q.OptionD}\n" +
+                           $"✔ Đáp án đúng: {q.CorrectAnswer}\n" +
+                           $"🧑 Sinh viên chọn: {studentAnswer}",
+                    BackColor = studentAnswer == q.CorrectAnswer ? Color.LightGreen : Color.LightCoral,
+                    Margin = new Padding(10)
                 };
+
                 flowPanelQuestions.Controls.Add(lbl);
             }
         }

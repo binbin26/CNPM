@@ -22,7 +22,7 @@ namespace CNPM.Forms.Teacher
         private void LoadSessions()
         {
             flowPanelSessions.Controls.Clear();
-            string query = "SELECT SessionID, Title FROM Sessions WHERE CourseID = @CourseID ORDER BY CreatedAt DESC";
+            string query = "SELECT SessionID, Title FROM Sessions WHERE CourseID = @CourseID ORDER BY CreatedAt ASC";
 
             using (var conn = DatabaseHelper.GetConnection())
             using (var cmd = new SqlCommand(query, conn))
@@ -36,8 +36,8 @@ namespace CNPM.Forms.Teacher
                         int sessionId = reader.GetInt32(0);
                         string title = reader.GetString(1);
 
-                        var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title);
-                        sessionItem.Width = flowPanelSessions.Width - 25;
+                        var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title, currentCourse.TeacherID);
+                        sessionItem.Width = flowPanelSessions.Width - 30;
                         flowPanelSessions.Controls.Add(sessionItem);
                     }
                 }
@@ -57,8 +57,8 @@ namespace CNPM.Forms.Teacher
                 conn.Open();
                 int sessionId = (int)cmd.ExecuteScalar();
 
-                var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title);
-                sessionItem.Width = flowPanelSessions.Width - 25;
+                var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title, currentCourse.TeacherID);
+                sessionItem.Width = flowPanelSessions.Width - 30;
                 flowPanelSessions.Controls.Add(sessionItem);
             }
         }

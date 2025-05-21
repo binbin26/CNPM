@@ -19,6 +19,11 @@ CREATE TABLE Users (
     CreatedAt DATETIME DEFAULT GETDATE(),
     IsActive BIT DEFAULT 1  -- 1: Active, 0: Deactivated
 );
+ALTER TABLE Users 
+ADD AvatarPath NVARCHAR(100), 
+	QueQuan NVARCHAR(50), 
+	SoDienThoai NVARCHAR(10);
+
 --Courses
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
@@ -436,3 +441,187 @@ ADD TeacherID INT;
 ALTER TABLE Grades
 ADD CONSTRAINT FK_Grades_Teacher
 FOREIGN KEY (TeacherID) REFERENCES Users(UserID);
+
+CREATE TABLE Questions (
+    QuestionID INT,
+    AssignmentID INT,
+    QuestionText NVARCHAR,
+	OptionA NVARCHAR,
+	OptionB NVARCHAR,
+	OptionC NVARCHAR,
+	OptionD NVARCHAR,
+	CorrectAnswer NVARCHAR,
+);
+ALTER TABLE Questions
+ALTER COLUMN QuestionID INT NOT NULL;
+
+ALTER TABLE Questions
+ADD CONSTRAINT PK_Questions PRIMARY KEY (QuestionID);
+
+CREATE TABLE StudentAnswers (
+    AnswerID INT IDENTITY(1,1) PRIMARY KEY,
+    AssignmentID INT NOT NULL,
+    StudentID INT NOT NULL,
+    QuestionID INT NOT NULL,
+    SelectedAnswer NVARCHAR(255),
+    IsCorrect BIT,
+);
+CREATE TABLE StudentCourse (
+    UserID INT NOT NULL,
+    CourseID INT NOT NULL,
+    EnrollmentDate DATETIME NOT NULL
+);
+
+CREATE TABLE AssignmentFiles (
+    FileID INT IDENTITY(1,1) PRIMARY KEY,
+    AssignmentID INT NOT NULL,
+    FileName NVARCHAR(255) NOT NULL,
+    FilePath NVARCHAR(500) NOT NULL,
+    UploadDate DATETIME NOT NULL
+);
+
+CREATE TABLE StudentSubmissions (
+    SubmissionID INT PRIMARY KEY IDENTITY(1,1),
+    AssignmentID INT NOT NULL,
+    StudentID INT NOT NULL,
+    FileName NVARCHAR(255) NOT NULL,
+    FilePath NVARCHAR(500) NOT NULL,
+    SubmitDate DATETIME NOT NULL,
+    Score FLOAT NULL,
+);
+
+ALTER TABLE Users
+ADD CONSTRAINT PK_Users PRIMARY KEY (UserID);
+
+ALTER TABLE Courses
+ADD CONSTRAINT PK_Courses PRIMARY KEY (CourseID);
+
+ALTER TABLE Courses
+ADD CONSTRAINT FK_Courses_Teacher FOREIGN KEY (TeacherID) REFERENCES Users(UserID);
+
+ALTER TABLE Sessions
+ADD CONSTRAINT PK_Sessions PRIMARY KEY (SessionID);
+
+ALTER TABLE Sessions
+ADD CONSTRAINT FK_Sessions_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE Assignments
+ADD CONSTRAINT PK_Assignments PRIMARY KEY (AssignmentID);
+
+ALTER TABLE Assignments
+ADD CONSTRAINT FK_Assignments_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE Questions
+ADD CONSTRAINT PK_Questions PRIMARY KEY (QuestionID);
+
+ALTER TABLE Questions
+ADD CONSTRAINT FK_Questions_Assignment FOREIGN KEY (AssignmentID) REFERENCES Assignments(AssignmentID);
+
+ALTER TABLE AssignmentFiles
+ADD CONSTRAINT PK_AssignmentFiles PRIMARY KEY (FileID);
+
+ALTER TABLE AssignmentFiles
+ADD CONSTRAINT FK_AssignmentFiles_Assignment FOREIGN KEY (AssignmentID) REFERENCES Assignments(AssignmentID);
+
+ALTER TABLE StudentSubmissions
+ADD CONSTRAINT PK_StudentSubmissions PRIMARY KEY (SubmissionID);
+
+ALTER TABLE StudentSubmissions
+ADD CONSTRAINT FK_StudentSubmissions_Assignment FOREIGN KEY (AssignmentID) REFERENCES Assignments(AssignmentID);
+
+ALTER TABLE StudentSubmissions
+ADD CONSTRAINT FK_StudentSubmissions_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID);
+
+ALTER TABLE StudentAnswers
+ADD CONSTRAINT PK_StudentAnswers PRIMARY KEY (AnswerID);
+
+ALTER TABLE StudentAnswers
+ADD CONSTRAINT FK_StudentAnswers_Question FOREIGN KEY (QuestionID) REFERENCES Questions(QuestionID);
+
+ALTER TABLE StudentAnswers
+ADD CONSTRAINT FK_StudentAnswers_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID);
+
+ALTER TABLE CourseDocuments
+ADD CONSTRAINT PK_CourseDocuments PRIMARY KEY (DocumentID);
+
+ALTER TABLE CourseDocuments
+ADD CONSTRAINT FK_CourseDocuments_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE CourseEnrollments
+ADD CONSTRAINT PK_CourseEnrollments PRIMARY KEY (EnrollmentID);
+
+ALTER TABLE CourseEnrollments
+ADD CONSTRAINT FK_CourseEnrollments_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE CourseEnrollments
+ADD CONSTRAINT FK_CourseEnrollments_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID);
+
+ALTER TABLE StudentCourse
+ADD CONSTRAINT PK_StudentCourse PRIMARY KEY (UserID, CourseID);
+
+ALTER TABLE StudentCourse
+ADD CONSTRAINT FK_StudentCourse_User FOREIGN KEY (UserID) REFERENCES Users(UserID);
+
+ALTER TABLE StudentCourse
+ADD CONSTRAINT FK_StudentCourse_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE Grades
+ADD CONSTRAINT PK_Grades PRIMARY KEY (StudentID, CourseID);
+
+ALTER TABLE Grades
+ADD CONSTRAINT FK_Grades_Student FOREIGN KEY (StudentID) REFERENCES Users(UserID);
+
+ALTER TABLE Grades
+ADD CONSTRAINT FK_Grades_Course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID);
+
+ALTER TABLE Users 
+ADD AvatarPath NVARCHAR(100), 
+	QueQuan NVARCHAR(50), 
+	SoDienThoai NVARCHAR(10);
+
+ALTER TABLE Sessions
+ALTER COLUMN CreatedBy INT NULL;
+
+ALTER TABLE CourseDocuments
+ALTER COLUMN UploadedBy INT NULL;
+
+ALTER TABLE Assignments
+ALTER COLUMN DueDate DATETIME NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN QuestionText NVARCHAR(255) NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN OptionA NVARCHAR(255) NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN OptionB NVARCHAR(255) NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN OptionC NVARCHAR(255) NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN OptionD NVARCHAR(255) NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN CorrectAnswer NVARCHAR(255) NULL;
+
+ALTER TABLE Questions
+ALTER COLUMN QuestionID INT NULL;
+
+ALTER TABLE Assignments 
+ADD SessionID INT NULL;
+
+ALTER TABLE Assignments
+ADD CONSTRAINT FK_Assignments_Sessions
+FOREIGN KEY (SessionID) REFERENCES Sessions(SessionID);
+
+ALTER TABLE CourseDocuments
+ADD SessionID INT NULL;
+
+ALTER TABLE CourseDocuments
+ADD CONSTRAINT FK_CourseDocuments_Sessions FOREIGN KEY (SessionID)
+REFERENCES Sessions(SessionID);
+
+ALTER TABLE StudentSubmissions
+ADD AssignmentType NVARCHAR(10) NULL;
