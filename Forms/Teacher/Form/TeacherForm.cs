@@ -1,4 +1,5 @@
-﻿using CNPM.Forms.Teacher.Usercontrol;
+﻿using CNPM.Forms.Auth;
+using CNPM.Forms.Teacher.Usercontrol;
 using System;
 using System.Windows.Forms;
 
@@ -40,11 +41,8 @@ namespace CNPM.Forms.Teacher
             DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                // TODO: Gọi các phương thức lưu trạng thái trước khi logout nếu cần
-
-                this.Hide();
                 new CNPM.Forms.Auth.LoginForm().Show();
-                this.Close();
+                this.Close(); // Đóng form giáo viên
             }
         }
 

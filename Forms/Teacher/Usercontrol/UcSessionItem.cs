@@ -6,6 +6,8 @@ using System.IO;
 using System.Windows.Forms;
 using CNPM.DAL;
 using CNPM.Models.Assignments;
+using FontAwesome.Sharp;
+using Microsoft.VisualBasic;
 
 namespace CNPM.Forms.Teacher
 {
@@ -127,7 +129,7 @@ namespace CNPM.Forms.Teacher
                         int assignmentId = reader.GetInt32(0);
                         string title = reader.GetString(1);
 
-                        var lbl = CreateItemLabel("📝 " + title);
+                        var lbl = CreateItemLabel(title, IconChar.ClipboardList);
                         lbl.Click += (s, e) =>
                         {
                             bool isMultipleChoice = CheckIfAssignmentIsMultipleChoice(assignmentId);
@@ -216,7 +218,7 @@ namespace CNPM.Forms.Teacher
                         string title = reader.GetString(1);
                         string path = reader.GetString(2);
 
-                        var lblFile = CreateItemLabel("📎 " + title);
+                        var lblFile = CreateItemLabel(title, IconChar.Paperclip);
                         lblFile.Click += (s, e) =>
                         {
                             try
@@ -264,21 +266,62 @@ namespace CNPM.Forms.Teacher
             flowPanelAssignments.Controls.Add(btnAttachFile);
             flowPanelAssignments.Controls.Add(btnCreateAssignment);
         }
-        private Label CreateItemLabel(string text)
+        private void btnEditTitle_Click(object sender, EventArgs e)
         {
-            return new Label
+            var form = new FormRenameSession(this.Title);
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                Text = text,
+                string newTitle = form.NewTitle;
+                if (newTitle != this.Title)
+                {
+                    using (var conn = DAL.DatabaseHelper.GetConnection())
+                    using (var cmd = new SqlCommand("UPDATE Sessions SET Title = @Title WHERE SessionID = @ID", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Title", newTitle);
+                        cmd.Parameters.AddWithValue("@ID", SessionID);
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    this.Title = newTitle;
+                    lblSessionTitle.Text = newTitle;
+                    MessageBox.Show("Đã cập nhật tiêu đề buổi học.");
+                }
+            }
+        }
+        private Label CreateItemLabel(string text, IconChar icon = IconChar.None)
+        {
+            var lbl = new Label
+            {
                 AutoSize = false,
                 Width = flowPanelAssignments.Width - 40,
                 Height = 40,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                BackColor = Color.LightGray,
+                BackColor = Color.WhiteSmoke,
                 ForeColor = Color.Black,
-                Padding = new Padding(10),
+                Padding = new Padding(10, 6, 10, 6),
                 Margin = new Padding(5),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                TextAlign = ContentAlignment.MiddleLeft
             };
+
+            if (icon != IconChar.None)
+            {
+                var ic = new IconPictureBox
+                {
+                    IconChar = icon,
+                    IconColor = Color.Gray,
+                    IconSize = 18,
+                    Location = new Point(10, 10),
+                    Size = new Size(20, 20),
+                };
+
+                lbl.Padding = new Padding(32, 0, 0, 0);
+                lbl.Controls.Add(ic);
+            }
+
+            lbl.Text = "   " + text; // giữ khoảng trống cho icon
+            return lbl;
         }
         private Button CreateItemButton(string text, Action onClick)
         {

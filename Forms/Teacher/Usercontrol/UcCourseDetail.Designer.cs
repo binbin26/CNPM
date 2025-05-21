@@ -9,16 +9,17 @@ namespace CNPM.Forms.Teacher
     {
         private Label lblCourseName;
         private IconButton btnAddSession;
-        private Button btnStat;
         private FlowLayoutPanel flowPanelSessions;
-        private Button btnCourseProgress;
+        private IconButton btnCourseProgress;
+        private FlowLayoutPanel panelButtons;
 
         private void InitializeComponent()
         {
             this.lblCourseName = new Label();
             this.btnAddSession = new IconButton();
-            this.btnStat = new Button();
             this.flowPanelSessions = new FlowLayoutPanel();
+            this.btnCourseProgress = new IconButton();
+            this.panelButtons = new FlowLayoutPanel();
 
             // lblCourseName
             this.lblCourseName.Text = "Tên môn học";
@@ -59,43 +60,43 @@ namespace CNPM.Forms.Teacher
             this.flowPanelSessions.BackColor = Color.White;
             this.flowPanelSessions.AutoSize = false; // 👈 Đảm bảo không co giãn theo nội dung
             this.flowPanelSessions.AutoScrollMargin = new Size(0, 10); // 👈 Scroll mượt hơn
+
             // btnCourseProgress
-            btnCourseProgress = new Button();
-            btnCourseProgress.Text = "📈 Tiến độ khóa học";
+            btnCourseProgress = new IconButton();
+            btnCourseProgress.Text = " Tiến độ khóa học";
+            btnCourseProgress.IconChar = IconChar.ChartLine;
+            btnCourseProgress.IconColor = Color.White;
+            btnCourseProgress.IconFont = IconFont.Auto;
+            btnCourseProgress.IconSize = 20;
+            btnCourseProgress.TextImageRelation = TextImageRelation.ImageBeforeText;
+            btnCourseProgress.ImageAlign = ContentAlignment.MiddleLeft;
+            btnCourseProgress.TextAlign = ContentAlignment.MiddleLeft;
             btnCourseProgress.BackColor = Color.SeaGreen;
             btnCourseProgress.ForeColor = Color.White;
-            btnCourseProgress.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnCourseProgress.FlatStyle = FlatStyle.Flat;
             btnCourseProgress.FlatAppearance.BorderSize = 0;
+            btnCourseProgress.Height = 40;
+            btnCourseProgress.Width = 220;
+            btnCourseProgress.Padding = new Padding(10, 5, 10, 5);
             btnCourseProgress.Cursor = Cursors.Hand;
-            btnCourseProgress.Height = 36;
-            btnCourseProgress.Width = 200;
-            btnCourseProgress.Margin = new Padding(10);
             btnCourseProgress.Click += (s, e) =>
             {
                 new CourseProgress(currentCourse.CourseID, currentCourse.CourseName).ShowDialog();
             };
-            //
-            // btnStat
-            // 
-            this.btnStat.Text = "📊 Thống kê trắc nghiệm";
-            this.btnStat.BackColor = Color.MediumSlateBlue;
-            this.btnStat.ForeColor = Color.White;
-            this.btnStat.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.btnStat.FlatStyle = FlatStyle.Flat;
-            this.btnStat.FlatAppearance.BorderSize = 0;
-            this.btnStat.Cursor = Cursors.Hand;
-            this.btnStat.Height = 36;
-            this.btnStat.Width = 200;
-            this.btnStat.Margin = new Padding(10);
-            this.btnStat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            this.btnStat.Click += new EventHandler(this.btnStat_Click);
+
+            // panelButtons
+            panelButtons.Dock = DockStyle.Top;
+            panelButtons.Height = 50;
+            panelButtons.FlowDirection = FlowDirection.LeftToRight;
+            panelButtons.Padding = new Padding(10);
+            panelButtons.BackColor = Color.WhiteSmoke;
+            panelButtons.Controls.Add(btnCourseProgress);
 
             // UcCourseDetail
             this.Controls.Add(this.flowPanelSessions);
             this.Controls.Add(this.btnAddSession);
             this.Controls.Add(this.lblCourseName);
-            this.Controls.Add(this.btnCourseProgress);
+            this.Controls.Add(this.panelButtons);
             this.BackColor = Color.Gainsboro;
             this.Name = "UcCourseDetail";
             this.Size = new Size(980, 700);

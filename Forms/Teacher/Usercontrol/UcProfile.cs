@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using CNPM.DAL;
-using System.Xml.Linq;
 
 namespace CNPM.Forms.Teacher
 {
@@ -26,7 +20,7 @@ namespace CNPM.Forms.Teacher
 
         private void LoadProfile()
         {
-            string query = "SELECT FullName, Email, SoDienThoai, QueQuan, Role FROM Users WHERE UserID = @ID";
+            string query = "SELECT FullName, Email, SoDienThoai, QueQuan, Role, AvatarPath FROM Users WHERE UserID = @ID";
             using (var conn = DatabaseHelper.GetConnection())
             using (var cmd = new SqlCommand(query, conn))
             {
@@ -41,6 +35,13 @@ namespace CNPM.Forms.Teacher
                         txtPhone.Text = reader.IsDBNull(2) ? "" : reader.GetString(2);
                         txtAddress.Text = reader.IsDBNull(3) ? "" : reader.GetString(3);
                         txtRole.Text = reader.IsDBNull(4) ? "" : reader.GetString(4);
+                        string avatarPath = reader.IsDBNull(5) ? null : reader.GetString(5);
+                        if (!string.IsNullOrEmpty(avatarPath))
+                        {
+                            string fullPath = Path.Combine(Application.StartupPath, avatarPath.Replace("/", "\\"));
+                            if (File.Exists(fullPath))
+                                picAvatar.Image = Image.FromFile(fullPath);
+                        }
                     }
                 }
             }
@@ -79,6 +80,36 @@ namespace CNPM.Forms.Teacher
                     updateCmd.ExecuteNonQuery();
                     MessageBox.Show("Đổi mật khẩu thành công.");
                 }
+            }
+        }
+
+        private void BtnChooseAvatar_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Ảnh (*.jpg;*.png;*.jpeg)|*.jpg;*.png;*.jpeg";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string sourcePath = dialog.FileName;
+                string fileName = Path.GetFileName(sourcePath);
+                string avatarDir = Path.Combine(Application.StartupPath, "Avatars");
+                if (!Directory.Exists(avatarDir)) Directory.CreateDirectory(avatarDir);
+
+                string destPath = Path.Combine(avatarDir, fileName);
+                File.Copy(sourcePath, destPath, true);
+                picAvatar.Image = Image.FromFile(destPath);
+
+                string relativePath = $"Avatars/{fileName}";
+                using (var conn = DatabaseHelper.GetConnection())
+                using (var cmd = new SqlCommand("UPDATE Users SET AvatarPath = @Path WHERE UserID = @ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Path", relativePath);
+                    cmd.Parameters.AddWithValue("@ID", UserID);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                MessageBox.Show("Cập nhật ảnh đại diện thành công.");
             }
         }
     }

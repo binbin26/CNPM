@@ -13,6 +13,7 @@ namespace CNPM.Forms.Teacher
         private IconButton btnAttachFile;
         private IconButton btnCreateAssignment;
         private IconButton btnDeleteSession;
+        private IconButton btnEditTitle;
 
         private void InitializeComponent()
         {
@@ -90,11 +91,24 @@ namespace CNPM.Forms.Teacher
             this.btnCreateAssignment.Padding = new Padding(10, 5, 10, 5);
             this.btnCreateAssignment.AutoSize = true;
             this.btnCreateAssignment.Cursor = Cursors.Hand;
+            // btnEditTitle
+            btnEditTitle = new IconButton();
+            btnEditTitle.IconChar = IconChar.Pen;
+            btnEditTitle.IconColor = Color.SteelBlue;
+            btnEditTitle.IconSize = 16;
+            btnEditTitle.Size = new Size(30, 30);
+            btnEditTitle.FlatStyle = FlatStyle.Flat;
+            btnEditTitle.FlatAppearance.BorderSize = 0;
+            btnEditTitle.BackColor = Color.Transparent;
+            btnEditTitle.Dock = DockStyle.Right;
+            btnEditTitle.Cursor = Cursors.Hand;
+            btnEditTitle.Click += btnEditTitle_Click;
 
             // UcSessionItem
             this.Controls.Add(this.panelScrollableContent);
             this.Controls.Add(this.lblSessionTitle);
             this.Controls.Add(this.btnDeleteSession);
+            this.Controls.Add(this.btnEditTitle);
             this.Padding = new Padding(5);
             this.Height = 260;
             this.Width = 300; // 👈 thu chiều rộng lại để gọn hơn
