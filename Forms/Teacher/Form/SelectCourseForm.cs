@@ -52,7 +52,7 @@ namespace CNPM.Forms.Teacher
             {
                 DataGridViewButtonColumn btnXem = new DataGridViewButtonColumn
                 {
-                    HeaderText = "Thốg kê",
+                    HeaderText = "Thống kê",
                     Text = "Xem thống kê",
                     UseColumnTextForButtonValue = true,
                     Name = "btnThongke",

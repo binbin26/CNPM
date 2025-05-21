@@ -365,6 +365,9 @@
     <EmbeddedResource Include="Forms\Teacher\Form\MultipleChoiceProgress.resx" />
     <EmbeddedResource Include="Forms\Teacher\Form\SelectCourseForm.resx" />
     <EmbeddedResource Include="Forms\Teacher\Form\TeacherForm.resx" />
+    <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcCourseDetail.resx">
+      <DependentUpon>UcCourseDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcCourses.resx" />
     <EmbeddedResource Include="Forms\Teacher\Usercontrol\UcSubmissions.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">

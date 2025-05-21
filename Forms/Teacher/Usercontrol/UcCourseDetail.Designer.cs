@@ -8,12 +8,14 @@ namespace CNPM.Forms.Teacher
     {
         private Label lblCourseName;
         private Button btnAddSession;
+        private Button btnStat;
         private FlowLayoutPanel flowPanelSessions;
 
         private void InitializeComponent()
         {
             this.lblCourseName = new Label();
             this.btnAddSession = new Button();
+            this.btnStat = new Button();
             this.flowPanelSessions = new FlowLayoutPanel();
 
             // lblCourseName
@@ -43,6 +45,18 @@ namespace CNPM.Forms.Teacher
             this.flowPanelSessions.WrapContents = false;
             this.flowPanelSessions.Padding = new Padding(10);
             this.flowPanelSessions.BackColor = Color.White;
+
+            // btnStat
+            // 
+            this.btnStat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnStat.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.btnStat.Location = new System.Drawing.Point(684, 3);
+            this.btnStat.Name = "btnStat";
+            this.btnStat.Size = new System.Drawing.Size(191, 36);
+            this.btnStat.TabIndex = 0;
+            this.btnStat.Text = "Thống kê trắc nghiệm";
+            this.btnStat.UseVisualStyleBackColor = true;
+            this.btnStat.Click += new EventHandler(this.btnStat_Click);
 
             // UcCourseDetail
             this.Controls.Add(this.flowPanelSessions);
