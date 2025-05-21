@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using CNPM.Models.Assignments;
 
 namespace CNPM.Forms.Teacher
 {
     public partial class FormSetupQuiz : Form
     {
-        private int SessionID, CourseID, TeacherID;
+        private int TeacherID, CourseID, SessionID;
 
-        public FormSetupQuiz(int sessionId, int courseId, int teacherID)
+        public FormSetupQuiz(int teacherID, int courseId, int sessionId)
         {
             InitializeComponent();
-            SessionID = sessionId;
-            CourseID = courseId;
             TeacherID = teacherID;
+            CourseID = courseId;
+            SessionID = sessionId;
         }
         private void RemovePlaceholder(object sender, EventArgs e)
         {
             TextBox tb = sender as TextBox;
-            if (tb != null && (tb.Text == "Số câu hỏi" || tb.Text == "Thời lượng (phút)"))
+            if (tb != null && (
+                tb.Text == "Số câu hỏi" ||
+                tb.Text == "Thời lượng (phút)" ||
+                tb.Text == "Điểm đạt (VD: 5)" ||
+                tb.Text == "Số lần làm tối đa"))
             {
                 tb.Text = "";
                 tb.ForeColor = Color.Black;
@@ -34,6 +39,11 @@ namespace CNPM.Forms.Teacher
                     tb.Text = "Số câu hỏi";
                 else if (tb == txtDuration)
                     tb.Text = "Thời lượng (phút)";
+                else if (tb == txtPassScore)
+                    tb.Text = "Điểm đạt (VD: 5)";
+                else if (tb == txtMaxAttempts)
+                    tb.Text = "Số lần làm tối đa";
+
                 tb.ForeColor = Color.Gray;
             }
         }
@@ -50,8 +60,22 @@ namespace CNPM.Forms.Teacher
                 MessageBox.Show("Thời lượng không hợp lệ.");
                 return;
             }
+            if (!float.TryParse(txtPassScore.Text, out float passScore) || passScore < 0)
+            {
+                MessageBox.Show("Điểm đạt không hợp lệ.");
+                return;
+            }
+            if (!int.TryParse(txtMaxAttempts.Text, out int maxAttempts) || maxAttempts <= 0)
+            {
+                MessageBox.Show("Số lần làm không hợp lệ.");
+                return;
+            }
 
-            var formCreate = new FormCreateQuizQuestions(count,SessionID, CourseID, TeacherID);
+            var formCreate = new FormCreateQuizQuestions(count, TeacherID, CourseID, SessionID)
+            {
+                PassScore = passScore,
+                MaxAttempts = maxAttempts
+            };
             formCreate.ShowDialog();
             this.Close();
         }
