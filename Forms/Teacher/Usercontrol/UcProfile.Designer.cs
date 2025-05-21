@@ -5,7 +5,6 @@ namespace CNPM.Forms.Teacher
 {
     partial class UcProfile
     {
-        private System.ComponentModel.IContainer components = null;
         private TextBox txtName, txtEmail, txtPhone, txtAddress, txtRole, txtOldPassword, txtNewPassword;
         private Button btnChangePassword;
 

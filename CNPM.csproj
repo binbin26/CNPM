@@ -238,19 +238,21 @@
     <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.Designer.cs">
+      <DependentUpon>FormChooseAssignmentType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Teacher\Form\CourseProgress.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Teacher\Form\CourseProgress.Designer.cs" />
-    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.Designer.cs" />
     <Compile Include="Forms\Teacher\Form\FormCreateQuizQuestions.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Teacher\Form\FormCreateQuizQuestions.Designer.cs" />
-    <Compile Include="Forms\Teacher\Form\FormGradeEssay.cs">
+	  <Compile Include="Forms\Teacher\Form\FormGradeEssay.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Teacher\Form\FormGradeEssay.Designer.cs" />
