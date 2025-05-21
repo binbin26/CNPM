@@ -625,3 +625,21 @@ REFERENCES Sessions(SessionID);
 
 ALTER TABLE StudentSubmissions
 ADD AssignmentType NVARCHAR(10) NULL;
+
+-- Thêm cột SessionID (cho phép null)
+ALTER TABLE CourseDocuments
+ADD SessionID INT NULL;
+
+-- Tạo khóa ngoại liên kết đến Sessions(SessionID)
+ALTER TABLE CourseDocuments
+ADD CONSTRAINT FK_CourseDocuments_Sessions
+FOREIGN KEY (SessionID)
+REFERENCES Sessions(SessionID);
+
+DROP TRIGGER TR_DeleteSubmissions;
+
+ALTER TABLE CourseDocuments
+ADD CONSTRAINT CHK_DocumentType_FileTypes
+CHECK (
+    DocumentType IN ('PDF', 'DOCX', 'EXCEL', 'TXT', 'IMAGE')
+);
