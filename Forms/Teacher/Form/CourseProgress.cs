@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
 {
-    public partial class CourseProgress: Form
+    public partial class CourseProgress : Form
     {
         private int _courseId;
         private readonly AssignmentBLL _assignmentBLL = new AssignmentBLL();

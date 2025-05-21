@@ -238,11 +238,15 @@
     <Compile Include="Forms\Student\ucTongQuan.Designer.cs">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\Form\CourseProgress.cs" />
+    <Compile Include="Forms\Teacher\Form\CourseProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Teacher\Form\CourseProgress.Designer.cs">
       <DependentUpon>CourseProgress.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs" />
+    <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Teacher\Form\FormChooseAssignmentType.Designer.cs">
       <DependentUpon>FormChooseAssignmentType.cs</DependentUpon>
     </Compile>
@@ -330,7 +334,9 @@
     <Compile Include="Forms\Teacher\Usercontrol\UcSessionItem.Designer.cs">
       <DependentUpon>UcSessionItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.cs" />
+    <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.Designer.cs">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </Compile>
