@@ -1,8 +1,10 @@
-﻿using CNPM.DAL;
+﻿using ClosedXML.Excel;
+using CNPM.DAL;
 using CNPM.Models.Assignments;
+using CNPM.Models.Courses;
 using System;
 using System.Collections.Generic;
-using CNPM.Models.Courses;
+using System.Windows.Forms;
 
 public class AssignmentBLL
 {
@@ -54,5 +56,33 @@ public class AssignmentBLL
         }
 
         return data;
+    }
+
+    public List<QuestionStatsDTO> GetPerformance(int assignmentId)
+    {
+        return _assignmentDAL.GetQuestionPerformance(assignmentId);
+    }
+    public void ExportQuestionStatsToExcel(List<QuestionStatsDTO> data, string filePath)
+    {
+        var wb = new XLWorkbook();
+        var ws = wb.Worksheets.Add("Report");
+
+        ws.Cell(1, 1).Value = "Câu hỏi";
+        ws.Cell(1, 2).Value = "Lượt trả lời";
+        ws.Cell(1, 3).Value = "Tỉ lệ đúng (%)";
+        ws.Cell(1, 4).Value = "Tỉ lệ sai (%)";
+        ws.Cell(1, 5).Value = "Độ khó";
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            ws.Cell(i + 2, 1).Value = data[i].Content;
+            ws.Cell(i + 2, 2).Value = data[i].TotalAnswers;
+            ws.Cell(i + 2, 3).Value = data[i].CorrectRate;
+            ws.Cell(i + 2, 4).Value = Math.Round(100 - data[i].CorrectRate, 2);
+            ws.Cell(i + 2, 5).Value = data[i].Difficulty;
+        }
+
+        ws.Columns().AdjustToContents();
+        wb.SaveAs(filePath);
     }
 }

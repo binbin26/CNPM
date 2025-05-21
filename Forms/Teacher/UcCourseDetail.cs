@@ -62,5 +62,11 @@ namespace CNPM.Forms.Teacher
                 flowPanelSessions.Controls.Add(sessionItem);
             }
         }
+
+        private void btnStat_Click(object sender, EventArgs e)
+        {
+            MultipleChoiceProgress progressForm = new MultipleChoiceProgress(currentCourse.CourseID);
+            progressForm.ShowDialog();
+        }
     }
 }

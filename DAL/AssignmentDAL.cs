@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using CNPM.Models.Assignments;
 using CNPM.Models.Courses;
+using ClosedXML.Excel;
 
 namespace CNPM.DAL
 {
@@ -106,7 +107,7 @@ namespace CNPM.DAL
         {
             var reports = new List<ProgressReportDTO>();
 
-            using (var conn = DatabaseHelper.GetConnection())
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
                 string query = @"
             SELECT 
@@ -160,6 +161,55 @@ WHERE ce.CourseID = @CourseID";
 
             return reports;
         }
+        //report 3
+        public List<QuestionStatsDTO> GetQuestionPerformance(int assignmentId)
+        {
+            var list = new List<QuestionStatsDTO>();
+            string query = @"
+            SELECT 
+    q.QuestionID,
+    q.QuestionText,
+    COUNT(sa.AnswerID) AS TotalAnswers,
+    CAST(SUM(CASE WHEN sa.IsCorrect = 1 THEN 1 ELSE 0 END) AS FLOAT) / 
+        NULLIF(COUNT(sa.AnswerID), 0) * 100 AS CorrectRate,
+    CAST(SUM(CASE WHEN sa.IsCorrect = 0 THEN 1 ELSE 0 END) AS FLOAT) / 
+        NULLIF(COUNT(sa.AnswerID), 0) * 100 AS IncorrectRate,
+    CASE 
+        WHEN CAST(SUM(CASE WHEN sa.IsCorrect = 1 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(sa.AnswerID), 0) >= 0.8 THEN N'Dễ'
+        WHEN CAST(SUM(CASE WHEN sa.IsCorrect = 1 THEN 1 ELSE 0 END) AS FLOAT) / NULLIF(COUNT(sa.AnswerID), 0) >= 0.5 THEN N'Trung bình'
+        ELSE N'Khó'
+    END AS Difficulty
+FROM Questions q
+LEFT JOIN StudentAnswers sa ON q.QuestionID = sa.QuestionID
+WHERE q.AssignmentID = @AssignmentID
+GROUP BY q.QuestionID, q.QuestionText
+ORDER BY q.QuestionID";
 
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@assignmentId", assignmentId);
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var dto = new QuestionStatsDTO
+                        {
+                            QuestionID = reader.GetInt32(0),
+                            Content = reader.GetString(1),
+                            TotalAnswers = reader.GetInt32(2),
+                            CorrectRate = Math.Round(reader.GetDouble(3), 2)
+                        };
+
+                        dto.Difficulty = dto.CorrectRate >= 80 ? "Dễ" :
+                                         dto.CorrectRate >= 50 ? "Trung bình" : "Khó";
+
+                        list.Add(dto);
+                    }
+                }
+            }
+            return list;
+        }
     }
 }
