@@ -30,7 +30,7 @@ namespace CNPM.Forms.Student
             if (dtGAssign.Columns.Count > 0)
             {
                 dtGAssign.Columns["AssignmentID"].HeaderText = "Mã bài tập";
-                dtGAssign.Columns["CourseID"].HeaderText = "Mã khóa học";
+                dtGAssign.Columns["CourseName"].HeaderText = "Khóa học";
                 dtGAssign.Columns["Title"].HeaderText = "Tiêu đề";
                 dtGAssign.Columns["Description"].HeaderText = "Mô tả";
                 dtGAssign.Columns["DueDate"].HeaderText = "Hạn nộp";

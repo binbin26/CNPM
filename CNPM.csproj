@@ -379,6 +379,9 @@
     <EmbeddedResource Include="Forms\Student\ucDiemTrungBinh.resx">
       <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucQuiz.resx">
+      <DependentUpon>ucQuiz.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
       <DependentUpon>ucTongQuan.cs</DependentUpon>
     </EmbeddedResource>
