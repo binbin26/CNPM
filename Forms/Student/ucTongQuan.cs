@@ -56,10 +56,6 @@ namespace CNPM.Forms.Student
                                 {
                                     AvatarPict.Image = new Bitmap(avatarPath);
                                 }
-                                else
-                                {
-                                    AvatarPict.Image = new Bitmap(@"C:\Users\baong\OneDrive\Desktop\CNPM\Resources\Avatar\defaultAvatar.png");
-                                }
                             }
                         }
                     }
@@ -73,8 +69,8 @@ namespace CNPM.Forms.Student
 
         private void btnPass_Click(object sender, EventArgs e)
         {
-            string oldPass = txtOP.Text.Trim();
-            string newPass = txtNP.Text.Trim();
+            string oldPass = txtOP.Text.Trim() ?? string.Empty; 
+            string newPass = txtNP.Text.Trim() ?? string.Empty; 
 
             if (string.IsNullOrEmpty(oldPass) || string.IsNullOrEmpty(newPass))
             {
@@ -107,7 +103,7 @@ namespace CNPM.Forms.Student
                 string selectedFile = openFileDialog.FileName;
                 string fileExtension = Path.GetExtension(selectedFile);
                 string newFileName = _username + fileExtension;
-                string saveDirectory = Path.Combine(Application.StartupPath, "Avartar", "Student");
+                string saveDirectory = Path.Combine(Application.StartupPath, "Avatars", "Student");
 
                 if (!Directory.Exists(saveDirectory))
                 {

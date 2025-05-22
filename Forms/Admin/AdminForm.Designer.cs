@@ -987,21 +987,18 @@ namespace CNPM.Forms.Admin
                 lblPhoneValue.Text = admin.SoDienThoai;
                 lblHometownValue.Text = admin.QueQuan;
                 lblRoleValue.Text = "Admin";
-
+                string avatarPath = admin.AvatarPath;
                 if (!string.IsNullOrEmpty(admin.AvatarPath) && File.Exists(admin.AvatarPath))
                 {
+                    
                     try
                     {
                         picAvatar.Image = new Bitmap(admin.AvatarPath);
                     }
                     catch
                     {
-                        picAvatar.Image = new Bitmap(@"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\defaultAvatar.png");
+                        picAvatar.Image = new Bitmap(avatarPath);
                     }
-                }
-                else
-                {
-                    picAvatar.Image = new Bitmap(@"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\defaultAvatar.png");
                 }
             }
             else
@@ -1011,7 +1008,6 @@ namespace CNPM.Forms.Admin
                 lblPhoneValue.Text = "N/A";
                 lblHometownValue.Text = "N/A";
                 lblRoleValue.Text = "Admin";
-                picAvatar.Image = new Bitmap(@"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\defaultAvatar.png");
             }
         }
 
@@ -1055,7 +1051,8 @@ namespace CNPM.Forms.Admin
 
                 // Cập nhật mật khẩu mới vào PasswordHash
                 admin.PasswordHash = newPassword;
-                if (_userBLL.UpdateUser(admin))
+
+                if (_userBLL.ChangeUserPassword(_userContext.CurrentUser.Username, oldPassword, newPassword))
                 {
                     MessageBox.Show("Đổi mật khẩu thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     txtOldPassword.Clear();
@@ -1092,7 +1089,7 @@ namespace CNPM.Forms.Admin
                     string selectedFile = openFileDialog.FileName;
                     string fileExtension = Path.GetExtension(selectedFile);
                     string newFileName = admin.Username + fileExtension;
-                    string saveDirectory = @"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\Admin";
+                    string saveDirectory = Path.Combine(Application.StartupPath, "Avatars", "Admin");
                     string savePath = Path.Combine(saveDirectory, newFileName);
 
                     try
