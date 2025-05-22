@@ -206,24 +206,11 @@ namespace CNPM.Forms.Admin
 
             txtOldPassword = new TextBox();
             txtOldPassword.Location = new Point(25 + labelWidth + 10, yPos);
-            txtOldPassword.Size = new Size(110, 20);
+            txtOldPassword.Size = new Size(200, 20);
             txtOldPassword.Name = "txtOldPassword";
             txtOldPassword.PasswordChar = '*';
             txtOldPassword.Font = valueFont;
             infoPanel.Controls.Add(txtOldPassword);
-
-            Button btnChangePassword = new Button();
-            btnChangePassword.Text = "Đổi mật khẩu";
-            btnChangePassword.Location = new Point(25 + labelWidth + 130, yPos - 2);
-            btnChangePassword.Size = new Size(100, 26);
-            btnChangePassword.Name = "btnChangePassword";
-            btnChangePassword.BackColor = Color.FromArgb(0, 122, 204);
-            btnChangePassword.ForeColor = Color.White;
-            btnChangePassword.FlatStyle = FlatStyle.Flat;
-            btnChangePassword.FlatAppearance.BorderSize = 0;
-            btnChangePassword.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
-            btnChangePassword.Click += BtnChangePassword_Click;
-            infoPanel.Controls.Add(btnChangePassword);
 
             yPos += spacing;
             Label lblNewPassword = new Label();
@@ -233,13 +220,26 @@ namespace CNPM.Forms.Admin
             lblNewPassword.Font = labelFont;
             infoPanel.Controls.Add(lblNewPassword);
 
-            txtNewPassword = new TextBox();
-            txtNewPassword.Location = new Point(25 + labelWidth + 10, yPos);
-            txtNewPassword.Size = new Size(110, 20);
-            txtNewPassword.Name = "txtNewPassword";
-            txtNewPassword.PasswordChar = '*';
-            txtNewPassword.Font = valueFont;
-            infoPanel.Controls.Add(txtNewPassword);
+            txtChangePassword = new TextBox();
+            txtChangePassword.Location = new Point(25 + labelWidth + 10, yPos);
+            txtChangePassword.Size = new Size(200, 20);
+            txtChangePassword.Name = "txtChangePassword";
+            txtChangePassword.PasswordChar = '*';
+            txtChangePassword.Font = valueFont;
+            infoPanel.Controls.Add(txtChangePassword);
+
+            Button btnChangePassword = new Button();
+            btnChangePassword.Text = "Đổi mật khẩu";
+            btnChangePassword.Location = new Point(25 + labelWidth + 220, yPos - 2);
+            btnChangePassword.Size = new Size(100, 26);
+            btnChangePassword.Name = "btnChangePassword";
+            btnChangePassword.BackColor = Color.FromArgb(0, 122, 204);
+            btnChangePassword.ForeColor = Color.White;
+            btnChangePassword.FlatStyle = FlatStyle.Flat;
+            btnChangePassword.FlatAppearance.BorderSize = 0;
+            btnChangePassword.Font = new Font("Segoe UI", 9.5f, FontStyle.Bold);
+            btnChangePassword.Click += BtnChangePassword_Click;
+            infoPanel.Controls.Add(btnChangePassword);
 
             yPos += spacing * 2;
             Button btnLogout = new Button();
@@ -1028,7 +1028,7 @@ namespace CNPM.Forms.Admin
 
                 // Lấy mật khẩu cũ và mới từ TextBox
                 string oldPassword = txtOldPassword?.Text?.Trim() ?? string.Empty;
-                string newPassword = txtNewPassword?.Text?.Trim() ?? string.Empty;
+                string newPassword = txtChangePassword?.Text?.Trim() ?? string.Empty;
 
                 if (string.IsNullOrEmpty(oldPassword))
                 {
@@ -1040,7 +1040,7 @@ namespace CNPM.Forms.Admin
                 if (string.IsNullOrEmpty(newPassword))
                 {
                     MessageBox.Show("Vui lòng nhập mật khẩu mới", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtNewPassword.Focus();
+                    txtChangePassword.Focus();
                     return;
                 }
 
@@ -1059,7 +1059,7 @@ namespace CNPM.Forms.Admin
                 {
                     MessageBox.Show("Đổi mật khẩu thành công", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     txtOldPassword.Clear();
-                    txtNewPassword.Clear();
+                    txtChangePassword.Clear();
                 }
                 else
                 {
@@ -1142,6 +1142,7 @@ namespace CNPM.Forms.Admin
         private TextBox txtNewUsername;
         private TextBox txtNewFullName;
         private TextBox txtNewPassword;
+        private TextBox txtChangePassword;
         private ComboBox cmbNewRole;
         private Button btnAddAccount;
         private ComboBox cmbAccounts;
