@@ -76,7 +76,6 @@ namespace CNPM.DAL
             a.DueDate,
             a.MaxScore,
             a.CreatedBy,
-            a.AssignmentType,
             CASE 
                 WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
                 ELSE N'Chưa nộp'
