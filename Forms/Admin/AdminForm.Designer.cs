@@ -9,6 +9,7 @@ using CNPM.Models.Users;
 using CNPM.Models.Courses;
 using CNPM.Forms.Shared;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace CNPM.Forms.Admin
 {
@@ -987,13 +988,20 @@ namespace CNPM.Forms.Admin
                 lblHometownValue.Text = admin.QueQuan;
                 lblRoleValue.Text = "Admin";
 
-                if (admin != null && !string.IsNullOrEmpty(admin.AvatarPath) && System.IO.File.Exists(admin.AvatarPath))
+                if (!string.IsNullOrEmpty(admin.AvatarPath) && File.Exists(admin.AvatarPath))
                 {
-                    picAvatar.Image = Image.FromFile(admin.AvatarPath);
+                    try
+                    {
+                        picAvatar.Image = new Bitmap(admin.AvatarPath);
+                    }
+                    catch
+                    {
+                        picAvatar.Image = new Bitmap(@"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\defaultAvatar.png");
+                    }
                 }
                 else
                 {
-                    picAvatar.Image = new Bitmap(1, 1);
+                    picAvatar.Image = new Bitmap(@"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\defaultAvatar.png");
                 }
             }
             else
@@ -1003,6 +1011,7 @@ namespace CNPM.Forms.Admin
                 lblPhoneValue.Text = "N/A";
                 lblHometownValue.Text = "N/A";
                 lblRoleValue.Text = "Admin";
+                picAvatar.Image = new Bitmap(@"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\defaultAvatar.png");
             }
         }
 
@@ -1074,51 +1083,50 @@ namespace CNPM.Forms.Admin
                     return;
                 }
 
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Title = "Chọn ảnh đại diện";
+                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
-                    openFileDialog.Title = "Select an Avatar Image";
+                    string selectedFile = openFileDialog.FileName;
+                    string fileExtension = Path.GetExtension(selectedFile);
+                    string newFileName = admin.Username + fileExtension;
+                    string saveDirectory = @"C:\Users\Lenovo\Downloads\CNPM\Resources\Avatar\Admin";
+                    string savePath = Path.Combine(saveDirectory, newFileName);
 
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    try
                     {
-                        string selectedFilePath = openFileDialog.FileName;
+                        Directory.CreateDirectory(saveDirectory);
+                        if (picAvatar.Image != null)
+                        {
+                            picAvatar.Image.Dispose();
+                            picAvatar.Image = null;
+                        }
+                        File.Copy(selectedFile, savePath, true);
                         
-                        // Tạo thư mục Avatars nếu chưa tồn tại
-                        string avatarDirectory = Path.Combine(Application.StartupPath, "Avatars");
-                        if (!Directory.Exists(avatarDirectory))
-                        {
-                            Directory.CreateDirectory(avatarDirectory);
-                        }
-
-                        // Tạo tên file mới dựa trên UserID
-                        string newFileName = $"avatar_{admin.UserID}{Path.GetExtension(selectedFilePath)}";
-                        string newFilePath = Path.Combine(avatarDirectory, newFileName);
-
-                        // Xóa avatar cũ nếu tồn tại
-                        if (!string.IsNullOrEmpty(admin.AvatarPath) && File.Exists(admin.AvatarPath))
-                        {
-                            try
-                            {
-                                File.Delete(admin.AvatarPath);
-                            }
-                            catch { /* Ignore error if can't delete old avatar */ }
-                        }
-
-                        // Copy file mới vào thư mục Avatars
-                        File.Copy(selectedFilePath, newFilePath, true);
-
                         // Cập nhật đường dẫn avatar trong database
-                        admin.AvatarPath = newFilePath;
-                        if (_userBLL.UpdateUser(admin))
+                        admin.AvatarPath = savePath;
+                        bool updated = _userBLL.UpdateUser(admin);
+
+                        if (updated)
                         {
-                            // Cập nhật hiển thị avatar
-                            picAvatar.Image = Image.FromFile(newFilePath);
-                            MessageBox.Show("Avatar updated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (picAvatar.Image != null)
+                            {
+                                picAvatar.Image.Dispose();
+                                picAvatar.Image = null;
+                            }
+                            picAvatar.Image = new Bitmap(savePath);
+                            MessageBox.Show("Ảnh đại diện đã được cập nhật!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            MessageBox.Show("Failed to update avatar", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Cập nhật không thành công!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi khi cập nhật ảnh đại diện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

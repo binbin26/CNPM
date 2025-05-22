@@ -180,7 +180,8 @@ namespace CNPM.DAL
                             Email = @Email,
                             IsActive = @IsActive,
                             QueQuan = @QueQuan,
-                            SoDienThoai = @SoDienThoai
+                            SoDienThoai = @SoDienThoai,
+                            AvatarPath = @AvatarPath
                         WHERE UserID = @UserID";
 
                         SqlCommand cmd = new SqlCommand(query, conn, transaction);
@@ -192,6 +193,7 @@ namespace CNPM.DAL
                         cmd.Parameters.AddWithValue("@QueQuan", user.QueQuan ?? "");
                         cmd.Parameters.AddWithValue("@SoDienThoai", user.SoDienThoai ?? "");
                         cmd.Parameters.AddWithValue("@IsActive", true);
+                        cmd.Parameters.AddWithValue("@AvatarPath", (object)user.AvatarPath ?? DBNull.Value);
 
                         cmd.ExecuteNonQuery();
                         transaction.Commit();
