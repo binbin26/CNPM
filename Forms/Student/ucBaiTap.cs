@@ -1,9 +1,6 @@
-﻿using CNPM.BLL;
-using CNPM.Forms.Teacher.Usercontrol;
-using CNPM.Models.Assignments;
+﻿using CNPM.Models.Assignments;
 using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
 using System.Windows.Forms;
 
 namespace CNPM.Forms.Student

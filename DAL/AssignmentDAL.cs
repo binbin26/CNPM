@@ -207,7 +207,7 @@ ORDER BY q.QuestionID";
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
-                cmd.Parameters.AddWithValue("@assignmentId", assignmentId);
+                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {

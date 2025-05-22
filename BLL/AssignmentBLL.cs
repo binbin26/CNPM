@@ -3,10 +3,11 @@ using CNPM.DAL;
 using CNPM.Models.Assignments;
 using CNPM.Models.Courses;
 using CNPM.Models.Courses.Sessions;
+using CNPM.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Windows.Forms;
-using CNPM.Utilities;
 
 public class AssignmentBLL
 {
@@ -25,12 +26,30 @@ public class AssignmentBLL
     {
         try
         {
-            return _assignmentDAL.GetAssignmentsForStudentWithStatus(username);
+            var assignments = _assignmentDAL.GetAssignmentsForStudentWithStatus(username);
+
+            if (assignments == null)
+            {
+                Logger.LogError($"Không tìm thấy username: {username} trong hệ thống.");
+                throw new ArgumentException($"Không tìm thấy tài khoản sinh viên với tên đăng nhập: {username}");
+            }
+
+            return assignments;
+        }
+        catch (SqlException sqlEx)
+        {
+            Logger.LogError($"[SQL ERROR] Lỗi truy vấn CSDL cho sinh viên '{username}': {sqlEx}");
+            throw new ApplicationException("Đã xảy ra lỗi truy vấn cơ sở dữ liệu. Vui lòng thử lại hoặc liên hệ hỗ trợ kỹ thuật.", sqlEx);
+        }
+        catch (ArgumentException argEx)
+        {
+            // Đã nêu ở trên
+            throw; // giữ nguyên thông báo gốc
         }
         catch (Exception ex)
         {
-            Logger.LogError("Lỗi khi lấy bài tập có trạng thái cho sinh viên: " + ex.ToString());
-            throw new ApplicationException("Không thể lấy bài tập của sinh viên.", ex);
+            Logger.LogError($"[UNKNOWN ERROR] Lỗi không xác định khi lấy bài tập cho sinh viên '{username}': {ex}");
+            throw new ApplicationException("Đã xảy ra lỗi không xác định. Vui lòng thử lại hoặc liên hệ quản trị viên.", ex);
         }
     }
 
@@ -73,7 +92,7 @@ public class AssignmentBLL
     {
         return _assignmentDAL.GetQuestionPerformance(assignmentId);
     }
-    /// Lấy danh sách bài tự luận của một bài tập
+    // Lấy danh sách bài tự luận của một bài tập
     public List<EssaySubmissionDTO> GetEssaySubmissions(int assignmentId, int teacherId)
     {
         try
