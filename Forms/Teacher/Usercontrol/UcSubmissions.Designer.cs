@@ -11,10 +11,6 @@ namespace CNPM.Forms.Teacher.Usercontrol
         private System.Windows.Forms.Label lblSelectAssignment;
         private System.Windows.Forms.ComboBox cboAssignments;
         private System.Windows.Forms.DataGridView dgvSubmissions;
-        private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Button btnOpenFile;
-        private System.Windows.Forms.NumericUpDown nudScore;
-        private System.Windows.Forms.Button btnSubmitScore;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -40,28 +36,29 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.lblSelectAssignment = new System.Windows.Forms.Label();
             this.cboAssignments = new System.Windows.Forms.ComboBox();
             this.dgvSubmissions = new System.Windows.Forms.DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnQuiz = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.nudScore = new System.Windows.Forms.NumericUpDown();
             this.btnSubmitScore = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnQuiz = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubmissions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudScore)).BeginInit();
             this.SuspendLayout();
             // 
             // lblSelectAssignment
             // 
+            this.lblSelectAssignment.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.lblSelectAssignment.Location = new System.Drawing.Point(20, 10);
             this.lblSelectAssignment.Name = "lblSelectAssignment";
-            this.lblSelectAssignment.Size = new System.Drawing.Size(100, 24);
+            this.lblSelectAssignment.Size = new System.Drawing.Size(122, 24);
             this.lblSelectAssignment.TabIndex = 0;
             this.lblSelectAssignment.Text = "Chọn bài tập:";
             // 
             // cboAssignments
             // 
             this.cboAssignments.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboAssignments.Location = new System.Drawing.Point(130, 10);
+            this.cboAssignments.Location = new System.Drawing.Point(130, 12);
             this.cboAssignments.Name = "cboAssignments";
             this.cboAssignments.Size = new System.Drawing.Size(250, 24);
             this.cboAssignments.TabIndex = 1;
@@ -79,43 +76,9 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.dgvSubmissions.ReadOnly = true;
             this.dgvSubmissions.RowHeadersWidth = 51;
             this.dgvSubmissions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSubmissions.Size = new System.Drawing.Size(691, 293);
+            this.dgvSubmissions.Size = new System.Drawing.Size(1137, 596);
             this.dgvSubmissions.TabIndex = 0;
             this.dgvSubmissions.SelectionChanged += new System.EventHandler(this.dgvSubmissions_SelectionChanged);
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(20, 360);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(90, 30);
-            this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.Text = "Tải lại";
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
-            // btnOpenFile
-            // 
-            this.btnOpenFile.Location = new System.Drawing.Point(120, 360);
-            this.btnOpenFile.Name = "btnOpenFile";
-            this.btnOpenFile.Size = new System.Drawing.Size(100, 30);
-            this.btnOpenFile.TabIndex = 3;
-            this.btnOpenFile.Text = "Xem bài nộp";
-            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
-            // 
-            // nudScore
-            // 
-            this.nudScore.Location = new System.Drawing.Point(230, 365);
-            this.nudScore.Name = "nudScore";
-            this.nudScore.Size = new System.Drawing.Size(60, 22);
-            this.nudScore.TabIndex = 4;
-            // 
-            // btnSubmitScore
-            // 
-            this.btnSubmitScore.Location = new System.Drawing.Point(300, 360);
-            this.btnSubmitScore.Name = "btnSubmitScore";
-            this.btnSubmitScore.Size = new System.Drawing.Size(100, 30);
-            this.btnSubmitScore.TabIndex = 5;
-            this.btnSubmitScore.Text = "Chấm điểm";
-            this.btnSubmitScore.Click += new System.EventHandler(this.btnSubmitScore_Click);
             // 
             // label1
             // 
@@ -131,29 +94,60 @@ namespace CNPM.Forms.Teacher.Usercontrol
             // btnQuiz
             // 
             this.btnQuiz.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnQuiz.Location = new System.Drawing.Point(475, 365);
+            this.btnQuiz.Location = new System.Drawing.Point(921, 664);
             this.btnQuiz.Name = "btnQuiz";
             this.btnQuiz.Size = new System.Drawing.Size(236, 27);
-            this.btnQuiz.TabIndex = 7;
+            this.btnQuiz.TabIndex = 12;
             this.btnQuiz.Text = "Danh sách bài trắc nghiệm";
             this.btnQuiz.UseVisualStyleBackColor = true;
-            this.btnQuiz.Click += new System.EventHandler(this.btnQuiz_Click);
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(20, 664);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(90, 29);
+            this.btnRefresh.TabIndex = 8;
+            this.btnRefresh.Text = "Tải lại";
+            // 
+            // btnOpenFile
+            // 
+            this.btnOpenFile.Location = new System.Drawing.Point(130, 664);
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Size = new System.Drawing.Size(100, 29);
+            this.btnOpenFile.TabIndex = 9;
+            this.btnOpenFile.Text = "Xem bài nộp";
+            // 
+            // nudScore
+            // 
+            this.nudScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.nudScore.Location = new System.Drawing.Point(387, 667);
+            this.nudScore.Name = "nudScore";
+            this.nudScore.Size = new System.Drawing.Size(60, 26);
+            this.nudScore.TabIndex = 10;
+            // 
+            // btnSubmitScore
+            // 
+            this.btnSubmitScore.Location = new System.Drawing.Point(262, 664);
+            this.btnSubmitScore.Name = "btnSubmitScore";
+            this.btnSubmitScore.Size = new System.Drawing.Size(100, 29);
+            this.btnSubmitScore.TabIndex = 11;
+            this.btnSubmitScore.Text = "Chấm điểm";
             // 
             // UcSubmissions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnQuiz);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.lblSelectAssignment);
-            this.Controls.Add(this.cboAssignments);
-            this.Controls.Add(this.dgvSubmissions);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.nudScore);
             this.Controls.Add(this.btnSubmitScore);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblSelectAssignment);
+            this.Controls.Add(this.cboAssignments);
+            this.Controls.Add(this.dgvSubmissions);
             this.Name = "UcSubmissions";
-            this.Size = new System.Drawing.Size(741, 403);
+            this.Size = new System.Drawing.Size(1187, 706);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubmissions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudScore)).EndInit();
             this.ResumeLayout(false);
@@ -165,5 +159,9 @@ namespace CNPM.Forms.Teacher.Usercontrol
 
         private Label label1;
         private Button btnQuiz;
+        private Button btnRefresh;
+        private Button btnOpenFile;
+        private NumericUpDown nudScore;
+        private Button btnSubmitScore;
     }
 }

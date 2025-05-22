@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-
+using System.Windows.Forms;
 
 namespace CNPM.BLL
 {
@@ -228,7 +228,7 @@ namespace CNPM.BLL
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(selectedImagePath))
                 throw new ArgumentException("Username hoặc ảnh không hợp lệ");
 
-            string avatarFolderPath = @"C:\Users\baong\OneDrive\Desktop\CNPM\Resources\Avatar\Student";
+            string avatarFolderPath = Path.Combine(Application.StartupPath, "Avatars", "Student");
 
             if (!Directory.Exists(avatarFolderPath))
             {

@@ -1104,7 +1104,7 @@ namespace CNPM.Forms.Admin
                         
                         // Cập nhật đường dẫn avatar trong database
                         admin.AvatarPath = savePath;
-                        bool updated = _userBLL.UpdateUser(admin);
+                        bool updated = _userBLL.ChangeUserAvatar(savePath, _userContext.CurrentUser.Username);
 
                         if (updated)
                         {
