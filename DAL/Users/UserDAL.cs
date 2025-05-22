@@ -96,7 +96,7 @@ namespace CNPM.DAL
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Username", username);
-                    cmd.Parameters.Add("@Avatar", SqlDbType.VarBinary).Value = avatarImage;
+                    cmd.Parameters.AddWithValue("@AvatarPath", (object)avatarImage ?? DBNull.Value);
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
@@ -118,15 +118,42 @@ namespace CNPM.DAL
 
         public bool UpdateAvatarPath(string username, string newPath)
         {
-            string query = "UPDATE Users SET AvatarPath = @AvatarPath WHERE Username = @Username";
+            string query = @"
+                UPDATE Users 
+                SET AvatarPath = @AvatarPath 
+                WHERE Username = @Username";
+
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlTransaction transaction = conn.BeginTransaction())
                 {
-                    cmd.Parameters.AddWithValue("@Username", username);
-                    cmd.Parameters.AddWithValue("@AvatarPath", newPath);
-                    return cmd.ExecuteNonQuery() > 0;
+                    try
+                    {
+                        using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@Username", username);
+                            cmd.Parameters.AddWithValue("@AvatarPath", newPath);
+                            
+                            int result = cmd.ExecuteNonQuery();
+                            if (result > 0)
+                            {
+                                transaction.Commit();
+                                return true;
+                            }
+                            else
+                            {
+                                transaction.Rollback();
+                                return false;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        Logger.LogError($"Lỗi khi cập nhật AvatarPath: {ex.Message}");
+                        throw;
+                    }
                 }
             }
         }
@@ -155,7 +182,8 @@ namespace CNPM.DAL
                             FullName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "",
                             QueQuan = reader["QueQuan"] != DBNull.Value ? reader["QueQuan"].ToString() : "",
                             SoDienThoai = reader["SoDienThoai"] != DBNull.Value ? reader["SoDienThoai"].ToString() : "",
-                            Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : ""
+                            Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : "",
+                            AvatarPath = reader["AvatarPath"] != DBNull.Value ? reader["AvatarPath"].ToString() : ""
                         };
                     }
                     return null;

@@ -52,7 +52,7 @@ namespace CNPM.Forms.Teacher
                 Margin = new Padding(10),
                 Cursor = Cursors.Hand,
                 BorderStyle = BorderStyle.FixedSingle,
-                Tag = new Course {TeacherID = TeacherId, CourseID = courseId, CourseName = courseName}
+                Tag = new Course { TeacherID = TeacherId, CourseID = courseId, CourseName = courseName }
             };
 
             // Bo góc
@@ -98,7 +98,6 @@ namespace CNPM.Forms.Teacher
             panel.Click += Course_Click;
             return panel;
         }
-
         private void Course_Click(object sender, EventArgs e)
         {
             Control control = sender as Control;
