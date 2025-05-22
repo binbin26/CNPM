@@ -973,7 +973,7 @@ namespace CNPM.Forms.Admin
                 return;
             }
 
-            var enrolledStudentsForm = new EnrolledStudentsForm(_courseId, _courseBLL, _userBLL);
+            var enrolledStudentsForm = new EnrolledStudentsForm(selectedCourseId, _courseBLL, _userBLL);
             enrolledStudentsForm.ShowDialog();
         }
 
