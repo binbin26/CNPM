@@ -36,32 +36,42 @@ namespace CNPM.DAL
             }
             return courses;
         }
-        public bool EnrollStudent(int studentID, int courseID)
+        public string EnrollStudent(int studentID, int courseID)
         {
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
-                // Giả sử bạn có bảng Enrollments với các cột: StudentID, CourseID
-                string checkQuery = "SELECT COUNT(*) FROM CourseEnrollments WHERE StudentID = @StudentID AND CourseID = @CourseID";
-                string insertQuery = "INSERT INTO CourseEnrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";
+                // 1. Kiểm tra CourseID có tồn tại không
+                string checkCourseQuery = "SELECT COUNT(*) FROM Courses WHERE CourseID = @CourseID";
+                SqlCommand checkCourseCmd = new SqlCommand(checkCourseQuery, conn);
+                checkCourseCmd.Parameters.AddWithValue("@CourseID", courseID);
 
+                conn.Open();
+                int courseExists = (int)checkCourseCmd.ExecuteScalar();
+                if (courseExists == 0)
+                {
+                    return "CourseNotFound";
+                }
+
+                // 2. Kiểm tra đã ghi danh chưa
+                string checkQuery = "SELECT COUNT(*) FROM CourseEnrollments WHERE StudentID = @StudentID AND CourseID = @CourseID";
                 SqlCommand checkCmd = new SqlCommand(checkQuery, conn);
                 checkCmd.Parameters.AddWithValue("@StudentID", studentID);
                 checkCmd.Parameters.AddWithValue("@CourseID", courseID);
 
-                conn.Open();
                 int exists = (int)checkCmd.ExecuteScalar();
-
                 if (exists > 0)
                 {
-                    return false; // Đã ghi danh rồi
+                    return "AlreadyEnrolled";
                 }
 
+                // 3. Thực hiện insert
+                string insertQuery = "INSERT INTO CourseEnrollments (StudentID, CourseID) VALUES (@StudentID, @CourseID)";
                 SqlCommand insertCmd = new SqlCommand(insertQuery, conn);
                 insertCmd.Parameters.AddWithValue("@StudentID", studentID);
                 insertCmd.Parameters.AddWithValue("@CourseID", courseID);
 
                 int rowsAffected = insertCmd.ExecuteNonQuery();
-                return rowsAffected > 0;
+                return rowsAffected > 0 ? "Success" : "Error";
             }
         }
             // Lấy danh sách khóa học do Giảng viên phụ trách

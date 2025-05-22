@@ -48,8 +48,6 @@ namespace CNPM.Forms.Teacher
 
         private void SaveToDatabase()
         {
-            MessageBox.Show($"DEBUG →  TeacherID: {TeacherID}, CourseID: {CourseID}");
-            MessageBox.Show($"DEBUG → SessionID = {SessionID}");
             using (var conn = DAL.DatabaseHelper.GetConnection())
             {
                 conn.Open();
@@ -86,22 +84,15 @@ namespace CNPM.Forms.Teacher
 
                 // Lưu danh sách câu hỏi
                 string insertQuestion = @"
-                    INSERT INTO Questions 
-                    (QuestionID, AssignmentID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer)
-                    VALUES 
-                    (@QID, @AID, @Q, @A, @B, @C, @D, @Ans)";
-
-                int nextQuestionID = 1;
-                using (var getMaxCmd = new SqlCommand("SELECT ISNULL(MAX(QuestionID), 0) + 1 FROM Questions", conn))
-                {
-                    nextQuestionID = (int)getMaxCmd.ExecuteScalar();
-                }
+    INSERT INTO Questions 
+    (AssignmentID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer)
+    VALUES 
+    (@AID, @Q, @A, @B, @C, @D, @Ans)";
 
                 foreach (var q in Questions)
                 {
                     using (var cmd = new SqlCommand(insertQuestion, conn))
                     {
-                        cmd.Parameters.AddWithValue("@QID", nextQuestionID++);
                         cmd.Parameters.AddWithValue("@AID", assignmentId);
                         cmd.Parameters.AddWithValue("@Q", q.QuestionText);
                         cmd.Parameters.AddWithValue("@A", q.OptionA);

@@ -168,10 +168,27 @@ namespace CNPM.Forms.Shared
             try
             {
                 int studentId = (int)availableStudentsGrid.SelectedRows[0].Cells["UserID"].Value;
-                if (_courseBLL.EnrollStudent(studentId, _courseId))
+                string result = _courseBLL.EnrollStudent(studentId, _courseId);
+                if (result == "Success")
                 {
                     LoadData();
                     MessageBox.Show("Thêm Sinh viên thành công", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if (result == "AlreadyEnrolled")
+                {
+                    MessageBox.Show("Sinh viên đã được ghi danh vào khóa học này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if (result == "CourseNotFound")
+                {
+                    MessageBox.Show("Khóa học không tồn tại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (result == "NotAStudent")
+                {
+                    MessageBox.Show("Tài khoản này không phải là sinh viên!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Có lỗi xảy ra khi thêm sinh viên!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
