@@ -1,4 +1,6 @@
-﻿namespace CNPM.Forms.Student
+﻿using System.Windows.Forms;
+
+namespace CNPM.Forms.Student
 {
     partial class ucBaiTap
     {
@@ -48,7 +50,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label1.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.label1.Location = new System.Drawing.Point(265, 32);
+            this.label1.Location = new System.Drawing.Point(264, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(252, 29);
             this.label1.TabIndex = 1;
@@ -68,6 +70,20 @@
 
         }
 
+        private void AddButtonColumn()
+        {
+            if (!dtGAssign.Columns.Contains("btnLamBaiTap"))
+            {
+                DataGridViewButtonColumn btnLamBaiTap = new DataGridViewButtonColumn();
+                btnLamBaiTap.HeaderText = "Thao tác";
+                btnLamBaiTap.Text = "Làm bài tập";
+                btnLamBaiTap.UseColumnTextForButtonValue = true;
+                btnLamBaiTap.Name = "btnLamBaiTap";
+                dtGAssign.Columns.Add(btnLamBaiTap);
+            }
+
+            dtGAssign.CellClick += dtGAssign_CellClick;
+        }
         #endregion
 
         private System.Windows.Forms.DataGridView dtGAssign;

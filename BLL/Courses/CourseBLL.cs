@@ -29,10 +29,10 @@ namespace CNPM.BLL
         {
             return _courseDAL.RegisterCourse(studentId, courseId);
         }
-        public bool EnrollStudent(int studentID, int courseID)
+        public string EnrollStudent(int studentID, int courseID)
         {
             // ✅ Đảm bảo StudentID là UserID có Role = 'Student'
-            if (!_courseDAL.UserExistsWithRole(studentID, "Student")) return false;
+            if (!_courseDAL.UserExistsWithRole(studentID, "Student")) return "NotAStudent";
             return _courseDAL.EnrollStudent(studentID, courseID);
         }
         public List<Course> GetCoursesByTeacher(int teacherID)

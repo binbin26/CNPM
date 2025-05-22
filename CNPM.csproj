@@ -226,6 +226,18 @@
     <Compile Include="Forms\Student\ucDiemTrungBinh.Designer.cs">
       <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Student\ucEssay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\ucEssay.Designer.cs">
+      <DependentUpon>ucEssay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Student\ucQuiz.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Student\ucQuiz.Designer.cs">
+      <DependentUpon>ucQuiz.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Student\ucTongQuan.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -366,6 +378,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucDiemTrungBinh.resx">
       <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucQuiz.resx">
+      <DependentUpon>ucQuiz.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucTongQuan.resx">
       <DependentUpon>ucTongQuan.cs</DependentUpon>

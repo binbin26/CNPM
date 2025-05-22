@@ -98,7 +98,6 @@ namespace CNPM.Forms.Teacher
             panel.Click += Course_Click;
             return panel;
         }
-
         private void Course_Click(object sender, EventArgs e)
         {
             Control control = sender as Control;
