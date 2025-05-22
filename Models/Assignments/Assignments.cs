@@ -12,5 +12,6 @@ namespace CNPM.Models.Assignments
         public Decimal MaxScore { get; set; }
         public int CreatedBy { get; set; }
         public AssignmentTypes AssignmentType { get; set; }
+        public string SubmissionStatus { get; set; }
     }
 }

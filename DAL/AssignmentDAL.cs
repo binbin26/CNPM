@@ -91,7 +91,7 @@ namespace CNPM.DAL
                 CASE 
                     WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
                     ELSE N'Chưa nộp'
-                END as SubmissionStatus
+                END AS SubmissionStatus
             FROM Assignments a
             INNER JOIN Courses c ON a.CourseID = c.CourseID
             INNER JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
