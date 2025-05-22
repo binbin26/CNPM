@@ -990,14 +990,19 @@ namespace CNPM.Forms.Admin
                 string avatarPath = admin.AvatarPath;
                 if (!string.IsNullOrEmpty(admin.AvatarPath) && File.Exists(admin.AvatarPath))
                 {
-                    
                     try
                     {
+                        // Dispose ảnh cũ trước khi load ảnh mới
+                        if (picAvatar.Image != null)
+                        {
+                            picAvatar.Image.Dispose();
+                            picAvatar.Image = null;
+                        }
                         picAvatar.Image = new Bitmap(admin.AvatarPath);
                     }
                     catch
                     {
-                        picAvatar.Image = new Bitmap(avatarPath);
+                        // Nếu lỗi, không load ảnh
                     }
                 }
             }
@@ -1076,60 +1081,62 @@ namespace CNPM.Forms.Admin
                 var admin = _userContext.CurrentUser;
                 if (admin == null)
                 {
-                    MessageBox.Show("User information not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Không tìm thấy thông tin người dùng", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Title = "Chọn ảnh đại diện";
-                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string selectedFile = openFileDialog.FileName;
-                    string fileExtension = Path.GetExtension(selectedFile);
-                    string newFileName = admin.Username + fileExtension;
-                    string saveDirectory = Path.Combine(Application.StartupPath, "Avatars", "Admin");
-                    string savePath = Path.Combine(saveDirectory, newFileName);
+                    openFileDialog.Title = "Chọn ảnh đại diện";
+                    openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
+                    openFileDialog.Multiselect = false;
 
-                    try
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        Directory.CreateDirectory(saveDirectory);
+                        string selectedFile = openFileDialog.FileName;
+                        FileInfo fileInfo = new FileInfo(selectedFile);
+                        if (fileInfo.Length > 5 * 1024 * 1024) // 5MB
+                        {
+                            MessageBox.Show("Kích thước ảnh không được vượt quá 5MB", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        try
+                        {
+                            using (Image img = Image.FromFile(selectedFile))
+                            {
+                                // Nếu load được thì ảnh hợp lệ
+                            }
+                        }
+                        catch
+                        {
+                            MessageBox.Show("File ảnh không hợp lệ", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        // Dispose ảnh cũ trước khi thao tác file
                         if (picAvatar.Image != null)
                         {
                             picAvatar.Image.Dispose();
                             picAvatar.Image = null;
                         }
-                        File.Copy(selectedFile, savePath, true);
-                        
-                        // Cập nhật đường dẫn avatar trong database
-                        admin.AvatarPath = savePath;
-                        bool updated = _userBLL.ChangeUserAvatar(savePath, _userContext.CurrentUser.Username);
 
-                        if (updated)
+                        // Cập nhật avatar
+                        bool success = _userBLL.ChangeUserAvatar(admin.Username, selectedFile);
+                        if (success)
                         {
-                            if (picAvatar.Image != null)
-                            {
-                                picAvatar.Image.Dispose();
-                                picAvatar.Image = null;
-                            }
-                            picAvatar.Image = new Bitmap(savePath);
-                            MessageBox.Show("Ảnh đại diện đã được cập nhật!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            picAvatar.Image = Image.FromFile(selectedFile);
+                            MessageBox.Show("Cập nhật ảnh đại diện thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            MessageBox.Show("Cập nhật không thành công!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Lỗi khi cập nhật ảnh đại diện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error changing avatar: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Lỗi khi cập nhật ảnh đại diện: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

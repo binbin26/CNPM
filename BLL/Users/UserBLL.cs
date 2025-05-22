@@ -228,46 +228,70 @@ namespace CNPM.BLL
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(selectedImagePath))
                 throw new ArgumentException("Username hoặc ảnh không hợp lệ");
 
-            string avatarFolderPath = Path.Combine(Application.StartupPath, "Avatars", "Student");
-
-            if (!Directory.Exists(avatarFolderPath))
-            {
-                Directory.CreateDirectory(avatarFolderPath);
-            }
-
-            string fileName = $"{username}_{Guid.NewGuid()}{Path.GetExtension(selectedImagePath)}";
-            string destinationPath = Path.Combine(avatarFolderPath, fileName);
-
-            User user = _userDAL.GetUserByUsername(username);
-            if (user == null) return false;
-
-            string oldAvatarPath = user.AvatarPath;
-
             try
             {
-                File.Copy(selectedImagePath, destinationPath, true);
+                string avatarFolderPath = Path.Combine(Application.StartupPath, "Avatars", "Admin");
+                if (!Directory.Exists(avatarFolderPath))
+                {
+                    Directory.CreateDirectory(avatarFolderPath);
+                }
+
+                string fileName = $"{username}{Path.GetExtension(selectedImagePath)}";
+                string destinationPath = Path.Combine(avatarFolderPath, fileName);
+
+                User user = _userDAL.GetUserByUsername(username);
+                if (user == null)
+                {
+                    Logger.LogError($"Không tìm thấy người dùng với username: {username}");
+                    return false;
+                }
+
+                string oldAvatarPath = user.AvatarPath;
+
+                // Xóa ảnh cũ nếu tồn tại
                 if (!string.IsNullOrWhiteSpace(oldAvatarPath) && File.Exists(oldAvatarPath))
                 {
                     try
                     {
-                        // Đảm bảo file không bị khóa
-                        GC.Collect();
-                        GC.WaitForPendingFinalizers();
                         File.Delete(oldAvatarPath);
                     }
-                    catch (IOException ex)
+                    catch (Exception ex)
                     {
                         Logger.LogError($"Không thể xóa ảnh cũ: {ex.Message}");
-                        // Không throw lỗi ở đây để tránh gián đoạn quá trình cập nhật
                     }
                 }
-                // Cập nhật đường dẫn mới vào DB
-                return _userDAL.UpdateAvatarPath(username, destinationPath);
+
+                // Copy ảnh mới
+                File.Copy(selectedImagePath, destinationPath, true);
+
+                // Cập nhật đường dẫn trong database
+                bool updated = _userDAL.UpdateAvatarPath(username, destinationPath);
+                if (!updated)
+                {
+                    Logger.LogError($"Không thể cập nhật đường dẫn avatar trong database cho user: {username}");
+                    if (File.Exists(destinationPath))
+                    {
+                        try
+                        {
+                            File.Delete(destinationPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogError($"Không thể xóa ảnh mới sau khi cập nhật database thất bại: {ex.Message}");
+                        }
+                    }
+                    return false;
+                }
+
+                // Cập nhật lại thông tin user
+                user.AvatarPath = destinationPath;
+                Logger.LogInfo($"Cập nhật avatar thành công cho user: {username}");
+                return true;
             }
             catch (Exception ex)
             {
-                Logger.LogError("Lỗi khi cập nhật ảnh đại diện: " + ex.Message);
-                return false;
+                Logger.LogError($"Lỗi khi cập nhật avatar: {ex.Message}");
+                throw new Exception($"Lỗi khi cập nhật avatar: {ex.Message}");
             }
         }
 
