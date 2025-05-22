@@ -3,23 +3,24 @@ using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
 {
-    public partial class FormRenameAssignment : Form
+    public partial class FormRenameSession : Form
     {
-        public string NewName => txtName.Text;
+        public string NewTitle => txtNewTitle.Text;
 
-        public FormRenameAssignment(string currentName)
+        public FormRenameSession(string currentTitle)
         {
             InitializeComponent();
-            txtName.Text = currentName;
+            txtNewTitle.Text = currentTitle;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text))
+            if (string.IsNullOrWhiteSpace(txtNewTitle.Text))
             {
-                MessageBox.Show("Tên không được để trống.");
+                MessageBox.Show("Tiêu đề không được để trống.");
                 return;
             }
+
             DialogResult = DialogResult.OK;
             Close();
         }

@@ -47,6 +47,9 @@ namespace CNPM.Forms.Teacher
                 btn.Height = 70;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderSize = 0;
+                btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(45, 45, 80); // Hover effect
+                btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(25, 25, 50); // Click effect
+                btn.Cursor = Cursors.Hand;
                 btn.ForeColor = Color.White;
                 btn.IconChar = icon;
                 btn.IconColor = Color.White;

@@ -52,8 +52,37 @@ namespace CNPM.Forms.Teacher
                 Margin = new Padding(10),
                 Cursor = Cursors.Hand,
                 BorderStyle = BorderStyle.FixedSingle,
-                Tag = new Course { CourseID = courseId, CourseName = courseName, TeacherID = TeacherId }
+                Tag = new Course {TeacherID = TeacherId, CourseID = courseId, CourseName = courseName}
             };
+
+            // Bo góc
+            panel.Paint += (s, e) =>
+            {
+                var g = e.Graphics;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                var rect = panel.ClientRectangle;
+                rect.Inflate(-1, -1);
+                using (var path = new System.Drawing.Drawing2D.GraphicsPath())
+                {
+                    path.AddArc(rect.X, rect.Y, 15, 15, 180, 90);
+                    path.AddArc(rect.Right - 15, rect.Y, 15, 15, 270, 90);
+                    path.AddArc(rect.Right - 15, rect.Bottom - 15, 15, 15, 0, 90);
+                    path.AddArc(rect.X, rect.Bottom - 15, 15, 15, 90, 90);
+                    path.CloseFigure();
+                    using (var brush = new SolidBrush(Color.White))
+                    {
+                        g.FillPath(brush, path);
+                    }
+                    using (var borderPen = new Pen(Color.LightGray, 1))
+                    {
+                        g.DrawPath(borderPen, path);
+                    }
+                }
+            };
+
+            // Hiệu ứng hover
+            panel.MouseEnter += (s, e) => panel.BackColor = Color.FromArgb(245, 250, 255);
+            panel.MouseLeave += (s, e) => panel.BackColor = Color.White;
 
             Label label = new Label
             {
@@ -64,11 +93,9 @@ namespace CNPM.Forms.Teacher
                 Padding = new Padding(15, 0, 0, 0),
                 ForeColor = Color.FromArgb(30, 30, 30)
             };
-
+            label.Click += Course_Click;
             panel.Controls.Add(label);
             panel.Click += Course_Click;
-            label.Click += Course_Click;
-
             return panel;
         }
 

@@ -1,16 +1,15 @@
 ﻿using System.Windows.Forms;
-using System.Drawing;
 
 namespace CNPM.Forms.Teacher
 {
     partial class FormViewQuestions
     {
-        private FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 
         private void InitializeComponent()
         {
             this.Text = "Chi tiết bài tập trắc nghiệm";
-            this.Size = new Size(800, 600);
+            this.Size = new System.Drawing.Size(800, 600);
             this.StartPosition = FormStartPosition.CenterParent;
 
             this.flowLayoutPanel1 = new FlowLayoutPanel
@@ -19,7 +18,8 @@ namespace CNPM.Forms.Teacher
                 AutoScroll = true,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                BackColor = Color.White
+                BackColor = System.Drawing.Color.White,
+                Padding = new Padding(10)
             };
 
             this.Controls.Add(flowLayoutPanel1);

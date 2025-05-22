@@ -1,27 +1,28 @@
 ﻿using System;
+using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher
 {
     public partial class FormChooseAssignmentType : Form
     {
-        private int SessionID;
-        private int CourseID;
         private int TeacherID;
-
-        public FormChooseAssignmentType(int sessionId, int courseId, int teacherID)
+        private int CourseID;
+        private int SessionID;
+        public FormChooseAssignmentType(int teacherID, int courseId, int sessionId)
         {
             InitializeComponent();
-            SessionID = sessionId;
-            CourseID = courseId;
             TeacherID = teacherID;
+            CourseID = courseId;
+            SessionID = sessionId;
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
             if (rbMultipleChoice.Checked)
             {
-                var setupQuiz = new FormSetupQuiz(SessionID, CourseID, TeacherID);
+                var setupQuiz = new FormSetupQuiz(TeacherID, CourseID, SessionID);
                 setupQuiz.ShowDialog();
             }
             else if (rbEssay.Checked)
@@ -30,25 +31,45 @@ namespace CNPM.Forms.Teacher
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = dialog.FileName;
-                    string fileName = System.IO.Path.GetFileName(filePath);
-                    string destPath = System.IO.Path.Combine(Application.StartupPath, "Assignments", fileName);
-                    System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(destPath));
-                    System.IO.File.Copy(filePath, destPath, true);
-
-                    string query = "INSERT INTO AssignmentFiles (CourseID, Title, FilePath, UploadDate) " +
-                                   "VALUES (@CID, @Title, @Path, GETDATE())";
+                    string fileName = Path.GetFileName(filePath);
+                    string destPath = Path.Combine(Application.StartupPath, "Assignments", fileName);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                    File.Copy(filePath, destPath, true);
 
                     using (var conn = DAL.DatabaseHelper.GetConnection())
-                    using (var cmd = new System.Data.SqlClient.SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@CID", CourseID);
-                        cmd.Parameters.AddWithValue("@Title", fileName);
-                        cmd.Parameters.AddWithValue("@Path", "Assignments/" + fileName);
                         conn.Open();
-                        cmd.ExecuteNonQuery();
+
+                        // Bước 1: Insert Assignments (và lấy ID)
+                        string insertAssignment = @"
+                    INSERT INTO Assignments (CourseID, Title, SessionID, CreatedBy)
+                    OUTPUT INSERTED.AssignmentID
+                    VALUES (@CID, @Title, @SID, @CreatedBy)";
+                        int assignmentId;
+                        using (var cmd = new SqlCommand(insertAssignment, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@CID", CourseID);
+                            cmd.Parameters.AddWithValue("@Title", Path.GetFileNameWithoutExtension(fileName));
+                            cmd.Parameters.AddWithValue("@SID", SessionID);
+                            cmd.Parameters.AddWithValue("@CreatedBy", TeacherID);
+                            assignmentId = (int)cmd.ExecuteScalar();
+                        }
+
+                        // Bước 2: Insert AssignmentFiles
+                        string insertFile = @"
+                    INSERT INTO AssignmentFiles (AssignmentID, CourseID, FileName, FilePath, UploadDate)
+                    VALUES (@ID, @CID, @FileName, @Path, GETDATE())";
+                        using (var cmd = new SqlCommand(insertFile, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@ID", assignmentId);
+                            cmd.Parameters.AddWithValue("@CID", CourseID);
+                            cmd.Parameters.AddWithValue("@FileName", fileName);
+                            cmd.Parameters.AddWithValue("@Path", "Assignments/" + fileName);
+                            cmd.ExecuteNonQuery();
+                        }
                     }
 
-                    MessageBox.Show("Tải bài tập tự luận thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Tạo bài tập tự luận thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             else

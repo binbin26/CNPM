@@ -36,37 +36,33 @@ namespace CNPM.Forms.Teacher
                         int sessionId = reader.GetInt32(0);
                         string title = reader.GetString(1);
 
-                        var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title, currentCourse.TeacherID);
+                        var sessionItem = new UcSessionItem(currentCourse.TeacherID, currentCourse.CourseID, sessionId, title);
                         sessionItem.Width = flowPanelSessions.Width - 30;
                         flowPanelSessions.Controls.Add(sessionItem);
                     }
                 }
             }
         }
-
         private void btnAddSession_Click(object sender, EventArgs e)
         {
-            string title = "Buổi " + (flowPanelSessions.Controls.Count + 1);
-            string query = "INSERT INTO Sessions (CourseID, Title, CreatedAt) OUTPUT INSERTED.SessionID VALUES (@CourseID, @Title, GETDATE())";
-
-            using (var conn = DatabaseHelper.GetConnection())
-            using (var cmd = new SqlCommand(query, conn))
+            var form = new FormInputTitle();
+            if (form.ShowDialog() == DialogResult.OK)
             {
-                cmd.Parameters.AddWithValue("@CourseID", currentCourse.CourseID);
-                cmd.Parameters.AddWithValue("@Title", title);
-                conn.Open();
-                int sessionId = (int)cmd.ExecuteScalar();
+                string title = form.InputTitle;
+                string query = "INSERT INTO Sessions (CourseID, Title, CreatedAt) OUTPUT INSERTED.SessionID VALUES (@CourseID, @Title, GETDATE())";
+                using (var conn = DatabaseHelper.GetConnection())
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@CourseID", currentCourse.CourseID);
+                    cmd.Parameters.AddWithValue("@Title", title);
+                    conn.Open();
+                    int sessionId = (int)cmd.ExecuteScalar();
 
-                var sessionItem = new UcSessionItem(sessionId, currentCourse.CourseID, title, currentCourse.TeacherID);
-                sessionItem.Width = flowPanelSessions.Width - 30;
-                flowPanelSessions.Controls.Add(sessionItem);
+                    var sessionItem = new UcSessionItem(currentCourse.TeacherID, currentCourse.CourseID, sessionId, title);
+                    sessionItem.Width = flowPanelSessions.Width - 30;
+                    flowPanelSessions.Controls.Add(sessionItem);
+                }
             }
-        }
-
-        private void btnStat_Click(object sender, EventArgs e)
-        {
-            MultipleChoiceProgress progressForm = new MultipleChoiceProgress(currentCourse.CourseID);
-            progressForm.ShowDialog();
         }
     }
 }

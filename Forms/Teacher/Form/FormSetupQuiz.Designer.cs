@@ -8,7 +8,9 @@ namespace CNPM.Forms.Teacher
         private TextBox txtQuestionCount;
         private TextBox txtDuration;
         private Button btnConfirm;
-
+        private TextBox txtPassScore;
+        private TextBox txtMaxAttempts;
+        private Panel panelMain;
         private void InitializeComponent()
         {
             this.Text = "Cài đặt bài trắc nghiệm";
@@ -36,17 +38,48 @@ namespace CNPM.Forms.Teacher
             txtDuration.Enter += RemovePlaceholder;
             txtDuration.Leave += SetPlaceholder;
 
+            txtPassScore = new TextBox
+            {
+                Text = "Điểm đạt (VD: 5)",
+                ForeColor = Color.Gray,
+                Location = new Point(20, 100),
+                Width = 240
+            };
+            txtPassScore.Enter += RemovePlaceholder;
+            txtPassScore.Leave += SetPlaceholder;
+
+            txtMaxAttempts = new TextBox
+            {
+                Text = "Số lần làm tối đa",
+                ForeColor = Color.Gray,
+                Location = new Point(20, 140),
+                Width = 240
+            };
+            txtMaxAttempts.Enter += RemovePlaceholder;
+            txtMaxAttempts.Leave += SetPlaceholder;
+            
+            panelMain = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                Padding = new Padding(10),
+                BackColor = Color.White
+            };
+
             btnConfirm = new Button
             {
                 Text = "Tiếp tục",
-                Location = new Point(20, 100),
+                Location = new Point(20, 180),
                 Width = 100
             };
             btnConfirm.Click += btnConfirm_Click;
 
-            this.Controls.Add(txtQuestionCount);
-            this.Controls.Add(txtDuration);
-            this.Controls.Add(btnConfirm);
+            panelMain.Controls.Add(txtQuestionCount);
+            panelMain.Controls.Add(txtDuration);
+            panelMain.Controls.Add(txtPassScore);
+            panelMain.Controls.Add(txtMaxAttempts);
+            panelMain.Controls.Add(btnConfirm);
+            this.Controls.Add(panelMain);
         }
     }
 }

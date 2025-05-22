@@ -35,21 +35,22 @@ namespace CNPM.Forms.Teacher
                 else if (tb == txtB) tb.Text = "Đáp án B";
                 else if (tb == txtC) tb.Text = "Đáp án C";
                 else if (tb == txtD) tb.Text = "Đáp án D";
-                else if (tb == txtCorrect) tb.Text = "Đáp án đúng (A/B/C/D)";
                 tb.ForeColor = Color.Gray;
             }
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            string correct = txtCorrect.Text.Trim().ToUpper();
-            if (!new[] { "A", "B", "C", "D" }.Contains(correct))
+            string correct = new[] { rbA, rbB, rbC, rbD }
+                        .FirstOrDefault(r => r.Checked)?.Tag?.ToString();
+
+            if (string.IsNullOrEmpty(correct))
             {
-                MessageBox.Show("Đáp án đúng phải là A, B, C hoặc D.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng chọn đáp án đúng.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            Question q = new Question
+            var question = new Question
             {
                 QuestionText = txtQuestion.Text.Trim(),
                 OptionA = txtA.Text.Trim(),
@@ -59,7 +60,7 @@ namespace CNPM.Forms.Teacher
                 CorrectAnswer = correct
             };
 
-            QuestionSubmitted?.Invoke(q);
+            QuestionSubmitted?.Invoke(question);
         }
     }
 }
