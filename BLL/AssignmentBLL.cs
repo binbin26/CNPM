@@ -20,9 +20,18 @@ public class AssignmentBLL
     {
 
     }
-    public List<Assignments> GetAssignmentsForStudent(string username)
+
+    public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
     {
-        return _assignmentDAL.GetAssignmentsForStudent(username);
+        try
+        {
+            return _assignmentDAL.GetAssignmentsForStudentWithStatus(username);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi lấy bài tập có trạng thái cho sinh viên: " + ex.ToString());
+            throw new ApplicationException("Không thể lấy bài tập của sinh viên.", ex);
+        }
     }
 
     public bool AddAssignment(Assignments assignment)
@@ -73,9 +82,8 @@ public class AssignmentBLL
         }
         catch (Exception ex)
         {
-            // Ghi log, hoặc thông báo lỗi tùy yêu cầu của hệ thống
             MessageBox.Show("Lỗi khi lấy bài tự luận: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return new List<EssaySubmissionDTO>(); // hoặc null tùy cách bạn muốn xử lý
+            return new List<EssaySubmissionDTO>();
         }
     }
     //Cập nhật điểm bài tự luận từ giảng viên
@@ -87,7 +95,6 @@ public class AssignmentBLL
         }
         catch (Exception ex)
         {
-            // Có thể log lỗi nếu cần, hoặc truyền lên lớp gọi
             throw new ApplicationException("Lỗi khi cập nhật điểm bài nộp.", ex);
         }
     }
@@ -105,6 +112,7 @@ public class AssignmentBLL
             return false;
         }
     }
+
     //Lấy danh sách bài làm trắc nghiệm của một bài tập
     public List<QuizSubmissionDTO> GetQuizSubmissions(int assignmentId, int teacherId)
     {

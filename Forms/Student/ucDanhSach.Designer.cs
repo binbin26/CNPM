@@ -39,7 +39,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label1.ForeColor = System.Drawing.Color.Blue;
-            this.label1.Location = new System.Drawing.Point(281, 35);
+            this.label1.Location = new System.Drawing.Point(365, 35);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(341, 29);
             this.label1.TabIndex = 0;
@@ -52,14 +52,14 @@
             this.dtGDanhSach.Name = "dtGDanhSach";
             this.dtGDanhSach.RowHeadersWidth = 51;
             this.dtGDanhSach.RowTemplate.Height = 24;
-            this.dtGDanhSach.Size = new System.Drawing.Size(925, 537);
+            this.dtGDanhSach.Size = new System.Drawing.Size(1151, 504);
             this.dtGDanhSach.TabIndex = 1;
             // 
             // btnProgress
             // 
             this.btnProgress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnProgress.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.btnProgress.Location = new System.Drawing.Point(822, 39);
+            this.btnProgress.Location = new System.Drawing.Point(886, 35);
             this.btnProgress.Name = "btnProgress";
             this.btnProgress.Size = new System.Drawing.Size(164, 29);
             this.btnProgress.TabIndex = 2;
@@ -75,7 +75,7 @@
             this.Controls.Add(this.dtGDanhSach);
             this.Controls.Add(this.label1);
             this.Name = "ucDanhSach";
-            this.Size = new System.Drawing.Size(925, 587);
+            this.Size = new System.Drawing.Size(1154, 587);
             ((System.ComponentModel.ISupportInitialize)(this.dtGDanhSach)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
