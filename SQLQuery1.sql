@@ -643,3 +643,6 @@ ADD CONSTRAINT CHK_DocumentType_FileTypes
 CHECK (
     DocumentType IN ('PDF', 'DOCX', 'EXCEL', 'TXT', 'IMAGE')
 );
+
+ALTER TABLE Courses
+ADD RegistrationDeadLine DATETIME NULL;
