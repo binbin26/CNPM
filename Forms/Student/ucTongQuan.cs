@@ -107,7 +107,13 @@ namespace CNPM.Forms.Student
                 string selectedFile = openFileDialog.FileName;
                 string fileExtension = Path.GetExtension(selectedFile);
                 string newFileName = _username + fileExtension;
-                string saveDirectory = @"C:\Users\baong\OneDrive\Desktop\CNPM\Resources\Avatar\Student";
+                string saveDirectory = Path.Combine(Application.StartupPath, "Avartar", "Student");
+
+                if (!Directory.Exists(saveDirectory))
+                {
+                    Directory.CreateDirectory(saveDirectory);
+                }
+
                 string savePath = Path.Combine(saveDirectory, newFileName);
 
                 try

@@ -11,14 +11,13 @@ namespace CNPM
 {
     static class Program
     {
-        public static IServiceProvider ServiceProvider { get; private set; } // ✅ thêm
+        public static IServiceProvider ServiceProvider { get; private set; } 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            // ✅ Khởi tạo DI container
             var services = new ServiceCollection();
             ConfigureServices(services);
             ServiceProvider = services.BuildServiceProvider();
@@ -30,13 +29,11 @@ namespace CNPM
             Application.Run(new LoginForm());
 
         }
-        // ✅ Thêm method để đăng ký các dịch vụ
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IUserContext, UserContext>();
             services.AddTransient<CourseDAL>();
             services.AddTransient<CourseBLL>();
-            // Đăng ký các service khác nếu cần
         }
     }
 }
