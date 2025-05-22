@@ -59,22 +59,50 @@ namespace CNPM.DAL
             return list;
         }
 
-        public List<Assignments> GetAssignmentsForStudent(string username)
+        public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
         {
             var list = new List<Assignments>();
+
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
+                conn.Open();
+
+                // Lấy StudentID từ Username
+                string getIdQuery = "SELECT UserID FROM Users WHERE Username = @Username";
+                int studentId;
+
+                using (var getIdCmd = new SqlCommand(getIdQuery, conn))
+                {
+                    getIdCmd.Parameters.AddWithValue("@Username", username);
+                    object result = getIdCmd.ExecuteScalar();
+                    if (result == null) return list;
+                    studentId = Convert.ToInt32(result);
+                }
+
+                // Truy vấn bài tập có trạng thái nộp bài
                 string query = @"
-                    SELECT a.*
-                      FROM Assignments a
-                      JOIN CourseEnrollments ce ON ce.CourseID = a.CourseID
-                      JOIN Users u             ON u.UserID = ce.StudentID
-                     WHERE u.Username = @Username";
+            SELECT 
+                a.AssignmentID,
+                c.CourseName,
+                a.Title,
+                a.Description,
+                a.DueDate,
+                a.MaxScore,
+                CASE 
+                    WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
+                    ELSE N'Chưa nộp'
+                END as SubmissionStatus
+            FROM Assignments a
+            INNER JOIN Courses c ON a.CourseID = c.CourseID
+            INNER JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
+            LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID 
+                AND s.StudentID = @StudentID
+            WHERE ce.StudentID = @StudentID
+            ORDER BY a.DueDate DESC";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Username", username);
-                    conn.Open();
+                    cmd.Parameters.AddWithValue("@StudentID", studentId);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -84,6 +112,7 @@ namespace CNPM.DAL
                     }
                 }
             }
+
             return list;
         }
 
