@@ -67,42 +67,29 @@ namespace CNPM.DAL
             {
                 conn.Open();
 
-                // Lấy StudentID từ Username
-                string getIdQuery = "SELECT UserID FROM Users WHERE Username = @Username";
-                int studentId;
-
-                using (var getIdCmd = new SqlCommand(getIdQuery, conn))
-                {
-                    getIdCmd.Parameters.AddWithValue("@Username", username);
-                    object result = getIdCmd.ExecuteScalar();
-                    if (result == null) return list;
-                    studentId = Convert.ToInt32(result);
-                }
-
-                // Truy vấn bài tập có trạng thái nộp bài
                 string query = @"
-            SELECT 
-                a.AssignmentID,
-                c.CourseName,
-                a.Title,
-                a.Description,
-                a.DueDate,
-                a.MaxScore,
-                CASE 
-                    WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
-                    ELSE N'Chưa nộp'
-                END AS SubmissionStatus
-            FROM Assignments a
-            INNER JOIN Courses c ON a.CourseID = c.CourseID
-            INNER JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
-            LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID 
-                AND s.StudentID = @StudentID
-            WHERE ce.StudentID = @StudentID
-            ORDER BY a.DueDate DESC";
+        SELECT 
+            a.AssignmentID,
+            c.CourseName,
+            a.Title,
+            a.Description,
+            a.DueDate,
+            a.MaxScore,
+            CASE 
+                WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
+                ELSE N'Chưa nộp'
+            END AS SubmissionStatus
+        FROM Users u
+        INNER JOIN CourseEnrollments ce ON u.UserID = ce.StudentID
+        INNER JOIN Courses c ON ce.CourseID = c.CourseID
+        INNER JOIN Assignments a ON c.CourseID = a.CourseID
+        LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID AND s.StudentID = u.UserID
+        WHERE u.Username = @Username
+        ORDER BY a.DueDate DESC";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@StudentID", studentId);
+                    cmd.Parameters.AddWithValue("@Username", username);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -115,6 +102,7 @@ namespace CNPM.DAL
 
             return list;
         }
+
 
         private Assignments MapReaderToAssignment(SqlDataReader reader)
         {
