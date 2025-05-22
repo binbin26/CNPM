@@ -48,8 +48,6 @@ namespace CNPM.Forms.Teacher
 
         private void SaveToDatabase()
         {
-            MessageBox.Show($"DEBUG →  TeacherID: {TeacherID}, CourseID: {CourseID}");
-            MessageBox.Show($"DEBUG → SessionID = {SessionID}");
             using (var conn = DAL.DatabaseHelper.GetConnection())
             {
                 conn.Open();
