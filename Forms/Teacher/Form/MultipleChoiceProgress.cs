@@ -12,27 +12,36 @@ namespace CNPM.Forms.Teacher
 {
     public partial class MultipleChoiceProgress : Form
     {
-        private int currentCourseId;
+        private int CourseId;
         private int currentAssignmentId;
-        public MultipleChoiceProgress(int courseId)
+        private int TeacherID;
+        public MultipleChoiceProgress(int courseId, int teacherID)
         {
             InitializeComponent();
-            currentCourseId = courseId;
+            CourseId = courseId;
             LoadAssignments();
+            TeacherID = teacherID;
         }
 
 
         private void LoadAssignments()
         {
-            var allAssignments = new AssignmentBLL().GetAssignmentsByCourse(currentCourseId);
-            var mcAssignments = allAssignments
-                //.Where(a => a.AssignmentType == AssignmentTypes.TracNghiem)
-                .Select(a => new KeyValuePair<int, string>(a.AssignmentID, a.Title))
-                .ToList();
+            try
+            {
+                var mcAssignment = new AssignmentBLL().GetMultipleChoiceAssignmentIds(TeacherID,CourseId);
 
-            cbAssignments.DataSource = mcAssignments;
-            cbAssignments.DisplayMember = "Value";
-            cbAssignments.ValueMember = "Key";
+                var data = mcAssignment
+                    .Select(mc => new KeyValuePair<int, int>(mc.AssignmentID, mc.QuestionCount))
+                    .ToList();
+
+                cbAssignments.DataSource = mcAssignment;
+                cbAssignments.DisplayMember = "Value";
+                cbAssignments.ValueMember = "Key";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể tải danh sách bài tập trắc nghiệm.\n" + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void cbAssignments_SelectedIndexChanged(object sender, EventArgs e)

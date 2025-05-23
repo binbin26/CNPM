@@ -31,10 +31,7 @@ namespace CNPM.Forms.Auth
                 if (_userBLL.ValidateLogin(username, password))
                 {
                     int userId = _userBLL.GetUserId(username);
-                    // Get user role
-                    string role = _userBLL.GetUserRole(username);
-                    
-                    // Set current user in UserContext
+                    string role = _userBLL.GetUserRole(username);    
                     User currentUser = _userBLL.GetUserByUsername(username);
                     _userContext.CurrentUser = currentUser;
 

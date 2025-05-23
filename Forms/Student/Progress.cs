@@ -38,7 +38,6 @@ namespace CNPM.Forms.Student
                 Width = 120
             });
 
-            // Cột: Submitted
             dtGProgress.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Đã hoàn thành",
@@ -46,16 +45,14 @@ namespace CNPM.Forms.Student
                 Width = 100
             });
 
-            // Cột: Completion %
             dtGProgress.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Tỷ lệ hoàn thành",
                 DataPropertyName = "CompletionRate",
                 Width = 100,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "P0" } // 80% thay vì 0.8
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "P0" }
             });
 
-            // Cột: Grade
             dtGProgress.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Tổng điểm",
@@ -63,7 +60,6 @@ namespace CNPM.Forms.Student
                 Width = 80
             });
 
-            // Cột: Status
             dtGProgress.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Đánh giá",
@@ -76,17 +72,15 @@ namespace CNPM.Forms.Student
         {
             try
             {
-                // Lấy họ tên
                 string fullName = _userBLL.GetUserByUsername(_username)?.FullName;
                 lblUsername.Text = $"Sinh viên: {fullName}";
 
-                // Lấy danh sách tiến độ
                 var data = _userBLL.GetStudentProgress(_username);
                 dtGProgress.DataSource = data;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi tải tiến độ học tập: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

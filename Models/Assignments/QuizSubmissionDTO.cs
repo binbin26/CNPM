@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CNPM.Models.Assignments
 {
@@ -9,5 +10,12 @@ namespace CNPM.Models.Assignments
         public string StudentName { get; set; }
         public DateTime SubmitDate { get; set; }
         public decimal? Score { get; set; }
+        public Dictionary<int, string> Answers { get; set; }
+    }
+
+    public class Result
+    {
+        public bool IsSuccess { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

@@ -208,10 +208,18 @@ namespace CNPM.BLL
         {
             return _userDAL.GetAvailableCourses(userId, search);
         }
-
+        //report 1
         public List<StudentProgressDTO> GetStudentProgress(string username)
         {
-            return _userDAL.GetProgressByUsername(username);
+            try
+            {
+                return _userDAL.GetProgressByUsername(username);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Lỗi khi lấy tiến độ sinh viên ({username}): {ex.Message}");
+                throw new ApplicationException("Không thể tải danh sách tiến độ sinh viên.", ex);
+            }
         }
 
         public bool UpdateUserAvatarPath(string username, string imagePath)
@@ -248,7 +256,6 @@ namespace CNPM.BLL
 
                 string oldAvatarPath = user.AvatarPath;
 
-                // Xóa ảnh cũ nếu tồn tại
                 if (!string.IsNullOrWhiteSpace(oldAvatarPath) && File.Exists(oldAvatarPath))
                 {
                     try
@@ -260,11 +267,8 @@ namespace CNPM.BLL
                         Logger.LogError($"Không thể xóa ảnh cũ: {ex.Message}");
                     }
                 }
-
-                // Copy ảnh mới
                 File.Copy(selectedImagePath, destinationPath, true);
 
-                // Cập nhật đường dẫn trong database
                 bool updated = _userDAL.UpdateAvatarPath(username, destinationPath);
                 if (!updated)
                 {
@@ -282,8 +286,6 @@ namespace CNPM.BLL
                     }
                     return false;
                 }
-
-                // Cập nhật lại thông tin user
                 user.AvatarPath = destinationPath;
                 Logger.LogInfo($"Cập nhật avatar thành công cho user: {username}");
                 return true;

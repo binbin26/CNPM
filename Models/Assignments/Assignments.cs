@@ -10,8 +10,7 @@ namespace CNPM.Models.Assignments
         public string Description { get; set; }
         public DateTime DueDate { get; set; }
         public decimal MaxScore { get; set; }
-        //public string CreatedBy { get; set; }
-        //public AssignmentTypes AssignmentType { get; set; }
+        public string CreatedBy { get; set; }
         public string SubmissionStatus { get; set; }
     }
 }

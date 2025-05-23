@@ -2,8 +2,8 @@
 using CNPM.DAL;
 using CNPM.Models.Assignments;
 using CNPM.Models.Courses;
-using CNPM.Models.Courses.Sessions;
 using CNPM.Utilities;
+using DocumentFormat.OpenXml.Office.CustomXsn;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -20,6 +20,54 @@ public class AssignmentBLL
     public AssignmentBLL() : this(new AssignmentDAL())
     {
 
+    }
+
+    public string GetAssignmentType(int assignmentId)
+    {
+        try
+        {
+            return _assignmentDAL.GetAssignmentType(assignmentId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi lấy loại bài tập: " + ex.Message);
+            throw new Exception("Không thể xác định loại bài tập. Vui lòng thử lại.");
+        }
+    }
+
+    public Result SaveStudentAnswers(int assignmentId, int studentId, Dictionary<int, string> answers)
+    {
+        try
+        {
+            // Gọi lớp DAL thực hiện lưu dữ liệu
+            _assignmentDAL.SaveStudentAnswers(assignmentId, studentId, answers);
+
+            // Trả về kết quả thành công
+            return new Result { IsSuccess = true };
+        }
+        catch (Exception ex)
+        {
+            // Trả về lỗi nếu có exception
+            return new Result
+            {
+                IsSuccess = false,
+                ErrorMessage = $"Lỗi khi lưu đáp án: {ex.Message}"
+            };
+        }
+    }
+
+
+    public List<Question> LoadQuestions(int assignmentId)
+    {
+        try
+        {
+            return _assignmentDAL.GetQuestionsByAssignmentId(assignmentId);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Lỗi khi tải danh sách câu hỏi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return new List<Question>();
+        }
     }
 
     public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
@@ -63,10 +111,16 @@ public class AssignmentBLL
         return _assignmentDAL.AddAssignment(assignment);
     }
 
-    public List<Assignments> GetAssignmentsByCourse(int courseID)
+    public List<AssignmentMC> GetMultipleChoiceAssignmentIds(int teacherId, int courseId)
     {
-        if (courseID <= 0) return new List<Assignments>();
-        return _assignmentDAL.GetAssignmentsByCourse(courseID);
+        try
+        {
+            return _assignmentDAL.GetMultipleChoiceAssignmentIds(teacherId, courseId);
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("Lỗi khi lấy danh sách bài tập trắc nghiệm.", ex);
+        }
     }
 
     public List<ProgressReportDTO> GetCourseProgress(int courseId)
@@ -117,7 +171,7 @@ public class AssignmentBLL
     }
 
     //Chấm điểm tự động bài trắc nghiệm
-    public bool AutoGradeQuiz(int assignmentId, int teacherId)
+    public decimal AutoGradeQuiz(int assignmentId, int teacherId)
     {
         try
         {
@@ -126,7 +180,19 @@ public class AssignmentBLL
         catch (Exception ex)
         {
             Logger.LogError("Lỗi khi tự động chấm điểm bài trắc nghiệm" + ex.Message);
-            return false;
+            return 0;
+        }
+    }
+
+    public bool HasExceededMaxAttempts(int assignmentId, int studentId)
+    {
+        try
+        {
+            return _assignmentDAL.HasExceededMaxAttempts(assignmentId, studentId);
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("Lỗi khi kiểm tra số lần làm bài", ex);
         }
     }
 
