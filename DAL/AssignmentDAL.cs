@@ -17,9 +17,9 @@ namespace CNPM.DAL
             {
                 string query = @"
                     INSERT INTO Assignments 
-                        (CourseID, Title, Description, DueDate, MaxScore, CreatedBy, AssignmentType) 
+                        (CourseID, Title, Description, DueDate, MaxScore) 
                     VALUES 
-                        (@CourseID, @Title, @Description, @DueDate, @MaxScore, @CreatedBy, @AssignmentType)";
+                        (@CourseID, @Title, @Description, @DueDate, @MaxScore)";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
@@ -28,7 +28,6 @@ namespace CNPM.DAL
                     cmd.Parameters.AddWithValue("@Description", (object)assignment.Description ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@DueDate", assignment.DueDate);
                     cmd.Parameters.AddWithValue("@MaxScore", assignment.MaxScore);
-                    cmd.Parameters.AddWithValue("@CreatedBy", assignment.CreatedBy);
 
                     conn.Open();
                     return cmd.ExecuteNonQuery() > 0;
@@ -61,31 +60,26 @@ namespace CNPM.DAL
         public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
         {
             List<Assignments> assignments = new List<Assignments>();
+
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                using (var cmd = new SqlCommand())
-                {
-                    cmd.Connection = conn;
-                    cmd.CommandText = @"
-                        SELECT a.*, 
-                               CASE 
-                                   WHEN s.SubmissionID IS NOT NULL THEN 'Submitted'
-                                   ELSE 'Not Submitted'
-                               END as SubmissionStatus
-                        FROM Assignments a
-                        LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID 
-                            AND s.StudentID = (SELECT UserID FROM Users WHERE Username = @Username)
-                        WHERE a.AssignmentID IN (
-                            SELECT AssignmentID 
-                            FROM Assignments 
-                            WHERE CourseID IN (
-                                SELECT CourseID 
-                                FROM Enrollments 
-                                WHERE StudentID = (SELECT UserID FROM Users WHERE Username = @Username)
-                            )
-                        )";
 
+                using (var cmd = new SqlCommand(@"
+            SELECT a.AssignmentID, a.CourseID, a.Title, a.Description, a.DueDate, a.MaxScore,
+                   c.CourseName,
+                   CASE
+                       WHEN ss.SubmissionID IS NOT NULL THEN 'Submitted'
+                       ELSE 'Not Submitted'
+                   END AS SubmissionStatus
+            FROM Assignments a
+            INNER JOIN Courses c ON a.CourseID = c.CourseID
+            INNER JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
+            INNER JOIN Users u ON ce.StudentID = u.UserID
+            LEFT JOIN StudentSubmissions ss ON a.AssignmentID = ss.AssignmentID AND ss.StudentID = u.UserID
+            WHERE u.Username = @Username
+            ORDER BY a.DueDate DESC", conn))
+                {
                     cmd.Parameters.AddWithValue("@Username", username);
 
                     using (var reader = cmd.ExecuteReader())
@@ -97,18 +91,19 @@ namespace CNPM.DAL
                                 AssignmentID = reader.GetInt32(reader.GetOrdinal("AssignmentID")),
                                 CourseID = reader.GetInt32(reader.GetOrdinal("CourseID")),
                                 Title = reader.GetString(reader.GetOrdinal("Title")),
-                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "" : reader.GetString(reader.GetOrdinal("Description")),
                                 DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
                                 MaxScore = reader.GetDecimal(reader.GetOrdinal("MaxScore")),
-                                CreatedBy = reader.GetString(reader.GetOrdinal("CreatedBy")),
                                 SubmissionStatus = reader.GetString(reader.GetOrdinal("SubmissionStatus"))
                             });
                         }
                     }
                 }
             }
+
             return assignments;
         }
+
 
         private Assignments MapReaderToAssignment(SqlDataReader reader)
         {
@@ -121,8 +116,7 @@ namespace CNPM.DAL
                                    ? null
                                    : reader.GetString(reader.GetOrdinal("Description")),
                 DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
-                MaxScore = Convert.ToDecimal(reader["MaxScore"]),
-                AssignmentType = (AssignmentTypes)reader.GetInt32(reader.GetOrdinal("AssignmentType"))
+                MaxScore = Convert.ToDecimal(reader["MaxScore"])
             };
         }
         public List<ProgressReportDTO> GetProgressByCourse(int courseId)
