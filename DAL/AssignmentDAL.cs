@@ -17,9 +17,9 @@ namespace CNPM.DAL
             {
                 string query = @"
                     INSERT INTO Assignments 
-                        (CourseID, Title, Description, DueDate, MaxScore, CreatedBy, AssignmentType) 
+                        (CourseID, Title, Description, DueDate, MaxScore) 
                     VALUES 
-                        (@CourseID, @Title, @Description, @DueDate, @MaxScore, @CreatedBy, @AssignmentType)";
+                        (@CourseID, @Title, @Description, @DueDate, @MaxScore)";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
@@ -28,8 +28,6 @@ namespace CNPM.DAL
                     cmd.Parameters.AddWithValue("@Description", (object)assignment.Description ?? DBNull.Value);
                     cmd.Parameters.AddWithValue("@DueDate", assignment.DueDate);
                     cmd.Parameters.AddWithValue("@MaxScore", assignment.MaxScore);
-                    cmd.Parameters.AddWithValue("@CreatedBy", assignment.CreatedBy);
-                    cmd.Parameters.AddWithValue("@AssignmentType", (int)assignment.AssignmentType);
 
                     conn.Open();
                     return cmd.ExecuteNonQuery() > 0;
@@ -61,48 +59,49 @@ namespace CNPM.DAL
 
         public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
         {
-            var list = new List<Assignments>();
+            List<Assignments> assignments = new List<Assignments>();
 
-            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
 
-                string query = @"
-        SELECT 
-            a.AssignmentID,
-            c.CourseName,
-            a.Title,
-            a.Description,
-            a.DueDate,
-            a.MaxScore,
-            a.CreatedBy,
-            a.AssignmentType,
-            CASE 
-                WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
-                ELSE N'Chưa nộp'
-            END AS SubmissionStatus
-        FROM Users u
-        INNER JOIN CourseEnrollments ce ON u.UserID = ce.StudentID
-        INNER JOIN Courses c ON ce.CourseID = c.CourseID
-        INNER JOIN Assignments a ON c.CourseID = a.CourseID
-        LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID AND s.StudentID = u.UserID
-        WHERE u.Username = @Username
-        ORDER BY a.DueDate DESC";
-
-                using (var cmd = new SqlCommand(query, conn))
+                using (var cmd = new SqlCommand(@"
+            SELECT a.AssignmentID, a.CourseID, a.Title, a.Description, a.DueDate, a.MaxScore,
+                   c.CourseName,
+                   CASE
+                       WHEN ss.SubmissionID IS NOT NULL THEN 'Submitted'
+                       ELSE 'Not Submitted'
+                   END AS SubmissionStatus
+            FROM Assignments a
+            INNER JOIN Courses c ON a.CourseID = c.CourseID
+            INNER JOIN CourseEnrollments ce ON c.CourseID = ce.CourseID
+            INNER JOIN Users u ON ce.StudentID = u.UserID
+            LEFT JOIN StudentSubmissions ss ON a.AssignmentID = ss.AssignmentID AND ss.StudentID = u.UserID
+            WHERE u.Username = @Username
+            ORDER BY a.DueDate DESC", conn))
                 {
                     cmd.Parameters.AddWithValue("@Username", username);
+
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(MapReaderToAssignment(reader));
+                            assignments.Add(new Assignments
+                            {
+                                AssignmentID = reader.GetInt32(reader.GetOrdinal("AssignmentID")),
+                                CourseID = reader.GetInt32(reader.GetOrdinal("CourseID")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "" : reader.GetString(reader.GetOrdinal("Description")),
+                                DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
+                                MaxScore = reader.GetDecimal(reader.GetOrdinal("MaxScore")),
+                                SubmissionStatus = reader.GetString(reader.GetOrdinal("SubmissionStatus"))
+                            });
                         }
                     }
                 }
             }
 
-            return list;
+            return assignments;
         }
 
 
@@ -117,9 +116,7 @@ namespace CNPM.DAL
                                    ? null
                                    : reader.GetString(reader.GetOrdinal("Description")),
                 DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
-                MaxScore = Convert.ToDecimal(reader["MaxScore"]),
-                CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
-                AssignmentType = (AssignmentTypes)reader.GetInt32(reader.GetOrdinal("AssignmentType"))
+                MaxScore = Convert.ToDecimal(reader["MaxScore"])
             };
         }
         public List<ProgressReportDTO> GetProgressByCourse(int courseId)
@@ -207,7 +204,7 @@ ORDER BY q.QuestionID";
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
-                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                cmd.Parameters.AddWithValue("@assignmentId", assignmentId);
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -371,6 +368,29 @@ ORDER BY q.QuestionID";
                 }
             }
             return submissions;
+        }
+
+
+        public string GetUsernameByAssignmentId(int assignmentId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"
+                        SELECT u.Username
+                        FROM Users u
+                        JOIN Enrollments e ON u.UserID = e.StudentID
+                        JOIN Assignments a ON e.CourseID = a.CourseID
+                        WHERE a.AssignmentID = @AssignmentId";
+
+                    cmd.Parameters.AddWithValue("@AssignmentId", assignmentId);
+
+                    return (string)cmd.ExecuteScalar();
+                }
+            }
         }
     }
 }

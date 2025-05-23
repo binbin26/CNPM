@@ -59,7 +59,6 @@ public class AssignmentBLL
         if (string.IsNullOrWhiteSpace(assignment.Title)) return false;
         if (assignment.DueDate <= DateTime.Now) return false;
         if (assignment.MaxScore < 0) return false;
-        if (assignment.CreatedBy <= 0) return false;
 
         return _assignmentDAL.AddAssignment(assignment);
     }
@@ -126,7 +125,7 @@ public class AssignmentBLL
         }
         catch (Exception ex)
         {
-            Logger.LogError("Lỗi khi tự động chấm điểm bài trắc nghiệm"+ ex.Message);
+            Logger.LogError("Lỗi khi tự động chấm điểm bài trắc nghiệm" + ex.Message);
             return false;
         }
     }

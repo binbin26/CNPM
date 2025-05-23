@@ -33,7 +33,7 @@ namespace CNPM.Forms.Teacher
             // panelTabs
             this.panelTabs.Dock = DockStyle.Left;
             this.panelTabs.Width = 220;
-            this.panelTabs.BackColor = Color.FromArgb(30, 30, 60);
+            this.panelTabs.BackColor = Color.FromArgb(25, 25, 112);
             this.panelTabs.Padding = new Padding(0, 100, 0, 0);
 
             // panelContent

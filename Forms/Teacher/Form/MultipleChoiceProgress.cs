@@ -26,7 +26,7 @@ namespace CNPM.Forms.Teacher
         {
             var allAssignments = new AssignmentBLL().GetAssignmentsByCourse(currentCourseId);
             var mcAssignments = allAssignments
-                .Where(a => a.AssignmentType == AssignmentTypes.TracNghiem)
+                //.Where(a => a.AssignmentType == AssignmentTypes.TracNghiem)
                 .Select(a => new KeyValuePair<int, string>(a.AssignmentID, a.Title))
                 .ToList();
 
