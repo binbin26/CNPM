@@ -43,8 +43,7 @@ public class AssignmentBLL
         }
         catch (ArgumentException argEx)
         {
-            // Đã nêu ở trên
-            throw; // giữ nguyên thông báo gốc
+            throw; 
         }
         catch (Exception ex)
         {
