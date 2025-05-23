@@ -33,7 +33,7 @@ namespace CNPM.Forms.Student
                 dtGAssign.Columns["DueDate"].HeaderText = "Hạn nộp";
                 dtGAssign.Columns["MaxScore"].HeaderText = "Điểm tối đa";
                 dtGAssign.Columns["CreatedBy"].HeaderText = "Người tạo";
-                //dtGAssign.Columns["AssignmentType"].HeaderText = "Loại bài tập";
+                dtGAssign.Columns["AssignmentType"].HeaderText = "Loại bài tập";
                 dtGAssign.Columns["SubmissionStatus"].HeaderText = "Trạng thái";
             }
         }
