@@ -11,6 +11,7 @@ namespace CNPM.Forms.Teacher
         private int Total, Index = 0;
         private readonly List<Question> Questions = new List<Question>();
         private readonly int TeacherID, CourseID, SessionID;
+        public int Duration { get; set; }
         public float PassScore { get; set; } = 5.0f;
         public int MaxAttempts { get; set; } = 1;
 
@@ -71,14 +72,15 @@ namespace CNPM.Forms.Teacher
 
                 // Lưu cấu hình bài tập trắc nghiệm
                 string insertMC = @"
-                    INSERT INTO AssignmentMC (AssignmentID, QuestionCount, MaxAttempts, PassScore)
-                    VALUES (@AID, @Count, @Max, @Pass)";
+                    INSERT INTO AssignmentMC (AssignmentID, QuestionCount, MaxAttempts, PassScore, Duration)
+                    VALUES (@AID, @Count, @Max, @Pass, @Duration)";
                 using (var cmd = new SqlCommand(insertMC, conn))
                 {
                     cmd.Parameters.AddWithValue("@AID", assignmentId);
                     cmd.Parameters.AddWithValue("@Count", Questions.Count);
                     cmd.Parameters.AddWithValue("@Max", MaxAttempts);
                     cmd.Parameters.AddWithValue("@Pass", PassScore);
+                    cmd.Parameters.AddWithValue("@Duration", Duration);
                     cmd.ExecuteNonQuery();
                 }
 

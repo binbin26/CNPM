@@ -74,7 +74,8 @@ namespace CNPM.Forms.Teacher
             var formCreate = new FormCreateQuizQuestions(count, TeacherID, CourseID, SessionID)
             {
                 PassScore = passScore,
-                MaxAttempts = maxAttempts
+                MaxAttempts = maxAttempts,
+                Duration = duration
             };
             formCreate.ShowDialog();
             this.Close();
