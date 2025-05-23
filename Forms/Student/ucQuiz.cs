@@ -11,6 +11,8 @@ namespace CNPM.Forms.Student
         private int assignmentId;
         private int studentId;
         private int currentQuestionIndex = 0;
+        private Timer countdownTimer;
+        private TimeSpan remainingTime;
         private Dictionary<int, string> studentAnswers = new Dictionary<int, string>();
         private List<Question> questions = new List<Question>();
         private readonly AssignmentBLL _assignmentBLL = new AssignmentBLL();
@@ -19,8 +21,14 @@ namespace CNPM.Forms.Student
         {
             InitializeComponent();
             this.assignmentId = assignmentId;
-            LoadQuestions();
             this.studentId = studentId;
+            remainingTime = TimeSpan.FromMinutes(_assignmentBLL.GetDuration(assignmentId));
+            countdownTimer = new Timer();
+            countdownTimer.Interval = 1000;
+            countdownTimer.Tick += CountdownTimer_Tick;
+            countdownTimer.Start();
+            LoadQuestions();
+            LoadQuestionButtons();
         }
 
         private void LoadQuestions()
@@ -39,34 +47,10 @@ namespace CNPM.Forms.Student
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            try
+            var result = MessageBox.Show("Xác nhận nộp bài?", "Nộp bài", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
-                var result = MessageBox.Show("Xác nhận nộp bài?", "Nộp bài", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result != DialogResult.Yes) return;
-
-                // 1. Lưu câu trả lời
-                var submissionResult = _assignmentBLL.SaveStudentAnswers(
-                    assignmentId,
-                    studentId,
-                    studentAnswers
-                );
-
-                if (!submissionResult.IsSuccess)
-                {
-                    MessageBox.Show($"Có lỗi khi nộp bài: {submissionResult.ErrorMessage}");
-                    return;
-                }
-
-                decimal score = _assignmentBLL.AutoGradeQuiz(assignmentId, studentId);
-
-                MessageBox.Show($"Nộp bài thành công!\nĐiểm của bạn là: {score:0.00}/10", "Kết quả", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                radioA.Enabled = radioB.Enabled = radioC.Enabled = radioD.Enabled = false;
-                btnNext.Enabled = btnPrevious.Enabled = btnSubmit.Enabled = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi không xác định: {ex.Message}");
+                SubmitQuiz();
             }
         }
         
@@ -79,6 +63,20 @@ namespace CNPM.Forms.Student
                 ShowQuestion();
             }
         }
+
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            remainingTime = remainingTime.Subtract(TimeSpan.FromSeconds(1));
+            lblTimer.Text = $"{remainingTime:hh\\:mm\\:ss}";
+
+            if (remainingTime.TotalSeconds <= 0)
+            {
+                countdownTimer.Stop();
+                MessageBox.Show("Hết giờ! Bài tập sẽ được tự động nộp.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SubmitQuiz();
+            }
+        }
+
 
         private void btnPrevious_Click(object sender, EventArgs e)
         {
@@ -145,6 +143,62 @@ namespace CNPM.Forms.Student
         private int GetCurrentQuestionId()
         {
             return questions[currentQuestionIndex].QuestionID;
+        }
+
+        private void LoadQuestionButtons()
+        {
+            flpQuestionList.Controls.Clear();
+
+            for (int i = 0; i < questions.Count; i++)
+            {
+                int questionIndex = i;
+                Button btn = new Button
+                {
+                    Text = (i + 1).ToString(),
+                    Width = 40,
+                    Height = 40,
+                    Margin = new Padding(5),
+                    Tag = questionIndex
+                };
+
+                btn.Click += (s, e) =>
+                {
+                    currentQuestionIndex = (int)((Button)s).Tag;
+                    ShowQuestion();
+                };
+
+                flpQuestionList.Controls.Add(btn);
+            }
+        }
+
+        private void SubmitQuiz()
+        {
+            try
+            {
+                var submissionResult = _assignmentBLL.SaveStudentAnswers(
+                    assignmentId,
+                    studentId,
+                    studentAnswers
+                );
+
+                if (!submissionResult.IsSuccess)
+                {
+                    MessageBox.Show($"Có lỗi khi nộp bài: {submissionResult.ErrorMessage}");
+                    return;
+                }
+
+                decimal score = _assignmentBLL.AutoGradeQuiz(assignmentId, studentId);
+
+                MessageBox.Show($"Bài đã được nộp.\nĐiểm của bạn là: {score:0.00}/10", "Kết quả", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                radioA.Enabled = radioB.Enabled = radioC.Enabled = radioD.Enabled = false;
+                btnNext.Enabled = btnPrevious.Enabled = btnSubmit.Enabled = false;
+                countdownTimer?.Stop();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi nộp bài: {ex.Message}");
+            }
         }
     }
 }

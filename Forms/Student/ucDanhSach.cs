@@ -21,22 +21,13 @@ namespace CNPM.Forms.Student
             LoadStudentCourses();
         }
 
-        private void ShowAssignments(int courseID)
-        {
-            AssignmentBLL assignmentBLL = new AssignmentBLL();
-            List<Assignments> assignments = assignmentBLL.GetAssignmentsByCourse(courseID);
-
-            // Gọi form hiển thị bài tập, hoặc hiển thị ở nơi khác tùy ý bạn
-            var frm = new TaiLieu(assignments); // cần tạo form này
-            frm.ShowDialog();
-        }
-
         private void dtGDanhSach_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0 && dtGDanhSach.Columns[e.ColumnIndex].Name == "btnXemTaiLieu")
             {
                 int courseId = Convert.ToInt32(dtGDanhSach.Rows[e.RowIndex].Cells["CourseID"].Value);
-                ShowAssignments(courseId);
+                var frm = new TaiLieu(courseId);
+                frm.ShowDialog();
             }
         }
 

@@ -333,6 +333,7 @@
     <Compile Include="Models\Assignments\Question.cs" />
     <Compile Include="Models\Assignments\QuestionStatsDTO.cs" />
     <Compile Include="Models\Assignments\QuizSubmissionDTO.cs" />
+    <Compile Include="Models\Courses\CourseDocuments.cs" />
     <Compile Include="Models\Courses\CourseGrade.cs" />
     <Compile Include="Models\Courses\Course.cs" />
     <Compile Include="Models\Courses\ProgressReportDTO.cs" />
@@ -379,6 +380,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucDiemTrungBinh.resx">
       <DependentUpon>ucDiemTrungBinh.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Student\ucEssay.resx">
+      <DependentUpon>ucEssay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Student\ucQuiz.resx">
       <DependentUpon>ucQuiz.cs</DependentUpon>

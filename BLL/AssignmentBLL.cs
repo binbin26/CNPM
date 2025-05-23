@@ -7,11 +7,13 @@ using DocumentFormat.OpenXml.Office.CustomXsn;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
 
 public class AssignmentBLL
 {
     private readonly AssignmentDAL _assignmentDAL;
+    private static AssignmentBLL _instance;
 
     public AssignmentBLL(AssignmentDAL assignmentDAL)
     {
@@ -20,6 +22,15 @@ public class AssignmentBLL
     public AssignmentBLL() : this(new AssignmentDAL())
     {
 
+    }
+    public static AssignmentBLL Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new AssignmentBLL();
+            return _instance;
+        }
     }
 
     public string GetAssignmentType(int assignmentId)
@@ -39,15 +50,12 @@ public class AssignmentBLL
     {
         try
         {
-            // Gọi lớp DAL thực hiện lưu dữ liệu
             _assignmentDAL.SaveStudentAnswers(assignmentId, studentId, answers);
 
-            // Trả về kết quả thành công
             return new Result { IsSuccess = true };
         }
         catch (Exception ex)
         {
-            // Trả về lỗi nếu có exception
             return new Result
             {
                 IsSuccess = false,
@@ -67,6 +75,74 @@ public class AssignmentBLL
         {
             MessageBox.Show("Lỗi khi tải danh sách câu hỏi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return new List<Question>();
+        }
+    }
+
+    public int GetDuration(int assignmentId)
+    {
+        try
+        {
+            return _assignmentDAL.GetDuration(assignmentId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi lấy thời gian làm bài: " + ex.Message);
+            throw new ApplicationException("Không thể lấy thời gian làm bài. Vui lòng thử lại.");
+        }
+    }
+    //Xử lý file bài tập tự luận cho sinh viên
+    public string SaveEssaySubmission(int assignmentId, int studentId, string sourceFilePath)
+    {
+        if (!File.Exists(sourceFilePath))
+            return null;
+
+        string fileName = Path.GetFileName(sourceFilePath);
+        string submissionsFolder = Path.Combine(Application.StartupPath, "Submissions");
+
+        if (!Directory.Exists(submissionsFolder))
+            Directory.CreateDirectory(submissionsFolder);
+
+        string uniqueFileName = $"{studentId}_{assignmentId}_{fileName}";
+        string destinationPath = Path.Combine(submissionsFolder, uniqueFileName);
+
+        try
+        {
+            File.Copy(sourceFilePath, destinationPath, true);
+
+            string relativePath = Path.Combine("Submissions", uniqueFileName);
+            _assignmentDAL.SaveSubmissionToDatabase(assignmentId, studentId, fileName, relativePath, DateTime.Now);
+
+            return relativePath;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public string GetEssay(int assignmentId)
+    {
+        try
+        {
+            return _assignmentDAL.GetEssay(assignmentId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi lấy đường dẫn file đề bài tự luận: " + ex.Message);
+            throw new ApplicationException("Không thể lấy đường dẫn file đề bài tự luận. Vui lòng thử lại.");
+        }
+    }
+
+    public List<CourseDocuments> GetCourseDocuments(int courseId)
+    {
+        try
+        {
+            return _assignmentDAL.GetCourseDocuments(courseId);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError("Lỗi khi lấy tài liệu khóa học: " + ex.Message);
+            throw new ApplicationException("Không thể lấy tài liệu khóa học. Vui lòng thử lại.");
         }
     }
 

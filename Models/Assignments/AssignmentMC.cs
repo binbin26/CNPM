@@ -9,5 +9,6 @@ namespace CNPM.Models.Assignments
         public int MaxAttempts { get; set; }
         public decimal PassScore { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int Duration { get; set; }
     }
 }

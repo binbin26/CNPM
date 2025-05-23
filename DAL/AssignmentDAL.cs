@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using ClosedXML.Excel;
 using CNPM.Models.Assignments;
 using CNPM.Models.Courses;
-using ClosedXML.Excel;
+using CNPM.Models.Courses.Sessions;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace CNPM.DAL
 {
@@ -213,6 +214,116 @@ namespace CNPM.DAL
             if (IsMultipleChoice(assignmentId)) return "TracNghiem";
             if (IsEssay(assignmentId)) return "TuLuan";
             return "Unknown";
+        }
+        //Lấy thời gian làm bài trắc nghiệm
+        public int GetDuration(int assignmentId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT Duration FROM AssignmentMC WHERE AssignmentID = @AssignmentID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                conn.Open();
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+        //Lấy đề tự luận cho sinh viên
+        public string GetEssay(int assignmentId)
+        {
+            string filePath = null;
+            string query = "SELECT * FROM AssignmentFiles WHERE AssignmentID = @AssignmentID";
+
+            using (var conn = DatabaseHelper.GetConnection())
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                conn.Open();
+                object result = cmd.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
+                {
+                    filePath = result.ToString();
+                }
+            }
+
+            return filePath;
+        }
+
+        public List<CourseDocuments> GetCourseDocuments(int courseId)
+        {
+            List<CourseDocuments> documents = new List<CourseDocuments>();
+
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT 
+                cd.DocumentID,
+                cd.CourseID,
+                cd.Title AS DocumentTitle,
+                cd.FilePath,
+                cd.UploadedBy,
+                cd.UploadDate,
+                cd.DocumentType,
+                cd.Documents,
+                cd.DueDate,
+                cd.SessionID,
+                s.Title AS SessionTitle,
+                s.CreatedAt
+            FROM CourseDocuments cd
+            INNER JOIN Sessions s ON cd.SessionID = s.SessionID
+            WHERE cd.CourseID = @CourseID
+            ORDER BY s.CreatedAt;";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@CourseID", courseId);
+                conn.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    CourseDocuments doc = new CourseDocuments
+                    {
+                        DocumentID = reader.GetInt32(0),
+                        CourseID = reader.GetInt32(1),
+                        Title = reader.GetString(2),
+                        FilePath = reader.IsDBNull(3) ? null : reader.GetString(3),
+                        UploadedBy = reader.IsDBNull(4) ? null : reader.GetString(4),
+                        UploadDate = reader.IsDBNull(5) ? (DateTime?)null : reader.GetDateTime(5),
+                        DocumentType = reader.IsDBNull(6) ? null : reader.GetString(6),
+                        Documents = reader.IsDBNull(7) ? null : reader.GetString(7),
+                        DueDate = reader.IsDBNull(8) ? (DateTime?)null : reader.GetDateTime(8),
+                        SessionID = reader.GetInt32(9),
+                        SessionTitle = reader.IsDBNull(10) ? null : reader.GetString(10),
+                        CreatedAt = reader.IsDBNull(11) ? (DateTime?)null : reader.GetDateTime(11)
+                    };
+
+                    documents.Add(doc);
+                }
+            }
+
+            return documents;
+        }
+
+
+        //Lưu bài tập tự luận cho sinh viên
+        public void SaveSubmissionToDatabase(int assignmentId, int studentId, string fileName, string filePath, DateTime submitDate)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                string query = "INSERT INTO StudentSubmissions (AssignmentID, StudentID, FileName, FilePath, SubmitDate) " +
+                               "VALUES (@AssignmentID, @StudentID, @FileName, @FilePath, @SubmitDate)";
+
+                using (SqlCommand command = new SqlCommand(query, conn))
+                {
+                    command.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                    command.Parameters.AddWithValue("@StudentID", studentId);
+                    command.Parameters.AddWithValue("@FileName", fileName);
+                    command.Parameters.AddWithValue("@FilePath", filePath);
+                    command.Parameters.AddWithValue("@SubmitDate", submitDate);
+
+                    conn.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         private bool IsMultipleChoice(int assignmentId)

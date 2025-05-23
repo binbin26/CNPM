@@ -5,6 +5,7 @@ namespace CNPM.Models.Courses.Sessions
     public class SessionData
     {
         public string Title { get; set; }
+        public int CourseID { get; set; }
         public List<FileItem> AttachedFiles { get; set; } = new List<FileItem>();
         public List<AssignmentData> Assignments { get; set; } = new List<AssignmentData>();
     }
