@@ -29,7 +29,6 @@ namespace CNPM.DAL
                     cmd.Parameters.AddWithValue("@DueDate", assignment.DueDate);
                     cmd.Parameters.AddWithValue("@MaxScore", assignment.MaxScore);
                     cmd.Parameters.AddWithValue("@CreatedBy", assignment.CreatedBy);
-                    cmd.Parameters.AddWithValue("@AssignmentType", (int)assignment.AssignmentType);
 
                     conn.Open();
                     return cmd.ExecuteNonQuery() > 0;
@@ -61,50 +60,55 @@ namespace CNPM.DAL
 
         public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
         {
-            var list = new List<Assignments>();
-
-            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            List<Assignments> assignments = new List<Assignments>();
+            using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-
-                string query = @"
-        SELECT 
-            a.AssignmentID,
-            c.CourseName,
-            a.Title,
-            a.Description,
-            a.DueDate,
-            a.MaxScore,
-            a.CreatedBy,
-            a.AssignmentType,
-            CASE 
-                WHEN s.SubmissionID IS NOT NULL THEN N'Đã nộp'
-                ELSE N'Chưa nộp'
-            END AS SubmissionStatus
-        FROM Users u
-        INNER JOIN CourseEnrollments ce ON u.UserID = ce.StudentID
-        INNER JOIN Courses c ON ce.CourseID = c.CourseID
-        INNER JOIN Assignments a ON c.CourseID = a.CourseID
-        LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID AND s.StudentID = u.UserID
-        WHERE u.Username = @Username
-        ORDER BY a.DueDate DESC";
-
-                using (var cmd = new SqlCommand(query, conn))
+                using (var cmd = new SqlCommand())
                 {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"
+                        SELECT a.*, 
+                               CASE 
+                                   WHEN s.SubmissionID IS NOT NULL THEN 'Submitted'
+                                   ELSE 'Not Submitted'
+                               END as SubmissionStatus
+                        FROM Assignments a
+                        LEFT JOIN Submissions s ON a.AssignmentID = s.AssignmentID 
+                            AND s.StudentID = (SELECT UserID FROM Users WHERE Username = @Username)
+                        WHERE a.AssignmentID IN (
+                            SELECT AssignmentID 
+                            FROM Assignments 
+                            WHERE CourseID IN (
+                                SELECT CourseID 
+                                FROM Enrollments 
+                                WHERE StudentID = (SELECT UserID FROM Users WHERE Username = @Username)
+                            )
+                        )";
+
                     cmd.Parameters.AddWithValue("@Username", username);
+
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(MapReaderToAssignment(reader));
+                            assignments.Add(new Assignments
+                            {
+                                AssignmentID = reader.GetInt32(reader.GetOrdinal("AssignmentID")),
+                                CourseID = reader.GetInt32(reader.GetOrdinal("CourseID")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
+                                MaxScore = reader.GetDecimal(reader.GetOrdinal("MaxScore")),
+                                CreatedBy = reader.GetString(reader.GetOrdinal("CreatedBy")),
+                                SubmissionStatus = reader.GetString(reader.GetOrdinal("SubmissionStatus"))
+                            });
                         }
                     }
                 }
             }
-
-            return list;
+            return assignments;
         }
-
 
         private Assignments MapReaderToAssignment(SqlDataReader reader)
         {
@@ -118,7 +122,6 @@ namespace CNPM.DAL
                                    : reader.GetString(reader.GetOrdinal("Description")),
                 DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
                 MaxScore = Convert.ToDecimal(reader["MaxScore"]),
-                CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                 AssignmentType = (AssignmentTypes)reader.GetInt32(reader.GetOrdinal("AssignmentType"))
             };
         }
@@ -207,7 +210,7 @@ ORDER BY q.QuestionID";
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
-                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                cmd.Parameters.AddWithValue("@assignmentId", assignmentId);
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -371,6 +374,29 @@ ORDER BY q.QuestionID";
                 }
             }
             return submissions;
+        }
+
+
+        public string GetUsernameByAssignmentId(int assignmentId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = @"
+                        SELECT u.Username
+                        FROM Users u
+                        JOIN Enrollments e ON u.UserID = e.StudentID
+                        JOIN Assignments a ON e.CourseID = a.CourseID
+                        WHERE a.AssignmentID = @AssignmentId";
+
+                    cmd.Parameters.AddWithValue("@AssignmentId", assignmentId);
+
+                    return (string)cmd.ExecuteScalar();
+                }
+            }
         }
     }
 }
