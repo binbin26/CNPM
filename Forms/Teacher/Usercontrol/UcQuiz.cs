@@ -106,7 +106,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             var selectedCourse = ShowCourseSelectionDialog(courses);
             if (selectedCourse != null)
             {
-                MultipleChoiceProgress progressForm = new MultipleChoiceProgress(selectedCourse.CourseID);
+                MultipleChoiceProgress progressForm = new MultipleChoiceProgress(selectedCourse.CourseID, TeacherID);
                 progressForm.Show();
             }
         }

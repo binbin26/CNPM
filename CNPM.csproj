@@ -326,8 +326,9 @@
     <Compile Include="Forms\Teacher\Usercontrol\UcSubmissions.Designer.cs">
       <DependentUpon>UcSubmissions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Assignments\AssignmentFile.cs" />
+    <Compile Include="Models\Assignments\AssignmentMC.cs" />
     <Compile Include="Models\Assignments\Assignments.cs" />
-    <Compile Include="Models\Assignments\AssignmentTypes.cs" />
     <Compile Include="Models\Assignments\EssaySubmissionDTO.cs" />
     <Compile Include="Models\Assignments\Question.cs" />
     <Compile Include="Models\Assignments\QuestionStatsDTO.cs" />

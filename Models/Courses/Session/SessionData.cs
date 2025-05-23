@@ -18,7 +18,6 @@ namespace CNPM.Models.Courses.Sessions
     public class AssignmentData
     {
         public string Title { get; set; }
-        public string AssignmentType { get; set; }
         public string FilePath { get; set; }
     }
 }

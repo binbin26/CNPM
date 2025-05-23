@@ -39,6 +39,7 @@
             this.lblQuestionNumber = new System.Windows.Forms.Label();
             this.btnSubmit = new System.Windows.Forms.Button();
             this.flpQuestionList = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblTitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblQuestion
@@ -61,6 +62,7 @@
             this.radioA.Size = new System.Drawing.Size(99, 24);
             this.radioA.TabIndex = 1;
             this.radioA.Text = "Đáp án A";
+            this.radioA.CheckedChanged += new System.EventHandler(this.Radio_CheckedChanged);
             // 
             // radioB
             // 
@@ -71,6 +73,7 @@
             this.radioB.Size = new System.Drawing.Size(100, 24);
             this.radioB.TabIndex = 2;
             this.radioB.Text = "Đáp án B";
+            this.radioB.CheckedChanged += new System.EventHandler(this.Radio_CheckedChanged);
             // 
             // radioC
             // 
@@ -81,6 +84,7 @@
             this.radioC.Size = new System.Drawing.Size(100, 24);
             this.radioC.TabIndex = 3;
             this.radioC.Text = "Đáp án C";
+            this.radioC.CheckedChanged += new System.EventHandler(this.Radio_CheckedChanged);
             // 
             // radioD
             // 
@@ -91,6 +95,7 @@
             this.radioD.Size = new System.Drawing.Size(101, 24);
             this.radioD.TabIndex = 4;
             this.radioD.Text = "Đáp án D";
+            this.radioD.CheckedChanged += new System.EventHandler(this.Radio_CheckedChanged);
             // 
             // btnPrevious
             // 
@@ -101,6 +106,7 @@
             this.btnPrevious.TabIndex = 5;
             this.btnPrevious.Text = "Câu trước";
             this.btnPrevious.UseVisualStyleBackColor = true;
+            this.btnPrevious.Click += new System.EventHandler(this.btnPrevious_Click);
             // 
             // btnNext
             // 
@@ -111,6 +117,7 @@
             this.btnNext.TabIndex = 6;
             this.btnNext.Text = "Câu tiếp";
             this.btnNext.UseVisualStyleBackColor = true;
+            this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
             // lblTimer
             // 
@@ -143,6 +150,7 @@
             this.btnSubmit.TabIndex = 10;
             this.btnSubmit.Text = "Nộp bài";
             this.btnSubmit.UseVisualStyleBackColor = true;
+            this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
             // 
             // flpQuestionList
             // 
@@ -152,11 +160,22 @@
             this.flpQuestionList.Size = new System.Drawing.Size(314, 320);
             this.flpQuestionList.TabIndex = 11;
             // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(400, 30);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(321, 46);
+            this.lblTitle.TabIndex = 13;
+            this.lblTitle.Text = "BÀI TRẮC NGHIỆM";
+            // 
             // ucQuiz
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblQuestion);
             this.Controls.Add(this.radioA);
             this.Controls.Add(this.radioB);
@@ -190,5 +209,6 @@
         private System.Windows.Forms.Label lblQuestionNumber;
         private System.Windows.Forms.Button btnSubmit;
         private System.Windows.Forms.FlowLayoutPanel flpQuestionList;
+        private System.Windows.Forms.Label lblTitle;
     }
 }

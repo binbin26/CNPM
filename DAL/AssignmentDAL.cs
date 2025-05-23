@@ -35,27 +35,129 @@ namespace CNPM.DAL
             }
         }
 
-        public List<Assignments> GetAssignmentsByCourse(int courseID)
+        //Tải bài tập trắc nghiệm ucQuiz:
+        public List<Question> GetQuestionsByAssignmentId(int assignmentId)
         {
-            var list = new List<Assignments>();
+            List<Question> questions = new List<Question>();
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
-                string query = "SELECT * FROM Assignments WHERE CourseID = @CourseID";
-                using (var cmd = new SqlCommand(query, conn))
+                string query = @"SELECT [QuestionID], [AssignmentID], [QuestionText], [OptionA], [OptionB], [OptionC], [OptionD], [CorrectAnswer]
+                         FROM Questions
+                         WHERE AssignmentID = @AssignmentID";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    cmd.Parameters.AddWithValue("@CourseID", courseID);
+                    Question q = new Question
+                    {
+                        QuestionID = Convert.ToInt32(reader["QuestionID"]),
+                        AssignmentID = Convert.ToInt32(reader["AssignmentID"]),
+                        QuestionText = reader["QuestionText"].ToString(),
+                        OptionA = reader["OptionA"].ToString(),
+                        OptionB = reader["OptionB"].ToString(),
+                        OptionC = reader["OptionC"].ToString(),
+                        OptionD = reader["OptionD"].ToString(),
+                        CorrectAnswer = reader["CorrectAnswer"].ToString()
+                    };
+                    questions.Add(q);
+                }
+                conn.Close();
+                return questions;
+            }
+        }
+
+        //Lưu câu trả lời trắc nghiệm của Sinh viên
+        public void SaveStudentAnswers(int assignmentId, int studentId, Dictionary<int, string> answers)
+        {
+            try
+            {
+                using (SqlConnection conn = DatabaseHelper.GetConnection())
+                {
+                    conn.Open();
+                    using (SqlTransaction transaction = conn.BeginTransaction())
+                    {
+                        foreach (var entry in answers)
+                        {
+                            int questionId = entry.Key;
+                            string selectedAnswer = entry.Value;
+
+                            string query = @"
+                        IF EXISTS (SELECT 1 FROM StudentAnswers 
+                                   WHERE AssignmentID = @AssignmentID 
+                                     AND StudentID = @StudentID 
+                                     AND QuestionID = @QuestionID)
+                        BEGIN
+                            UPDATE StudentAnswers
+                            SET SelectedAnswer = @SelectedAnswer
+                            WHERE AssignmentID = @AssignmentID 
+                              AND StudentID = @StudentID 
+                              AND QuestionID = @QuestionID
+                        END
+                        ELSE
+                        BEGIN
+                            INSERT INTO StudentAnswers
+                                (AssignmentID, StudentID, QuestionID, SelectedAnswer)
+                            VALUES
+                                (@AssignmentID, @StudentID, @QuestionID, @SelectedAnswer)
+                        END";
+
+                            using (SqlCommand command = new SqlCommand(query, conn, transaction))
+                            {
+                                command.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                                command.Parameters.AddWithValue("@StudentID", studentId);
+                                command.Parameters.AddWithValue("@QuestionID", questionId);
+                                command.Parameters.AddWithValue("@SelectedAnswer", selectedAnswer);
+
+                                command.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi lưu danh sách câu trả lời: {ex.Message}");
+                throw;
+            }
+        }
+
+        public List<AssignmentMC> GetMultipleChoiceAssignmentIds(int teacherId, int courseId)
+        {
+            List<AssignmentMC> assignmentMCs = new List<AssignmentMC>();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT a.AssignmentID
+            FROM Assignments a
+            JOIN AssignmentMC mc ON a.AssignmentID = mc.AssignmentID
+            WHERE a.TeacherID = @TeacherID AND a.CourseID = @CourseID";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TeacherID", teacherId);
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
                     conn.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(MapReaderToAssignment(reader));
+                            assignmentMCs.Add(new AssignmentMC
+                            {
+                                AssignmentID = (int)reader["AssignmentID"]
+                            });
                         }
                     }
                 }
             }
-            return list;
+            return assignmentMCs;
         }
+
 
         public List<Assignments> GetAssignmentsForStudentWithStatus(string username)
         {
@@ -105,20 +207,40 @@ namespace CNPM.DAL
         }
 
 
-        private Assignments MapReaderToAssignment(SqlDataReader reader)
+        //Hàm kiểm tra loại bài tập:
+        public string GetAssignmentType(int assignmentId)
         {
-            return new Assignments
-            {
-                AssignmentID = reader.GetInt32(reader.GetOrdinal("AssignmentID")),
-                CourseID = reader.GetInt32(reader.GetOrdinal("CourseID")),
-                Title = reader.GetString(reader.GetOrdinal("Title")),
-                Description = reader.IsDBNull(reader.GetOrdinal("Description"))
-                                   ? null
-                                   : reader.GetString(reader.GetOrdinal("Description")),
-                DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
-                MaxScore = Convert.ToDecimal(reader["MaxScore"])
-            };
+            if (IsMultipleChoice(assignmentId)) return "TracNghiem";
+            if (IsEssay(assignmentId)) return "TuLuan";
+            return "Unknown";
         }
+
+        private bool IsMultipleChoice(int assignmentId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT COUNT(*) FROM AssignmentMC WHERE AssignmentID = @AssignmentID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+        }
+
+        private bool IsEssay(int assignmentId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                string query = "SELECT COUNT(*) FROM AssignmentFile WHERE AssignmentID = @AssignmentID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+        }
+        //Report 2:
         public List<ProgressReportDTO> GetProgressByCourse(int courseId)
         {
             var reports = new List<ProgressReportDTO>();
@@ -130,7 +252,7 @@ namespace CNPM.DAL
     u.FullName,
     ISNULL(a.TotalAssignments, 0) AS TotalAssignments,
     ISNULL(s.Submitted, 0) AS SubmittedAssignments,
-    ISNULL(g.AverageGrade, 0) AS AverageGrade
+    ISNULL(s.AverageGrade, 0) AS AverageGrade
 FROM CourseEnrollments ce
 JOIN Users u ON ce.StudentID = u.UserID
 LEFT JOIN (
@@ -140,18 +262,16 @@ LEFT JOIN (
     GROUP BY CourseID
 ) a ON a.CourseID = ce.CourseID
 LEFT JOIN (
-    SELECT ss.StudentID, a.CourseID, COUNT(*) AS Submitted
+    SELECT 
+        ss.StudentID, 
+        a.CourseID, 
+        COUNT(*) AS Submitted,
+        AVG(CAST(ss.Score AS FLOAT)) AS AverageGrade
     FROM StudentSubmissions ss
     JOIN Assignments a ON ss.AssignmentID = a.AssignmentID
     WHERE a.CourseID = @CourseID
     GROUP BY ss.StudentID, a.CourseID
 ) s ON s.StudentID = ce.StudentID AND s.CourseID = ce.CourseID
-LEFT JOIN (
-    SELECT g.StudentID, g.CourseID, AVG(g.Score) AS AverageGrade
-    FROM Grades g
-    WHERE g.CourseID = @CourseID
-    GROUP BY g.StudentID, g.CourseID
-) g ON g.StudentID = ce.StudentID AND g.CourseID = ce.CourseID
 WHERE ce.CourseID = @CourseID";
 
                 using (var cmd = new SqlCommand(query, conn))
@@ -237,7 +357,12 @@ ORDER BY q.QuestionID";
             SELECT s.*
             FROM StudentSubmissions s
             JOIN Assignments a ON s.AssignmentID = a.AssignmentID
-            WHERE s.AssignmentID = @AssignmentID AND a.TeacherID = @TeacherID AND a.AssignmentType = N'TuLuan'";
+            WHERE s.AssignmentID = @AssignmentID
+            AND a.CreatedBy = @TeacherID
+            AND EXISTS (
+            SELECT 1
+            FROM AssignmentFiles af
+            WHERE af.AssignmentID = s.AssignmentID)";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -289,52 +414,111 @@ ORDER BY q.QuestionID";
             }
         }
         //Tự chấm điểm trắc nghiệm (UcQuiz)
-        public bool AutoGradeQuiz(int assignmentId, int studentId)
+        public decimal AutoGradeQuiz(int assignmentId, int studentId)
         {
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
+                conn.Open();
+                string updateIsCorrect = @"
+                UPDATE sa 
+                SET IsCorrect = CASE 
+                WHEN sa.SelectedAnswer = q.CorrectAnswer THEN 1 
+                ELSE 0 
+                END
+                FROM StudentAnswers sa
+                JOIN Questions q ON sa.QuestionID = q.QuestionID
+                WHERE sa.StudentID = @StudentID AND q.AssignmentID = @AssignmentID";
+
+                using (var updateCmd = new SqlCommand(updateIsCorrect, conn))
+                {
+                    updateCmd.Parameters.AddWithValue("@StudentID", studentId);
+                    updateCmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                    updateCmd.ExecuteNonQuery();
+                }
+
+
                 string query = @"
-        SELECT COUNT(*) AS TotalQuestions,
-               SUM(CASE WHEN sa.IsCorrect = 1 THEN 1 ELSE 0 END) AS CorrectAnswers
-        FROM StudentAnswers sa
-        JOIN Questions q ON sa.QuestionID = q.QuestionID
-        WHERE sa.StudentID = @StudentID AND q.AssignmentID = @AssignmentID";
+                SELECT COUNT(*) AS TotalQuestions,
+                SUM(CASE WHEN sa.SelectedAnswer = q.CorrectAnswer THEN 1 ELSE 0 END) AS CorrectAnswers
+                FROM StudentAnswers sa
+                JOIN Questions q ON sa.QuestionID = q.QuestionID
+                WHERE sa.StudentID = @StudentID AND q.AssignmentID = @AssignmentID";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@StudentID", studentId);
                     cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
 
-                    conn.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
                             int total = reader.GetInt32(0);
                             int correct = reader.GetInt32(1);
-                            decimal score = (decimal)correct / total * 10;
 
+                            if (total == 0) return 0;
+
+                            decimal score = (decimal)correct / total * 10;
                             reader.Close();
-                            // Cập nhật điểm
+
+                            // Cập nhật vào bảng StudentSubmissions
                             string update = @"
-                        UPDATE StudentSubmissions 
-                        SET Score = @Score
-                        WHERE AssignmentID = @AssignmentID AND StudentID = @StudentID";
+                            UPDATE StudentSubmissions 
+                            SET Score = @Score
+                            WHERE AssignmentID = @AssignmentID AND StudentID = @StudentID";
 
                             using (var updateCmd = new SqlCommand(update, conn))
                             {
                                 updateCmd.Parameters.AddWithValue("@Score", score);
                                 updateCmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
                                 updateCmd.Parameters.AddWithValue("@StudentID", studentId);
-
-                                return updateCmd.ExecuteNonQuery() > 0;
+                                updateCmd.ExecuteNonQuery();
                             }
+
+                            return score;
+                        }
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        //Ràng buộc số lần làm trắc nghiệm
+        public bool HasExceededMaxAttempts(int assignmentId, int studentId)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = @"
+            SELECT a.MaxAttempts, 
+                   COUNT(ss.SubmissionID) AS AttemptCount
+            FROM AssignmentMC a
+            LEFT JOIN StudentSubmissions ss 
+                ON ss.AssignmentID = a.AssignmentID AND ss.StudentID = @StudentID
+            WHERE a.AssignmentID = @AssignmentID
+            GROUP BY a.MaxAttempts";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                    cmd.Parameters.AddWithValue("@StudentID", studentId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int maxAttempts = reader.GetInt32(0);
+                            int attemptCount = reader.GetInt32(1);
+                            return attemptCount >= maxAttempts;
                         }
                     }
                 }
             }
             return false;
         }
+
+
         //Lấy danh sách bài nộp trắc nghiệm(UcQuiz)
         public List<QuizSubmissionDTO> GetQuizSubmissions(int assignmentId, int teacherId)
         {
@@ -342,11 +526,15 @@ ORDER BY q.QuestionID";
             using (SqlConnection conn = DatabaseHelper.GetConnection())
             {
                 string query = @"
-        SELECT u.FullName, s.StudentID, s.Score
-        FROM StudentSubmissions s
-        JOIN Users u ON s.StudentID = u.UserID
-        JOIN Assignments a ON s.AssignmentID = a.AssignmentID
-        WHERE s.AssignmentID = @AssignmentID AND a.TeacherID = @TeacherID AND a.AssignmentType = N'TracNghiem'";
+                SELECT u.FullName, s.StudentID, s.Score
+                FROM StudentSubmissions s
+                JOIN Users u ON s.StudentID = u.UserID
+                JOIN Assignments a ON s.AssignmentID = a.AssignmentID
+                WHERE s.AssignmentID = @AssignmentID 
+                AND a.TeacherID = @TeacherID 
+                AND EXISTS (
+                SELECT 1 FROM AssignmentMC amc 
+                WHERE amc.AssignmentID = a.AssignmentID)";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
