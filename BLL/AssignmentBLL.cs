@@ -145,9 +145,24 @@ public class AssignmentBLL
         {
             return _assignmentDAL.GetCourseDocuments(courseId);
         }
+        catch (SqlException sqlEx)
+        {
+            Logger.LogError("Lỗi SQL khi lấy tài liệu khóa học: " + sqlEx.Message);
+            throw new ApplicationException("Lỗi cơ sở dữ liệu khi truy xuất tài liệu.");
+        }
+        catch (InvalidOperationException invalidOpEx)
+        {
+            Logger.LogError("Thao tác không hợp lệ khi lấy tài liệu khóa học: " + invalidOpEx.Message);
+            throw new ApplicationException("Đã xảy ra lỗi trong quá trình xử lý yêu cầu.");
+        }
+        catch (NullReferenceException nullRefEx)
+        {
+            Logger.LogError("Lỗi null khi lấy tài liệu khóa học: " + nullRefEx.Message);
+            throw new ApplicationException("Dữ liệu không hợp lệ hoặc bị thiếu.");
+        }
         catch (Exception ex)
         {
-            Logger.LogError("Lỗi khi lấy tài liệu khóa học: " + ex.Message);
+            Logger.LogError("Lỗi không xác định khi lấy tài liệu khóa học: " + ex.Message);
             throw new ApplicationException("Không thể lấy tài liệu khóa học. Vui lòng thử lại.");
         }
     }

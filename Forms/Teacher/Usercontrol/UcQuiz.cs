@@ -22,9 +22,9 @@ namespace CNPM.Forms.Teacher.Usercontrol
 
         private void cboAssignments_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboAssignments.SelectedValue is int assignmentId)
+            if (cboAssignments.SelectedItem is Assignments assignment)
             {
-                LoadSubmissions(assignmentId);
+                LoadSubmissions(assignment.AssignmentID);
             }
         }
 
@@ -34,6 +34,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             {
                 var submissions = assignmentBLL.GetQuizSubmissions(assignmentId, TeacherID);
                 dgvSubmissions.AutoGenerateColumns = true;
+                dgvSubmissions.DataSource = null;
                 dgvSubmissions.DataSource = submissions;
             }
             catch (Exception ex)
@@ -121,23 +122,23 @@ namespace CNPM.Forms.Teacher.Usercontrol
                     MessageBox.Show("Giáo viên chưa tạo bài tập nào.");
                     return;
                 }
-                var essayAssignments = new List<Assignments>();
+                var quizAssignments = new List<Assignments>();
                 foreach (var assignment in allAssignments)
                 {
                     string type = assignmentBLL.GetAssignmentType(assignment.AssignmentID);
                     if (type == "TracNghiem")
                     {
-                        essayAssignments.Add(assignment);
+                        quizAssignments.Add(assignment);
                     }
                 }
 
-                if (essayAssignments.Count == 0)
+                if (quizAssignments.Count == 0)
                 {
-                    MessageBox.Show("Không có bài tập tự luận nào.");
+                    MessageBox.Show("Không có bài tập trắc nghiệm nào.");
                     return;
                 }
 
-                cboAssignments.DataSource = essayAssignments;
+                cboAssignments.DataSource = quizAssignments;
                 cboAssignments.DisplayMember = "Title";
                 cboAssignments.ValueMember = "AssignmentID";
             }
