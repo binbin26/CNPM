@@ -30,7 +30,11 @@ namespace CNPM.Forms.Teacher.Usercontrol
         {
             if (cboAssignments.SelectedItem is Assignments assignment)
             {
-                LoadSubmissions(assignment.AssignmentID);
+                LoadSubmissions(assignment.AssignmentID, TeacherID);
+            }
+            else
+            {
+                MessageBox.Show("Vui lòng chọn một bài tập.");
             }
         }
 
@@ -38,7 +42,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             if (cboAssignments.SelectedValue is int assignmentId)
-                LoadSubmissions(assignmentId);
+                LoadSubmissions(assignmentId, TeacherID);
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
@@ -65,7 +69,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
                 {
                     assignmentBLL.UpdateSubmissionScore(submission.AssignmentID, submission.StudentID, score, TeacherID);
                     MessageBox.Show("Chấm điểm thành công.");
-                    LoadSubmissions(submission.AssignmentID);
+                    LoadSubmissions(submission.AssignmentID, TeacherID);
                 }
                 catch (Exception ex)
                 {
@@ -74,12 +78,28 @@ namespace CNPM.Forms.Teacher.Usercontrol
             }
         }
 
-        private void LoadSubmissions(int assignmentId)
+        private void LoadSubmissions(int assignmentId, int teacherID)
         {
             try
             {
-                var submissions = assignmentBLL.GetEssaySubmissions(assignmentId, TeacherID);
-                dgvSubmissions.DataSource = submissions;
+                var submissions = assignmentBLL.GetEssaySubmissions(assignmentId, teacherID);
+
+                // Kiểm tra nếu danh sách rỗng hoặc null
+                if (submissions == null || submissions.Count == 0)
+                {
+                    MessageBox.Show("Không tìm thấy bài nộp nào.");
+                }
+                else
+                {
+                    // In ra các giá trị của AssignmentID và TeacherID để debug bằng MessageBox
+                    foreach (var submission in submissions)
+                    {
+                        MessageBox.Show($"AssignmentID: {submission.AssignmentID}, TeacherID: {TeacherID}");
+                    }
+
+                    // Gán danh sách bài nộp vào DataGridView
+                    dgvSubmissions.DataSource = submissions;
+                }
             }
             catch (Exception ex)
             {

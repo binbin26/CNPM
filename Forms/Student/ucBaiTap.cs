@@ -50,11 +50,7 @@ namespace CNPM.Forms.Student
                 int assignmentId = Convert.ToInt32(dtGAssign.Rows[e.RowIndex].Cells["AssignmentID"].Value);
                 DateTime dueDate = Convert.ToDateTime(dtGAssign.Rows[e.RowIndex].Cells["DueDate"].Value);
                 string status = dtGAssign.Rows[e.RowIndex].Cells["SubmissionStatus"].Value?.ToString();
-                if (DateTime.Now > dueDate)
-                {
-                    MessageBox.Show("Đã quá hạn nộp bài tập!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                
                 if (status == "Submitted")
                 {
                     MessageBox.Show("Bạn đã nộp bài tập này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -69,6 +65,11 @@ namespace CNPM.Forms.Student
                     {
                         if (loaiBaiTap == "TracNghiem")
                         {
+                            if (DateTime.Now > dueDate)
+                            {
+                                MessageBox.Show("Đã quá hạn nộp bài tập!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
                             if (_assignmentBLL.HasExceededMaxAttempts(assignmentId, userId))
                             {
                                 MessageBox.Show("Bạn đã vượt quá số lần làm bài trắc nghiệm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -82,7 +83,7 @@ namespace CNPM.Forms.Student
                         else if (loaiBaiTap == "TuLuan")
                         {
                             parent.Controls.Remove(this);
-                            ucEssay UcEssay = new ucEssay(assignmentId);
+                            ucEssay UcEssay = new ucEssay(assignmentId, userId);
                             UcEssay.Dock = DockStyle.Fill;
                             parent.Controls.Add(UcEssay);
                         }

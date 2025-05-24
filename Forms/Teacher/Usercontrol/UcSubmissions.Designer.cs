@@ -100,6 +100,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.btnQuiz.TabIndex = 12;
             this.btnQuiz.Text = "Danh sách bài trắc nghiệm";
             this.btnQuiz.UseVisualStyleBackColor = true;
+            this.btnQuiz.Click += new System.EventHandler(this.btnQuiz_Click);
             // 
             // btnRefresh
             // 
@@ -108,6 +109,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.btnRefresh.Size = new System.Drawing.Size(90, 29);
             this.btnRefresh.TabIndex = 8;
             this.btnRefresh.Text = "Tải lại";
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // btnOpenFile
             // 
@@ -116,6 +118,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.btnOpenFile.Size = new System.Drawing.Size(100, 29);
             this.btnOpenFile.TabIndex = 9;
             this.btnOpenFile.Text = "Xem bài nộp";
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // nudScore
             // 
@@ -132,6 +135,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.btnSubmitScore.Size = new System.Drawing.Size(100, 29);
             this.btnSubmitScore.TabIndex = 11;
             this.btnSubmitScore.Text = "Chấm điểm";
+            this.btnSubmitScore.Click += new System.EventHandler(this.btnSubmitScore_Click);
             // 
             // UcSubmissions
             // 
