@@ -2,6 +2,7 @@
 using CNPM.DAL;
 using CNPM.Models.Assignments;
 using CNPM.Models.Courses;
+using CNPM.Models.Courses.Sessions;
 using CNPM.Utilities;
 using DocumentFormat.OpenXml.Office.CustomXsn;
 using System;
@@ -62,6 +63,11 @@ public class AssignmentBLL
                 ErrorMessage = $"Lỗi khi lưu đáp án: {ex.Message}"
             };
         }
+    }
+
+    public List<Assignments> GetAssignmentsCreatedByTeacher(int teacherId)
+    {
+        return _assignmentDAL.GetAssignmentsCreatedByTeacher(teacherId);
     }
 
 

@@ -43,12 +43,14 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.nudScore = new System.Windows.Forms.NumericUpDown();
             this.btnSubmitScore = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubmissions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudScore)).BeginInit();
             this.SuspendLayout();
             // 
             // lblSelectAssignment
             // 
+            this.lblSelectAssignment.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.lblSelectAssignment.Location = new System.Drawing.Point(20, 10);
             this.lblSelectAssignment.Name = "lblSelectAssignment";
             this.lblSelectAssignment.Size = new System.Drawing.Size(100, 24);
@@ -76,13 +78,14 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.dgvSubmissions.ReadOnly = true;
             this.dgvSubmissions.RowHeadersWidth = 51;
             this.dgvSubmissions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSubmissions.Size = new System.Drawing.Size(691, 293);
+            this.dgvSubmissions.Size = new System.Drawing.Size(817, 499);
             this.dgvSubmissions.TabIndex = 0;
             this.dgvSubmissions.SelectionChanged += new System.EventHandler(this.dgvSubmissions_SelectionChanged);
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(20, 360);
+            this.btnRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnRefresh.Location = new System.Drawing.Point(20, 562);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(90, 30);
             this.btnRefresh.TabIndex = 2;
@@ -93,7 +96,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             // 
             this.btnOpenFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnOpenFile.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnOpenFile.Location = new System.Drawing.Point(611, 10);
+            this.btnOpenFile.Location = new System.Drawing.Point(671, 10);
             this.btnOpenFile.Name = "btnOpenFile";
             this.btnOpenFile.Size = new System.Drawing.Size(100, 30);
             this.btnOpenFile.TabIndex = 3;
@@ -102,24 +105,38 @@ namespace CNPM.Forms.Teacher.Usercontrol
             // 
             // nudScore
             // 
-            this.nudScore.Location = new System.Drawing.Point(230, 365);
+            this.nudScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.nudScore.Location = new System.Drawing.Point(320, 570);
             this.nudScore.Name = "nudScore";
-            this.nudScore.Size = new System.Drawing.Size(60, 22);
+            this.nudScore.Size = new System.Drawing.Size(60, 26);
             this.nudScore.TabIndex = 4;
             // 
             // btnSubmitScore
             // 
-            this.btnSubmitScore.Location = new System.Drawing.Point(300, 360);
+            this.btnSubmitScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.btnSubmitScore.Location = new System.Drawing.Point(158, 566);
             this.btnSubmitScore.Name = "btnSubmitScore";
-            this.btnSubmitScore.Size = new System.Drawing.Size(100, 30);
+            this.btnSubmitScore.Size = new System.Drawing.Size(131, 30);
             this.btnSubmitScore.TabIndex = 5;
             this.btnSubmitScore.Text = "Chấm điểm";
             this.btnSubmitScore.Click += new System.EventHandler(this.btnSubmitScore_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.label1.ForeColor = System.Drawing.Color.CornflowerBlue;
+            this.label1.Location = new System.Drawing.Point(407, 7);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(232, 29);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Bài tập trắc nghiệm";
             // 
             // UcQuiz
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblSelectAssignment);
             this.Controls.Add(this.cboAssignments);
             this.Controls.Add(this.dgvSubmissions);
@@ -128,13 +145,16 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.Controls.Add(this.nudScore);
             this.Controls.Add(this.btnSubmitScore);
             this.Name = "UcQuiz";
-            this.Size = new System.Drawing.Size(741, 403);
+            this.Size = new System.Drawing.Size(867, 609);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubmissions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudScore)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private Label label1;
     }
 }
