@@ -78,14 +78,14 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.dgvSubmissions.ReadOnly = true;
             this.dgvSubmissions.RowHeadersWidth = 51;
             this.dgvSubmissions.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSubmissions.Size = new System.Drawing.Size(817, 499);
+            this.dgvSubmissions.Size = new System.Drawing.Size(716, 339);
             this.dgvSubmissions.TabIndex = 0;
             this.dgvSubmissions.SelectionChanged += new System.EventHandler(this.dgvSubmissions_SelectionChanged);
             // 
             // btnRefresh
             // 
             this.btnRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnRefresh.Location = new System.Drawing.Point(20, 562);
+            this.btnRefresh.Location = new System.Drawing.Point(24, 416);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(90, 30);
             this.btnRefresh.TabIndex = 2;
@@ -96,7 +96,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             // 
             this.btnOpenFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.btnOpenFile.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnOpenFile.Location = new System.Drawing.Point(671, 10);
+            this.btnOpenFile.Location = new System.Drawing.Point(636, 10);
             this.btnOpenFile.Name = "btnOpenFile";
             this.btnOpenFile.Size = new System.Drawing.Size(100, 30);
             this.btnOpenFile.TabIndex = 3;
@@ -106,7 +106,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             // nudScore
             // 
             this.nudScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.nudScore.Location = new System.Drawing.Point(320, 570);
+            this.nudScore.Location = new System.Drawing.Point(340, 419);
             this.nudScore.Name = "nudScore";
             this.nudScore.Size = new System.Drawing.Size(60, 26);
             this.nudScore.TabIndex = 4;
@@ -114,7 +114,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             // btnSubmitScore
             // 
             this.btnSubmitScore.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.btnSubmitScore.Location = new System.Drawing.Point(158, 566);
+            this.btnSubmitScore.Location = new System.Drawing.Point(173, 416);
             this.btnSubmitScore.Name = "btnSubmitScore";
             this.btnSubmitScore.Size = new System.Drawing.Size(131, 30);
             this.btnSubmitScore.TabIndex = 5;
@@ -126,7 +126,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
             this.label1.ForeColor = System.Drawing.Color.CornflowerBlue;
-            this.label1.Location = new System.Drawing.Point(407, 7);
+            this.label1.Location = new System.Drawing.Point(386, 10);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(232, 29);
             this.label1.TabIndex = 6;
@@ -145,7 +145,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             this.Controls.Add(this.nudScore);
             this.Controls.Add(this.btnSubmitScore);
             this.Name = "UcQuiz";
-            this.Size = new System.Drawing.Size(867, 609);
+            this.Size = new System.Drawing.Size(773, 477);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSubmissions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudScore)).EndInit();
             this.ResumeLayout(false);

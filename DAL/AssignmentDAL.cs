@@ -701,7 +701,7 @@ ORDER BY q.QuestionID";
                 JOIN Users u ON s.StudentID = u.UserID
                 JOIN Assignments a ON s.AssignmentID = a.AssignmentID
                 WHERE s.AssignmentID = @AssignmentID 
-                AND a.TeacherID = @TeacherID 
+                AND a.CreatedBy = @TeacherID 
                 AND EXISTS (
                 SELECT 1 FROM AssignmentMC amc 
                 WHERE amc.AssignmentID = a.AssignmentID)";

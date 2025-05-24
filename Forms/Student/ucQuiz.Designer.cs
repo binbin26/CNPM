@@ -123,7 +123,7 @@
             // 
             this.lblTimer.AutoSize = true;
             this.lblTimer.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTimer.Location = new System.Drawing.Point(904, 10);
+            this.lblTimer.Location = new System.Drawing.Point(59, 39);
             this.lblTimer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTimer.Name = "lblTimer";
             this.lblTimer.Size = new System.Drawing.Size(109, 46);
@@ -143,7 +143,7 @@
             // 
             // btnSubmit
             // 
-            this.btnSubmit.Location = new System.Drawing.Point(888, 535);
+            this.btnSubmit.Location = new System.Drawing.Point(357, 448);
             this.btnSubmit.Margin = new System.Windows.Forms.Padding(4);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(125, 38);
@@ -155,7 +155,7 @@
             // flpQuestionList
             // 
             this.flpQuestionList.AutoScroll = true;
-            this.flpQuestionList.Location = new System.Drawing.Point(530, 105);
+            this.flpQuestionList.Location = new System.Drawing.Point(357, 105);
             this.flpQuestionList.Name = "flpQuestionList";
             this.flpQuestionList.Size = new System.Drawing.Size(314, 320);
             this.flpQuestionList.TabIndex = 11;
@@ -164,7 +164,7 @@
             // 
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.Location = new System.Drawing.Point(400, 30);
+            this.lblTitle.Location = new System.Drawing.Point(349, 10);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(321, 46);
             this.lblTitle.TabIndex = 13;
@@ -190,7 +190,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ucQuiz";
-            this.Size = new System.Drawing.Size(1034, 591);
+            this.Size = new System.Drawing.Size(719, 526);
             this.ResumeLayout(false);
             this.PerformLayout();
 
