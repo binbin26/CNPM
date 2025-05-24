@@ -89,16 +89,15 @@ namespace CNPM.Forms.Teacher
                 // Lưu danh sách câu hỏi
                 string insertQuestion = @"
     INSERT INTO Questions 
-    (AssignmentID,QuestionID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer)
+    (AssignmentID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer)
     VALUES 
-    (@AID, @Q, @Q, @A, @B, @C, @D, @Ans)";
+    (@AID, @Q, @A, @B, @C, @D, @Ans)";
 
                 foreach (var q in Questions)
                 {
                     using (var cmd = new SqlCommand(insertQuestion, conn))
                     {
                         cmd.Parameters.AddWithValue("@AID", assignmentId);
-                        cmd.Parameters.AddWithValue("@QID", QuestionID);
                         cmd.Parameters.AddWithValue("@Q", q.QuestionText);
                         cmd.Parameters.AddWithValue("@A", q.OptionA);
                         cmd.Parameters.AddWithValue("@B", q.OptionB);

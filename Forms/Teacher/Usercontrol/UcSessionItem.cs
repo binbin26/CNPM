@@ -181,8 +181,6 @@ namespace CNPM.Forms.Teacher
                                     var cmdQ = new SqlCommand("DELETE FROM Questions WHERE AssignmentID = @ID", c);
                                     cmdQ.Parameters.AddWithValue("@ID", assignmentId);
                                     cmdQ.ExecuteNonQuery();
-                         
-
                                     // Xóa bài tập trắc nghiệm (nếu có)
                                     var cmdMC = new SqlCommand("DELETE FROM AssignmentMC WHERE AssignmentID = @ID", c);
                                     cmdMC.Parameters.AddWithValue("@ID", assignmentId);
