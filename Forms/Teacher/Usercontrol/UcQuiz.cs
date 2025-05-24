@@ -22,9 +22,9 @@ namespace CNPM.Forms.Teacher.Usercontrol
 
         private void cboAssignments_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboAssignments.SelectedValue is int assignmentId)
+            if (cboAssignments.SelectedItem is Assignments assignment)
             {
-                LoadSubmissions(assignmentId);
+                LoadSubmissions(assignment.AssignmentID);
             }
         }
 
@@ -34,6 +34,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             {
                 var submissions = assignmentBLL.GetQuizSubmissions(assignmentId, TeacherID);
                 dgvSubmissions.AutoGenerateColumns = true;
+                dgvSubmissions.DataSource = null;
                 dgvSubmissions.DataSource = submissions;
             }
             catch (Exception ex)
