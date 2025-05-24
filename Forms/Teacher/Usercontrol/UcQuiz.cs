@@ -33,6 +33,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
             try
             {
                 var submissions = assignmentBLL.GetQuizSubmissions(assignmentId, TeacherID);
+                dgvSubmissions.AutoGenerateColumns = true;
                 dgvSubmissions.DataSource = submissions;
             }
             catch (Exception ex)

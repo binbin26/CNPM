@@ -121,7 +121,7 @@ namespace CNPM.DAL
                 IF NOT EXISTS (SELECT 1 FROM StudentSubmissions 
                                WHERE AssignmentID = @AssignmentID AND StudentID = @StudentID)
                 BEGIN
-                    INSERT INTO StudentSubmissions (AssignmentID, StudentID, SubmissionTime)
+                    INSERT INTO StudentSubmissions (AssignmentID, StudentID, SubmitDate)
                     VALUES (@AssignmentID, @StudentID, GETDATE())
                 END";
 
@@ -532,7 +532,7 @@ ORDER BY q.QuestionID";
             JOIN Assignments a ON s.AssignmentID = a.AssignmentID
             WHERE s.AssignmentID = @AssignmentID
             AND a.CreatedBy = @TeacherID
-            AND AND s.FilePath IS NOT NULL)";
+            AND s.FilePath IS NOT NULL";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -701,7 +701,7 @@ ORDER BY q.QuestionID";
                 JOIN Users u ON s.StudentID = u.UserID
                 JOIN Assignments a ON s.AssignmentID = a.AssignmentID
                 WHERE s.AssignmentID = @AssignmentID 
-                AND a.TeacherID = @TeacherID 
+                AND a.CreatedBy = @TeacherID 
                 AND EXISTS (
                 SELECT 1 FROM AssignmentMC amc 
                 WHERE amc.AssignmentID = a.AssignmentID)";

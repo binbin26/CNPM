@@ -46,23 +46,40 @@ namespace CNPM.Forms.Teacher
         }
         private void btnAddSession_Click(object sender, EventArgs e)
         {
-            var form = new FormInputTitle();
-            if (form.ShowDialog() == DialogResult.OK)
+            try
             {
-                string title = form.InputTitle;
-                string query = "INSERT INTO Sessions (CourseID, Title, CreatedAt) OUTPUT INSERTED.SessionID VALUES (@CourseID, @Title, GETDATE())";
-                using (var conn = DatabaseHelper.GetConnection())
-                using (var cmd = new SqlCommand(query, conn))
+                var form = new FormInputTitle();
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    cmd.Parameters.AddWithValue("@CourseID", currentCourse.CourseID);
-                    cmd.Parameters.AddWithValue("@Title", title);
-                    conn.Open();
-                    int sessionId = (int)cmd.ExecuteScalar();
+                    string title = form.InputTitle;
+                    if (string.IsNullOrWhiteSpace(title))
+                    {
+                        MessageBox.Show("Tiêu đề không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    if (title.Length > 100)
+                    {
+                        MessageBox.Show("Tiêu đề quá dài! Tối đa 100 ký tự.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                    string query = "INSERT INTO Sessions (CourseID, Title, CreatedAt) OUTPUT INSERTED.SessionID VALUES (@CourseID, @Title, GETDATE())";
+                    using (var conn = DatabaseHelper.GetConnection())
+                    using (var cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CourseID", currentCourse.CourseID);
+                        cmd.Parameters.AddWithValue("@Title", title);
+                        conn.Open();
+                        int sessionId = (int)cmd.ExecuteScalar();
 
-                    var sessionItem = new UcSessionItem(currentCourse.TeacherID, currentCourse.CourseID, sessionId, title);
-                    sessionItem.Width = flowPanelSessions.Width - 30;
-                    flowPanelSessions.Controls.Add(sessionItem);
+                        var sessionItem = new UcSessionItem(currentCourse.TeacherID, currentCourse.CourseID, sessionId, title);
+                        sessionItem.Width = flowPanelSessions.Width - 30;
+                        flowPanelSessions.Controls.Add(sessionItem);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Đã xảy ra lỗi khi thêm buổi học:\n" + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

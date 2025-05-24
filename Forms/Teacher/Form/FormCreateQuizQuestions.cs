@@ -10,7 +10,7 @@ namespace CNPM.Forms.Teacher
     {
         private int Total, Index = 0;
         private readonly List<Question> Questions = new List<Question>();
-        private readonly int TeacherID, CourseID, SessionID;
+        private readonly int TeacherID, CourseID, SessionID, QuestionID;
         public int Duration { get; set; }
         public float PassScore { get; set; } = 5.0f;
         public int MaxAttempts { get; set; } = 1;
@@ -91,14 +91,14 @@ namespace CNPM.Forms.Teacher
     INSERT INTO Questions 
     (AssignmentID,QuestionID, QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer)
     VALUES 
-    (@AID, @QID, @Q, @A, @B, @C, @D, @Ans)";
+    (@AID, @Q, @Q, @A, @B, @C, @D, @Ans)";
 
                 foreach (var q in Questions)
                 {
                     using (var cmd = new SqlCommand(insertQuestion, conn))
                     {
                         cmd.Parameters.AddWithValue("@AID", assignmentId);
-                        cmd.Parameters.AddWithValue("@QID", assignmentId);
+                        cmd.Parameters.AddWithValue("@QID", QuestionID);
                         cmd.Parameters.AddWithValue("@Q", q.QuestionText);
                         cmd.Parameters.AddWithValue("@A", q.OptionA);
                         cmd.Parameters.AddWithValue("@B", q.OptionB);

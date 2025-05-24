@@ -173,16 +173,24 @@ namespace CNPM.Forms.Teacher
                                 using (var c = DatabaseHelper.GetConnection())
                                 {
                                     c.Open();
+                                    // Xóa bài nộp
+                                    var cmdS = new SqlCommand("DELETE FROM StudentAnswers WHERE AssignmentID = @ID", c);
+                                    cmdS.Parameters.AddWithValue("@ID", assignmentId);
+                                    cmdS.ExecuteNonQuery();
                                     // Xóa câu hỏi trước
                                     var cmdQ = new SqlCommand("DELETE FROM Questions WHERE AssignmentID = @ID", c);
                                     cmdQ.Parameters.AddWithValue("@ID", assignmentId);
                                     cmdQ.ExecuteNonQuery();
+                         
 
                                     // Xóa bài tập trắc nghiệm (nếu có)
                                     var cmdMC = new SqlCommand("DELETE FROM AssignmentMC WHERE AssignmentID = @ID", c);
                                     cmdMC.Parameters.AddWithValue("@ID", assignmentId);
                                     cmdMC.ExecuteNonQuery();
-
+                                    // Xóa bài tập tự luận (nếu có)
+                                    var cmdSFile = new SqlCommand("DELETE FROM StudentSubmissions WHERE AssignmentID = @ID", c);
+                                    cmdSFile.Parameters.AddWithValue("@ID", assignmentId);
+                                    cmdSFile.ExecuteNonQuery();
                                     // Xóa bài tập tự luận (nếu có)
                                     var cmdFile = new SqlCommand("DELETE FROM AssignmentFiles WHERE AssignmentID = @ID", c);
                                     cmdFile.Parameters.AddWithValue("@ID", assignmentId);
