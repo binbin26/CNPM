@@ -1,7 +1,3 @@
-Dưới đây là nội dung tệp `README.md` mẫu cho dự án Hệ thống Quản lý Học tập (LMS) của bạn tại [https://github.com/binbin26/CNPM](https://github.com/binbin26/CNPM). Tệp này được viết bằng tiếng Việt và tuân theo chuẩn GitHub Markdown:
-
----
-
 # 📚 Hệ thống Quản lý Học tập (LMS)
 
 Đây là dự án môn học "Công Nghệ Phần Mềm" tại Học viện Công nghệ Bưu chính Viễn thông (PTIT), phát triển một hệ thống quản lý học tập (LMS) hỗ trợ giảng viên và sinh viên trong việc giảng dạy và học tập trực tuyến.([GitHub][1])
