@@ -36,7 +36,7 @@
 2. Mở file `CNPM.sln` bằng Visual Studio.
 3. Khôi phục các gói NuGet nếu cần.
 4. Cấu hình chuỗi kết nối cơ sở dữ liệu trong `App.config`.
-5. Khởi tạo cơ sở dữ liệu bằng script `SQLQuery1.sql`.
+5. Nhấp chuột phải vào Databases và chọn Import Data-tier Application file 'CNPM.bacpac' để nhập cơ sở dữ liệu.
 6. Chạy ứng dụng bằng cách nhấn F5 hoặc chọn "Start" trong Visual Studio.([GitHub][3])
 7.Chọn 1 trong các tài khoản ở `SQLQuery1.sql` để đăng nhập hoặc đăng ký.
 ## 📁 Cấu trúc thư mục
