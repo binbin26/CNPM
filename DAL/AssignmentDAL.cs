@@ -288,7 +288,7 @@ namespace CNPM.DAL
             FROM CourseDocuments cd
             INNER JOIN Sessions s ON cd.SessionID = s.SessionID
             WHERE cd.CourseID = @CourseID
-            ORDER BY s.CreatedAt;";
+            ORDER BY s.CreatedAt";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@CourseID", courseId);
