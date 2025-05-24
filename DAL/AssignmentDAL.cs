@@ -87,24 +87,24 @@ namespace CNPM.DAL
                             string selectedAnswer = entry.Value;
 
                             string query = @"
-                        IF EXISTS (SELECT 1 FROM StudentAnswers 
-                                   WHERE AssignmentID = @AssignmentID 
-                                     AND StudentID = @StudentID 
-                                     AND QuestionID = @QuestionID)
-                        BEGIN
-                            UPDATE StudentAnswers
-                            SET SelectedAnswer = @SelectedAnswer
-                            WHERE AssignmentID = @AssignmentID 
-                              AND StudentID = @StudentID 
-                              AND QuestionID = @QuestionID
-                        END
-                        ELSE
-                        BEGIN
-                            INSERT INTO StudentAnswers
-                                (AssignmentID, StudentID, QuestionID, SelectedAnswer)
-                            VALUES
-                                (@AssignmentID, @StudentID, @QuestionID, @SelectedAnswer)
-                        END";
+                    IF EXISTS (SELECT 1 FROM StudentAnswers 
+                               WHERE AssignmentID = @AssignmentID 
+                                 AND StudentID = @StudentID 
+                                 AND QuestionID = @QuestionID)
+                    BEGIN
+                        UPDATE StudentAnswers
+                        SET SelectedAnswer = @SelectedAnswer
+                        WHERE AssignmentID = @AssignmentID 
+                          AND StudentID = @StudentID 
+                          AND QuestionID = @QuestionID
+                    END
+                    ELSE
+                    BEGIN
+                        INSERT INTO StudentAnswers
+                            (AssignmentID, StudentID, QuestionID, SelectedAnswer)
+                        VALUES
+                            (@AssignmentID, @StudentID, @QuestionID, @SelectedAnswer)
+                    END";
 
                             using (SqlCommand command = new SqlCommand(query, conn, transaction))
                             {
@@ -117,6 +117,20 @@ namespace CNPM.DAL
                             }
                         }
 
+                        string submissionQuery = @"
+                IF NOT EXISTS (SELECT 1 FROM StudentSubmissions 
+                               WHERE AssignmentID = @AssignmentID AND StudentID = @StudentID)
+                BEGIN
+                    INSERT INTO StudentSubmissions (AssignmentID, StudentID, SubmissionTime)
+                    VALUES (@AssignmentID, @StudentID, GETDATE())
+                END";
+
+                        using (SqlCommand submissionCmd = new SqlCommand(submissionQuery, conn, transaction))
+                        {
+                            submissionCmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
+                            submissionCmd.Parameters.AddWithValue("@StudentID", studentId);
+                            submissionCmd.ExecuteNonQuery();
+                        }
                         transaction.Commit();
                     }
                 }
@@ -127,6 +141,7 @@ namespace CNPM.DAL
                 throw;
             }
         }
+
 
         public List<AssignmentMC> GetMultipleChoiceAssignmentIds(int teacherId, int courseId)
         {
@@ -341,6 +356,51 @@ namespace CNPM.DAL
             }
         }
 
+        //Lấy danh sách bài tập của giáo viên
+        public List<Assignments> GetAssignmentsCreatedByTeacher(int teacherId)
+        {
+            List<Assignments> assignments = new List<Assignments>();
+
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"
+            SELECT AssignmentID, CourseID, Title, Description, DueDate, MaxScore
+            FROM Assignments
+            WHERE CreatedBy = @TeacherID
+            ORDER BY DueDate DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@TeacherID", teacherId);
+
+                    conn.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Assignments assignment = new Assignments
+                            {
+                                AssignmentID = reader.GetInt32(reader.GetOrdinal("AssignmentID")),
+                                CourseID = reader.GetInt32(reader.GetOrdinal("CourseID")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Description = reader.IsDBNull(reader.GetOrdinal("Description"))
+                                    ? ""
+                                    : reader.GetString(reader.GetOrdinal("Description")),
+                                DueDate = reader.IsDBNull(reader.GetOrdinal("DueDate"))
+                                    ? (DateTime?)null
+                                    : reader.GetDateTime(reader.GetOrdinal("DueDate")),
+                                MaxScore = reader.GetDecimal(reader.GetOrdinal("MaxScore"))
+                            };
+                            assignments.Add(assignment);
+                        }
+                    }
+                }
+            }
+
+            return assignments;
+        }
+
+
         private bool IsEssay(int assignmentId)
         {
             using (var conn = DatabaseHelper.GetConnection())
@@ -472,10 +532,7 @@ ORDER BY q.QuestionID";
             JOIN Assignments a ON s.AssignmentID = a.AssignmentID
             WHERE s.AssignmentID = @AssignmentID
             AND a.CreatedBy = @TeacherID
-            AND EXISTS (
-            SELECT 1
-            FROM AssignmentFiles af
-            WHERE af.AssignmentID = s.AssignmentID)";
+            AND AND s.FilePath IS NOT NULL)";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {

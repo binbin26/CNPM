@@ -1,8 +1,9 @@
 ﻿using CNPM.BLL;
 using CNPM.Models.Assignments;
 using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace CNPM.Forms.Teacher.Usercontrol
 {
@@ -14,6 +15,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
         {
             InitializeComponent();
             TeacherID = teacherId;
+            LoadAssignments();
         }
 
         private void dgvSubmissions_SelectionChanged(object sender, EventArgs e)
@@ -83,21 +85,17 @@ namespace CNPM.Forms.Teacher.Usercontrol
             try
             {
                 var submissions = assignmentBLL.GetEssaySubmissions(assignmentId, teacherID);
-
-                // Kiểm tra nếu danh sách rỗng hoặc null
                 if (submissions == null || submissions.Count == 0)
                 {
                     MessageBox.Show("Không tìm thấy bài nộp nào.");
                 }
                 else
                 {
-                    // In ra các giá trị của AssignmentID và TeacherID để debug bằng MessageBox
                     foreach (var submission in submissions)
                     {
                         MessageBox.Show($"AssignmentID: {submission.AssignmentID}, TeacherID: {TeacherID}");
                     }
 
-                    // Gán danh sách bài nộp vào DataGridView
                     dgvSubmissions.DataSource = submissions;
                 }
             }
@@ -114,6 +112,42 @@ namespace CNPM.Forms.Teacher.Usercontrol
             UcQuiz ucQuiz = new UcQuiz(TeacherID);
             ucQuiz.Dock = DockStyle.Fill;
             parent.Controls.Add(ucQuiz);
+        }
+
+        private void LoadAssignments()
+        {
+            try
+            {
+                var allAssignments = assignmentBLL.GetAssignmentsCreatedByTeacher(TeacherID);
+                if (allAssignments == null || allAssignments.Count == 0)
+                {
+                    MessageBox.Show("Giáo viên chưa tạo bài tập nào.");
+                    return;
+                }
+                var essayAssignments = new List<Assignments>();
+                foreach (var assignment in allAssignments)
+                {
+                    string type = assignmentBLL.GetAssignmentType(assignment.AssignmentID);
+                    if (type == "TuLuan")
+                    {
+                        essayAssignments.Add(assignment);
+                    }
+                }
+
+                if (essayAssignments.Count == 0)
+                {
+                    MessageBox.Show("Không có bài tập tự luận nào.");
+                    return;
+                }
+
+                cboAssignments.DataSource = essayAssignments;
+                cboAssignments.DisplayMember = "Title";
+                cboAssignments.ValueMember = "AssignmentID";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách bài tập: " + ex.Message);
+            }
         }
     }
 }

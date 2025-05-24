@@ -17,6 +17,7 @@ namespace CNPM.Forms.Teacher.Usercontrol
         {
             InitializeComponent();
             TeacherID = teacherId;
+            LoadAssignments();
         }
 
         private void cboAssignments_SelectedIndexChanged(object sender, EventArgs e)
@@ -101,13 +102,47 @@ namespace CNPM.Forms.Teacher.Usercontrol
                 MessageBox.Show("Không có môn học nào.");
                 return;
             }
-
-            // Hiển thị hộp thoại chọn Course
             var selectedCourse = ShowCourseSelectionDialog(courses);
             if (selectedCourse != null)
             {
                 MultipleChoiceProgress progressForm = new MultipleChoiceProgress(selectedCourse.CourseID, TeacherID);
                 progressForm.Show();
+            }
+        }
+
+        private void LoadAssignments()
+        {
+            try
+            {
+                var allAssignments = assignmentBLL.GetAssignmentsCreatedByTeacher(TeacherID);
+                if (allAssignments == null || allAssignments.Count == 0)
+                {
+                    MessageBox.Show("Giáo viên chưa tạo bài tập nào.");
+                    return;
+                }
+                var essayAssignments = new List<Assignments>();
+                foreach (var assignment in allAssignments)
+                {
+                    string type = assignmentBLL.GetAssignmentType(assignment.AssignmentID);
+                    if (type == "TracNghiem")
+                    {
+                        essayAssignments.Add(assignment);
+                    }
+                }
+
+                if (essayAssignments.Count == 0)
+                {
+                    MessageBox.Show("Không có bài tập tự luận nào.");
+                    return;
+                }
+
+                cboAssignments.DataSource = essayAssignments;
+                cboAssignments.DisplayMember = "Title";
+                cboAssignments.ValueMember = "AssignmentID";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách bài tập: " + ex.Message);
             }
         }
     }
