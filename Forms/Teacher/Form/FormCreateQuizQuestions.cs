@@ -62,11 +62,13 @@ namespace CNPM.Forms.Teacher
                 int assignmentId;
                 using (var cmd = new SqlCommand(insertAssignment, conn))
                 {
+                    DateTime createdAt = DateTime.Now;
+                    DateTime dueDate = createdAt.AddMinutes(Duration);
                     cmd.Parameters.AddWithValue("@CID", CourseID);
                     cmd.Parameters.AddWithValue("@SessionID", SessionID);
                     cmd.Parameters.AddWithValue("@Title", "Bài tập trắc nghiệm");
                     cmd.Parameters.AddWithValue("@CreatedBy", TeacherID);
-                    cmd.Parameters.AddWithValue("@DueDate", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@DueDate", dueDate);
                     assignmentId = (int)cmd.ExecuteScalar();
                 }
 

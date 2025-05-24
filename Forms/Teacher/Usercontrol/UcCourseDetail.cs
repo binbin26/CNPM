@@ -10,6 +10,7 @@ namespace CNPM.Forms.Teacher
     public partial class UcCourseDetail : UserControl
     {
         private Course currentCourse;
+        private int TeacherID => currentCourse.TeacherID;
 
         public UcCourseDetail(Course course)
         {

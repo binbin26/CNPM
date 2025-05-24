@@ -195,7 +195,9 @@ namespace CNPM.DAL
                                 CourseID = reader.GetInt32(reader.GetOrdinal("CourseID")),
                                 Title = reader.GetString(reader.GetOrdinal("Title")),
                                 Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "" : reader.GetString(reader.GetOrdinal("Description")),
-                                DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
+                                DueDate = reader.IsDBNull(reader.GetOrdinal("DueDate"))
+                                  ? (DateTime?)null
+                                  : reader.GetDateTime(reader.GetOrdinal("DueDate")),
                                 MaxScore = reader.GetDecimal(reader.GetOrdinal("MaxScore")),
                                 SubmissionStatus = reader.GetString(reader.GetOrdinal("SubmissionStatus"))
                             });
@@ -231,7 +233,7 @@ namespace CNPM.DAL
         public string GetEssay(int assignmentId)
         {
             string filePath = null;
-            string query = "SELECT * FROM AssignmentFiles WHERE AssignmentID = @AssignmentID";
+            string query = "SELECT FilePath FROM AssignmentFiles WHERE AssignmentID = @AssignmentID";
 
             using (var conn = DatabaseHelper.GetConnection())
             using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -343,7 +345,7 @@ namespace CNPM.DAL
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
-                string query = "SELECT COUNT(*) FROM AssignmentFile WHERE AssignmentID = @AssignmentID";
+                string query = "SELECT COUNT(*) FROM AssignmentFiles WHERE AssignmentID = @AssignmentID";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@AssignmentID", assignmentId);
                 conn.Open();

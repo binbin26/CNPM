@@ -646,3 +646,6 @@ CHECK (
 
 ALTER TABLE Courses
 ADD RegistrationDeadLine DATETIME NULL;
+
+ALTER TABLE AssignmentMC
+ADD Duration INT NULL;

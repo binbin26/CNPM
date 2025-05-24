@@ -227,10 +227,17 @@ public class AssignmentBLL
         {
             return _assignmentDAL.GetEssaySubmissions(assignmentId, teacherId);
         }
-        catch (Exception ex)
+        catch (SqlException sqlEx)
         {
-            MessageBox.Show("Lỗi khi lấy bài tự luận: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return new List<EssaySubmissionDTO>();
+            MessageBox.Show("Lỗi truy vấn cơ sở dữ liệu khi lấy bài tự luận.\nChi tiết: " + sqlEx.Message,
+                            "Lỗi CSDL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            throw new ApplicationException("Lỗi truy vấn dữ liệu");
+        }
+        catch (ArgumentException argEx)
+        {
+            MessageBox.Show("Không tìm thấy giáo viên tương ứng.\nChi tiết: " + argEx.Message,
+                            "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            throw new ApplicationException("Không tìm thấy giáo viên");
         }
     }
     //Cập nhật điểm bài tự luận từ giảng viên
