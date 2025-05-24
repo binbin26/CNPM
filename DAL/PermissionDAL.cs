@@ -13,7 +13,7 @@ namespace CNPM.DAL
                 FROM Users u
                 JOIN Permissions p ON u.Role = p.Role
                 WHERE u.UserID = @UserID 
-                AND p." + permissionType + " = 1"; //Ví dụ: CanCreateCourse
+                AND p." + permissionType + " = 1";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@UserID", userID);

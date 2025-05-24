@@ -31,7 +31,6 @@ namespace CNPM.BLL
         }
         public string EnrollStudent(int studentID, int courseID)
         {
-            // ✅ Đảm bảo StudentID là UserID có Role = 'Student'
             if (!_courseDAL.UserExistsWithRole(studentID, "Student")) return "NotAStudent";
             return _courseDAL.EnrollStudent(studentID, courseID);
         }
@@ -39,7 +38,6 @@ namespace CNPM.BLL
         {
             return _courseDAL.GetCoursesByTeacher(teacherID);
         }
-        // Trong CourseBLL.cs
         public Course GetCourseByID(int courseID)
         {
             return _courseDAL.GetCourseByID(courseID);
@@ -51,8 +49,6 @@ namespace CNPM.BLL
             if (string.IsNullOrWhiteSpace(course.CourseCode)) return false;
             if (string.IsNullOrWhiteSpace(course.CourseName)) return false;
             if (course.TeacherID <= 0) return false;
-
-            // ✅ Đảm bảo TeacherID chính là UserID của Role = 'Teacher'
             if (!_courseDAL.UserExistsWithRole(course.TeacherID, "Teacher")) return false;
 
             if (course.StartDate >= course.EndDate) return false;
@@ -79,18 +75,6 @@ namespace CNPM.BLL
         {
             if (studentId <= 0 || courseId <= 0) return false;
             return _courseDAL.RemoveStudent(studentId, courseId);
-        }
-
-        public List<ViewModel1> GetFormattedGradesByStudent(int studentId)
-        {
-            var grades = _courseDAL.GetGradesByStudent(studentId);
-
-            return grades.Select(g => new ViewModel1
-            {
-                CourseName = g.CourseName,
-                ScoreText = g.Score.HasValue ? g.Score.Value.ToString("0.00") : "Chưa có điểm",
-                GradedBy = g.GradedBy
-            }).ToList();
         }
     }
 }

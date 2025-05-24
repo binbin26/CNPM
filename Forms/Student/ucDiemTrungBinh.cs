@@ -1,6 +1,7 @@
 ﻿using CNPM.BLL;
 using CNPM.DAL;
 using CNPM.Models.Users;
+using System;
 using System.Data;
 using System.Windows.Forms;
 
@@ -19,31 +20,41 @@ namespace CNPM.Forms.Student
 
         private void LoadGradesByUsername()
         {
-            if (string.IsNullOrWhiteSpace(_username))
-                return;
-
-            User user = userBLL.GetUserByUsername(_username);
-
-            if (user == null || user.Role != "Student")
+            try
             {
-                MessageBox.Show("Không tìm thấy sinh viên hoặc tài khoản không hợp lệ.");
-                return;
+                if (string.IsNullOrWhiteSpace(_username))
+                    return;
+
+                User user = userBLL.GetUserByUsername(_username);
+
+                if (user == null || user.Role != "Student")
+                {
+                    MessageBox.Show("Không tìm thấy sinh viên hoặc tài khoản không hợp lệ.");
+                    return;
+                }
+
+                var courseBLL = new CourseBLL(new CourseDAL());
+                var gradeVMs = courseBLL.GetGradesByStudent(user.UserID);
+
+                var dt = new DataTable();
+                dt.Columns.Add("Tên khóa học");
+                dt.Columns.Add("Điểm trung bình");
+                dt.Columns.Add("Giáo viên chấm điểm");
+
+                foreach (var grade in gradeVMs)
+                {
+                    dt.Rows.Add(grade.CourseName, grade.ScoreText, grade.GradedBy);
+                }
+
+                dtGPoint.DataSource = dt;
+                dtGPoint.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                dtGPoint.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dtGPoint.ReadOnly = true;
             }
-
-            var courseBLL = new CourseBLL(new CourseDAL());
-            var gradeVMs = courseBLL.GetFormattedGradesByStudent(user.UserID);
-
-            var dt = new DataTable();
-            dt.Columns.Add("Tên khóa học");
-            dt.Columns.Add("Điểm");
-            dt.Columns.Add("Giáo viên chấm điểm");
-
-            foreach (var grade in gradeVMs)
+            catch (Exception ex)
             {
-                dt.Rows.Add(grade.CourseName, grade.ScoreText, grade.GradedBy);
+                MessageBox.Show("Lỗi khi tải dữ liệu: " + ex.Message);
             }
-
-            dtGPoint.DataSource = dt;
         }
     }
 }
