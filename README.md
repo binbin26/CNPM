@@ -38,7 +38,7 @@
 4. Cấu hình chuỗi kết nối cơ sở dữ liệu trong `App.config`.
 5. Khởi tạo cơ sở dữ liệu bằng script `SQLQuery1.sql`.
 6. Chạy ứng dụng bằng cách nhấn F5 hoặc chọn "Start" trong Visual Studio.([GitHub][3])
-
+7.Chọn 1 trong các tài khoản ở `SQLQuery1.sql` để đăng nhập hoặc đăng ký.
 ## 📁 Cấu trúc thư mục
 
 * `DAL/`: Lớp truy cập dữ liệu.
@@ -54,7 +54,7 @@
 * Nguyễn Gia Bảo 
 * Nguyễn Minh Tuấn
 * Hồ Xuân Lộc
-* Phạm Tố Uyên 
+* Phạm Huỳnh Tố Quyên 
 
 ## 📄 Giấy phép
 
